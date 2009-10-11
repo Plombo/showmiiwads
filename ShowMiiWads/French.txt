@@ -1,0 +1,119 @@
+﻿Fichier
+Langage
+Aide
+Sauvegarder les dossiers
+Rafraîchir
+Anglais
+Allemand
+À-propos
+Nom de fichier
+Title ID
+Blocs
+Taille du fichier
+Attribut du IOS
+Attribut de région
+Contenu
+Chemin
+Fichiers
+À-propos
+Échec lors du changement du Title ID!
+Erreur
+Choisissez un fichier
+Éditer
+Changer le Title ID
+Renommer
+Changer l'attribut de région
+Options
+Quitter
+Annuler
+Renommer
+Veuillez saisir le nouveau nom de fichier pour le WAD suivant
+Effacer
+Le fichier n'existe pas !
+Effacer le fichier ?
+Voulez-vous vraiment effacer ce fichier ?
+Ajuster la taille des colonnes automatiquement
+Format de la texture
+Taille
+Dossiers
+Effacer ce fichier
+Un dossier nommé '{0}' sera créé dans le dossier choisi
+Extraire
+Changer le Title ID
+Saisissez le nouveau Title ID
+Le Title ID doit contenir uniquement des caractères et des chiffres !
+Le Title ID doit être composé de 4 caractères !
+Ouvrir les dossiers
+Copier
+Couper
+Coller
+Le fichier existe déjà. Voulez-vous le réécrire ?
+Le fichier source n'existe pas.
+Réécrire ?
+La (common-)key.bin doit être présente dans le dossier de l'application !
+La Common-Key est absente
+Sauvegarder le Wad
+Dans le dossier
+Choisissez le dossier de la sauvegarde de la NAND.
+Vous devez définir le chemin de votre sauvegarde de NAND(Options)!
+Sauvegarde de NAND inexistante
+Sauvegarder
+Sur la NAND
+Choisir le chemin de sauvegarde de la NAND
+L'édition des fonctions sont limitées aux titres des chaines !
+Slang les fichiers
+Le fichier slang est invalide !
+Informations
+{0} Erreurs survenues
+Êtes-vous sûr de vouloir changer la région de tous les Wads présents dans ce dossier ?
+Êtes-vous sûr ?
+Il n'y a aucun Wads à dézoner dans ce dossier !
+Opération de dézonage terminée
+Exporter dans le fichier
+Montrer le chemin dans le nom de groupe
+Changer le titre de la chaine
+Changer le dossier incluant les contenus à empaqueter
+Le titre de la chaine ne peut être trouvé !
+Ouverts récemment
+Depuis le fichier
+Outils
+Voir
+Empaqueter le Wad
+Empaqueter le Wad (sans Trailer)
+Il manque des fichiers!
+Ajouter à la liste
+Installation
+Jeter
+Titres installés
+Version
+Type
+Titre de la chaine
+Fichier
+Dossier
+Tous les fichiers wads dans le dossier séléctionné seront installés
+Ajouter un sous-dossier
+Français
+La prévisualisation fonctionne uniquement sur les chaines!
+Le fichier c'est pas une archive U8 valide!
+Seul les TPL contenant 1 texture sont supportés!
+La texture possède un format non supporté!
+Prévisualisation
+Décompresser l'archive U8
+Convertir le TPL en PNG
+Fermer
+Sauvegarder tous
+Images de bannière
+Images d'icones
+Les deux
+Les chaines cachées n'ont pas de bannières ou d'icones!
+Veuillez saisir '{0}' afin de créer '{1}'
+Vous auriez du saisir '{0}'!
+Créer la Common-Key
+'{0}' existe déjà!
+Vous avez déjà la dernière version.
+La version {0} est disponible.<s>Ici: {1}<s>Voulez-vous ouvrir cette page?
+Recherche de mise à jour
+Sauvegarde restaurée avec succès
+Aucune sauvegarde de ce fichier n'a été crée!
+Faites des sauvegardes avant d'éditer vos fichiers
+Restauration

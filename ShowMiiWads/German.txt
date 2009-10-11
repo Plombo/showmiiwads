@@ -1,0 +1,119 @@
+﻿Datei
+Sprache
+Hilfe
+Ordner Speichern
+Aktualisieren
+Englisch
+Deutsch
+Über
+Dateiname
+Title ID
+Blöcke
+Dateigröße
+IOS Flag
+Region Flag
+Content
+Pfad
+Dateien
+Über
+Ändern der Title ID fehlgeschlagen!
+Fehler
+Wählen sie ein Verzeichnis
+Bearbeiten
+Title ID Ändern
+Umbenennen
+Region Flag Ändern
+Optionen
+Beenden
+Abbrechen
+Umbenennen
+Bitte geben sie den neuen Namen für folgende WAD Datei ein
+Löschen
+Datei ist nicht vorhanden!
+Datei löschen?
+Möchten sie diese Datei wirklich löschen?
+Spalten Automatisch Anpassen
+Texturformat
+Größe
+Ordner
+Diesen Ordner Entfernen
+Der Ordner "{0}" wird im gewählten Verzeichnis erstellt
+Extrahieren
+Title ID ändern
+Geben sie die neue Title ID ein
+Die Title ID darf nur aus Buchstaben und Zahlen bestehen!
+Die Title ID muss 4 Zeichen lang sein!
+Ordner Öffnen
+Kopieren
+Ausschneiden
+Einfügen
+Die Zieldatei existiert bereits. Wollen sie sie überschreiben?
+Die Quelldatei existiert nicht.
+Überschreiben?
+Die (common-)key.bin befindet sich nicht im Programmverzeichnis!
+Common-Key nicht gefunden
+Wad Speichern
+In Ordner
+Wählen sie den NAND Backup Ordner aus
+Sie müssen den Pfad zu ihrem NAND Backup festlegen (Optionen)!
+NAND Backup nicht gefunden
+Speichern
+In NAND
+NAND Backup Pfad Ändern
+Editing Funktionen sind nur auf Channel anwendbar!
+Slang Dateien
+Die slang Datei ist ungültig!
+Information
+{0} Fehler sind aufgetreten
+Sind sie sicher, dass sie die Region für alle Wad Dateien in diesem Ordner ändern möchten?
+Sind sie sicher?
+Es sind keine Wads, die zu Region Free geändert werden können, im Ordner!
+Kompletten Ordner Zu Region Free
+In Datei Exportieren
+Zeige Pfad In Gruppennamen
+Channel Title Ändern
+Wählen sie den Ordner mit den zu packenden Inhalten
+Der Channel Title konnte nicht gefunden werden!
+Zuletzt Geöffnet
+Aus Datei
+Tools
+Ansicht
+Wad Packen
+Wad Packen (ohne Trailer)
+Es fehlen Dateien!
+Warteschlange
+Installieren
+Verwerfen
+Installierte Titel
+Version
+Typ
+Channel Title
+Datei
+Ordner
+Alle Wad Dateien im gewählten Ordner weden installiert
+Unterordner Hinzufügen
+Französisch
+Die Vorschau ist nur für Channel!
+Datei ist kein gültiges U8 Archiv!
+Nur TPL Dateien mit 1 Textur werden unterstützt!
+Die Textur hat ein ungültiges Format!
+Vorschau
+U8 Archiv Entpacken
+Tpl In Png Konvertieren
+Schließen
+Alle Speichern
+Banner Bilder
+Icon Bilder
+Beide
+Verstecke Channel haben keine Banner oder Icons!
+Bitte '{0}' eingeben, um '{1}' zu erstellen
+Nicht '{0}' eingegeben!
+Erstelle Common-Key
+'{0}' existiert bereits!
+Es ist keine neue Version verfügbar.
+Version {0} ist verfügbar.<s>Download: {1}<s>Soll die Seite geöffnet werden?
+Nach Updates Suchen
+Backup wurde wiederhergestellt
+Von dieser Datei wurde kein Backup gemacht!
+Erstelle Backups Vor Dem Editieren
+Backup Wiederherstellen

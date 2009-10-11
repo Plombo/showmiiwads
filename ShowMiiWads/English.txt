@@ -1,0 +1,127 @@
+﻿//This is an example language file for ShowMiiWads 1.0
+//Use a '//' in front of a line to comment it out (just as seen in this line)
+//Be sure that the lines stay in exactly the same order as they are and don't
+//remove a line or add one (except for comments)!
+//
+//{0}, {1}, ... are placeholder.
+//<s> is a new line.
+//Don't change the amout of placeholders or new lines, else you probably will get errors!
+File
+Language
+Help
+Save Folders
+Refresh
+English
+German
+About
+Filename
+Title ID
+Blocks
+Filesize
+IOS Flag
+Region Flag
+Content
+Path
+Files
+About
+Changing Title ID failed!
+Error
+Choose a folder
+Edit
+Change Title ID
+Rename
+Change Region Flag
+Options
+Exit
+Cancel
+Rename
+Please enter the new name for the following WAD file
+Delete
+File does not exist!
+Delete File?
+Do you really want to delete this File?
+Resize Columns Automatically
+Texture Format
+Size
+Folders
+Remove This Folder
+A folder called '{0}' will be created in the chosen directory
+Extract
+Change Title ID
+Enter the new Title ID
+The Title ID must contain characters and numbers only!
+The Title ID must be 4 characters long!
+Open Folder
+Copy
+Cut
+Paste
+The destination file does already exist. Would you like to overwrite?
+The source file doesn't exist.
+Overwrite?
+The (common-)key.bin must be in the application directory!
+Common-Key not found
+Save Wad
+To Folder
+Choose your NAND Backup Directory
+You need to define the path to your NAND Backup (Options)!
+NAND Backup not found
+Save
+To NAND
+Change NAND Backup Path
+Editing Features are limited to Channel Titles!
+Slang Files
+The slang file is invalid!
+Information
+{0} Errors occured
+Are you sure you want to change the Region for all Wad files in this folder?
+Are you sure?
+There are no Wads to change to Region Free in this folder!
+Complete Folder To Region Free
+Export To File
+Show Path In Groupnames
+Change Channel Title
+Choose the folder including the contents to pack
+The Channel Title couldn't be found!
+Recently Opened
+From File
+Tools
+View
+Pack Wad
+Pack Wad (without Trailer)
+There are files missing!
+Queue
+Install
+Discard
+Installed Titles
+Version
+Type
+Channel Title
+File
+Folder
+All wad files in the selected folder will be installed
+Add Subfolders
+French
+Previewing only works with Channels!
+File is no valid U8 Archive!
+Only TPL files containing 1 Texture are supported!
+The Texture has an unsupported format!
+Preview
+Unpack U8 Archive
+Convert Tpl To Png
+Close
+Save All
+Banner Images
+Icon Images
+Both
+Hidden Channel don't have Banners or Icons!
+Please type '{0}' to create '{1}'
+You should have typed '{0}'!
+Create Common-Key
+'{0}' already exists!
+You already have the latest version.
+Version {0} is available.<s>Get it at: {1}<s>Do you want the page to be opened?
+Check For Update
+Backup has been restored
+No Backup of this file has been created!
+Create Backups Before Editing
+Restore Backup
