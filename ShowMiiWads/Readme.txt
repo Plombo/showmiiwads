@@ -11,6 +11,11 @@ want to have your translation included into the application, contact me..
 -----------------------------------------------------------------------------------------
 Changelog:
 
+Version 1.0b
+	- Fixed a bug where every entry was added multiple times in ShowMiiNand
+	- Fixed VC / WiiWare detection (Thanks to giantpune for the hint!)
+	- Added auto updatecheck at startup
+
 Version 1.0
 	- Finally got independant of external tools (saves about 3 MB)
 	  All reading, editing and writing of wad and related files is now done by my own classes!
@@ -87,7 +92,7 @@ The author can't be held responsible for any damages arising from the use of it.
 -----------------------------------------------------------------------------------------
 Thanks:
 
-icefire / Xuzz for Wii.py (which was the base for TPL conversion)
+Xuzz, SquidMan, megazig, Matt_P, Omega and The Lemon Man for Wii.py (which was the base for TPL conversion) 
 SquidMan for Zetsubou (which was a reference for TPL conversion)
 Andre Perrot for gbalzss (which was the base for LZ77 decompression)
 NeoRame for the Logo

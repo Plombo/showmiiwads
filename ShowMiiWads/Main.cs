@@ -33,7 +33,7 @@ namespace ShowMiiWads
     public partial class Main : Form
     {
         //Define global variables
-        public const string version = "1.0";
+        public const string version = "1.0b";
         private string language = "English";
         private string langfile = "";
         private string oldlang = "";
@@ -88,6 +88,8 @@ namespace ShowMiiWads
             LoadSettings();
             //Define EventHandler for Wad Processes
             Wii.Tools.ProgressChanged += new EventHandler<Wii.ProgressChangedEventArgs>(WadProgressChanged);
+            //Check for Updates
+            UpdateCheck(true);
             //Cursor back to default
             Cursor.Current = Cursors.Default;
         }
@@ -134,11 +136,12 @@ namespace ShowMiiWads
                 Directory.Exists(nandpath + "\\title"))
             {
                 string[] tickets = Directory.GetFiles(nandpath + "\\ticket", "*.tik", SearchOption.AllDirectories);
+                
                 if (tickets.Length > 0)
                 {
                     string[,] Infos = new string[tickets.Length, 11];
                     Cursor.Current = Cursors.WaitCursor;
-
+                    
                     for (int i = 0; i < tickets.Length; i++)
                     {
                         try
@@ -221,24 +224,23 @@ namespace ShowMiiWads
                                 Infos[i, 3] = size + " MB";
                             }
                         }
-                        catch (Exception ex) 
-                        { 
-                            MessageBox.Show(ex.Message, Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error); 
-                        }
-
-                        for (int x = 0; x < Infos.GetLength(0); x++)
+                        catch //(Exception ex)
                         {
-                            if (!string.IsNullOrEmpty(Infos[x, 0]))
-                            {
-                                lvNand.Items.Add(new ListViewItem(new string[] { Infos[x, 0], Infos[x, 1], Infos[x, 2], Infos[x, 3], Infos[x, 4], Infos[x, 5], Infos[x, 6], Infos[x, 7], Infos[x, 8], Infos[x, 9], Infos[x, 10] }));
-                            }
+                            //MessageBox.Show(ex.Message, Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
+                    }
 
-                        lbFileCount.Text = lvNand.Items.Count.ToString();
+                    for (int x = 0; x < Infos.GetLength(0); x++)
+                    {
+                        if (!string.IsNullOrEmpty(Infos[x, 0]))
+                        {
+                            lvNand.Items.Add(new ListViewItem(new string[] { Infos[x, 0], Infos[x, 1], Infos[x, 2], Infos[x, 3], Infos[x, 4], Infos[x, 5], Infos[x, 6], Infos[x, 7], Infos[x, 8], Infos[x, 9], Infos[x, 10] }));
+                        }
                     }
                 }
             }
 
+            lbFileCount.Text = lvNand.Items.Count.ToString();
             Cursor.Current = Cursors.Default;
             pbProgress.Value = 100;
         }
@@ -488,8 +490,8 @@ namespace ShowMiiWads
 
                 try
                 {
-                    if (ds.Tables["Settings"].Rows[0]["Version"].ToString() == version)
-                    {
+                    //if (ds.Tables["Settings"].Rows[0]["Version"].ToString() == version)
+                    //{
                         langfile = ds.Tables["Settings"].Rows[0]["LangFile"].ToString();
                         addsub = ds.Tables["Settings"].Rows[0]["AddSub"].ToString();
                         savefolders = ds.Tables["Settings"].Rows[0]["SaveFolders"].ToString();
@@ -592,12 +594,12 @@ namespace ShowMiiWads
                         }
 
                         btnRefresh_Click(null, null);
-                    }
-                    else
-                    {
-                        File.Delete(Application.StartupPath + "\\ShowMiiWads.cfg");
-                        LoadSettings();
-                    }
+                    //}
+                    //else
+                    //{
+                    //    File.Delete(Application.StartupPath + "\\ShowMiiWads.cfg");
+                    //    LoadSettings();
+                    //}
                 }
                 catch
                 {
@@ -3009,10 +3011,10 @@ namespace ShowMiiWads
 
         private void btnUpdateCheck_Click(object sender, EventArgs e)
         {
-            CheckForUpdate(false);
+            UpdateCheck(false);
         }
 
-        private void CheckForUpdate(bool silentifno)
+        private void UpdateCheck(bool silentifno)
         {
             if (!version.Contains("Beta"))
             {

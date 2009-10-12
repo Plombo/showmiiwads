@@ -20,8 +20,6 @@
 //Zetsubou by SquidMan was a reference for TPL conversion
 //gbalzss by Andre Perrot was the base for LZ77 decompression
 
-#define NoCheckVC
-
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -386,7 +384,7 @@ namespace Wii
 
             if (type == 1)
             {
-                if (channeltype.Contains("Channel"))
+                if (channeltype.Contains("Channel") || channeltype.Contains("Ware") || channeltype.Contains("Console"))
                 {
                     string tmdid = Convert.ToChar(wadtiktmd[tmdpos + 0x190]).ToString() + Convert.ToChar(wadtiktmd[tmdpos + 0x191]).ToString() + Convert.ToChar(wadtiktmd[tmdpos + 0x192]).ToString() + Convert.ToChar(wadtiktmd[tmdpos + 0x193]).ToString();
                     return tmdid;
@@ -401,7 +399,7 @@ namespace Wii
             }
             else
             {
-                if (channeltype.Contains("Channel"))
+                if (channeltype.Contains("Channel") || channeltype.Contains("Ware") || channeltype.Contains("Console"))
                 {
                     string tikid = Convert.ToChar(wadtiktmd[tikpos + 0x1e0]).ToString() + Convert.ToChar(wadtiktmd[tikpos + 0x1e1]).ToString() + Convert.ToChar(wadtiktmd[tikpos + 0x1e2]).ToString() + Convert.ToChar(wadtiktmd[tikpos + 0x1e3]).ToString();
                     return tikid;
@@ -440,55 +438,55 @@ namespace Wii
             {
                 string channeltype = GetChannelType(wadfile, 0);
 
-                if (channeltype.Contains("Channel") && !channeltype.Contains("Hidden"))
+                if (channeltype.Contains("Channel") || channeltype.Contains("Ware") || channeltype.Contains("Console"))
                 {
-                    string[] titles = new string[7];
-
-                    //Detection from footer is turned off, cause the footer
-                    //can be easily edited and thus the titles in it could be simply wrong
-
-                    //int footer = GetFooterSize(wadfile);
-                    //if (footer > 0)
-                    //{
-                    //    int footerpos = wadfile.Length - footer;
-                    //    int count = 0;
-                    //    int imetpos = 0;
-
-                    //    if ((wadfile.Length - (wadfile.Length - footer)) < 250) return new string[7];
-
-                    //    for (int z = 0; z < 250; z++)
-                    //    {
-                    //        if (Convert.ToChar(wadfile[footerpos + z]) == 'I')
-                    //            if (Convert.ToChar(wadfile[footerpos + z + 1]) == 'M')
-                    //                if (Convert.ToChar(wadfile[footerpos + z + 2]) == 'E')
-                    //                    if (Convert.ToChar(wadfile[footerpos + z + 3]) == 'T')
-                    //                    {
-                    //                        imetpos = footerpos + z;
-                    //                        break;
-                    //                    }
-                    //    }
-
-                    //    int jappos = imetpos + 29;
-
-                    //    for (int i = jappos; i < jappos + 588; i += 84)
-                    //    {
-                    //        for (int j = 0; j < 40; j += 2)
-                    //        {
-                    //            if (wadfile[i + j] != 0x00)
-                    //            {
-                    //                char temp = Convert.ToChar(wadfile[i + j]);
-                    //                titles[count] += temp;
-                    //            }
-                    //        }
-
-                    //        count++;
-                    //    }
-
-                    //    return titles;
-                    //}
-
-                    if (channeltype.Contains("Channel") && !channeltype.Contains("Hidden"))
+                    if (!channeltype.Contains("Hidden"))
                     {
+                        string[] titles = new string[7];
+
+                        //Detection from footer is turned off, cause the footer
+                        //can be easily edited and thus the titles in it could be simply wrong
+
+                        //int footer = GetFooterSize(wadfile);
+                        //if (footer > 0)
+                        //{
+                        //    int footerpos = wadfile.Length - footer;
+                        //    int count = 0;
+                        //    int imetpos = 0;
+
+                        //    if ((wadfile.Length - (wadfile.Length - footer)) < 250) return new string[7];
+
+                        //    for (int z = 0; z < 250; z++)
+                        //    {
+                        //        if (Convert.ToChar(wadfile[footerpos + z]) == 'I')
+                        //            if (Convert.ToChar(wadfile[footerpos + z + 1]) == 'M')
+                        //                if (Convert.ToChar(wadfile[footerpos + z + 2]) == 'E')
+                        //                    if (Convert.ToChar(wadfile[footerpos + z + 3]) == 'T')
+                        //                    {
+                        //                        imetpos = footerpos + z;
+                        //                        break;
+                        //                    }
+                        //    }
+
+                        //    int jappos = imetpos + 29;
+
+                        //    for (int i = jappos; i < jappos + 588; i += 84)
+                        //    {
+                        //        for (int j = 0; j < 40; j += 2)
+                        //        {
+                        //            if (wadfile[i + j] != 0x00)
+                        //            {
+                        //                char temp = Convert.ToChar(wadfile[i + j]);
+                        //                titles[count] += temp;
+                        //            }
+                        //        }
+
+                        //        count++;
+                        //    }
+
+                        //    return titles;
+                        //}
+
                         string[,] conts = GetContentInfo(wadfile);
                         byte[] titlekey = GetTitleKey(wadfile);
                         int nullapp = 0;
@@ -532,10 +530,10 @@ namespace Wii
 
                             count++;
                         }
+
+                        return titles;
                     }
-
-
-                    return titles;
+                    else return new string[7];
                 }
                 else return new string[7];
             }
@@ -619,13 +617,12 @@ namespace Wii
 
             if (thistype == "00010001")
             {
-#if CheckVC
-                //Unfortunately, this returns some channel (e.g. official) to be VC / WW, so it's turned off...
-                if (CheckWiiWareVC(wadtiktmd) == true) channeltype = "VC / WW Channel";
+                int wwvctype = CheckWiiWareVC(wadtiktmd);
+
+                if (wwvctype == 3) channeltype = "System Channel";
+                else if (wwvctype == 1) channeltype = "Virtual Console";
+                else if (wwvctype == 2) channeltype = "WiiWare";
                 else channeltype = "Channel Title";
-#elif NoCheckVC
-                channeltype = "Channel Title";
-#endif
             }
             else if (thistype == "00010002") channeltype = "System Channel";
             else if (thistype == "00010004" || thistype == "00010000") channeltype = "Game Channel";
@@ -873,18 +870,26 @@ namespace Wii
         }
 
         /// <summary>
-        /// Returns true, if the wad file is a WiiWare / VC title
+        /// Returns true, if the wad file is a WiiWare / VC title.
+        /// 0 = None, 1 = VC, 2 = WiiWare, 3 = System Channel
         /// </summary>
         /// <param name="wadfile"></param>
         /// <returns></returns>
-        public static bool CheckWiiWareVC(byte[] wadtik)
+        public static int CheckWiiWareVC(byte[] wadtik)
         {
             int tikpos = 0;
 
             if (IsThisWad(wadtik) == true) { tikpos = GetTikPos(wadtik); }
 
-            if (wadtik[tikpos + 0x221] == 0x01) return true;
-            else return false;
+            if (wadtik[tikpos + 0x221] == 0x01)
+            {
+                char idchar = Convert.ToChar(wadtik[tikpos + 0x1e0]);
+
+                if (idchar == 'H') return 3;
+                else if (idchar == 'W') return 2;
+                else return 1;
+            }
+            else return 0;
         }
 
         /// <summary>

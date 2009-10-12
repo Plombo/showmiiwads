@@ -72,7 +72,7 @@ namespace ShowMiiWads
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(0, 110);
+            this.label3.Location = new System.Drawing.Point(0, 119);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(200, 44);
             this.label3.TabIndex = 4;
@@ -82,7 +82,7 @@ namespace ShowMiiWads
             // 
             // linkLabel1
             // 
-            this.linkLabel1.Location = new System.Drawing.Point(0, 150);
+            this.linkLabel1.Location = new System.Drawing.Point(0, 164);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(200, 13);
             this.linkLabel1.TabIndex = 5;
@@ -106,7 +106,7 @@ namespace ShowMiiWads
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(210, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(178, 162);
+            this.groupBox1.Size = new System.Drawing.Size(178, 190);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thanks:";
@@ -116,7 +116,7 @@ namespace ShowMiiWads
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(5, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(168, 143);
+            this.label1.Size = new System.Drawing.Size(168, 169);
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -124,7 +124,7 @@ namespace ShowMiiWads
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(5, 179);
+            this.label2.Location = new System.Drawing.Point(5, 202);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(182, 13);
             this.label2.TabIndex = 9;
@@ -134,7 +134,7 @@ namespace ShowMiiWads
             // lbDonate
             // 
             this.lbDonate.AutoSize = true;
-            this.lbDonate.Location = new System.Drawing.Point(187, 179);
+            this.lbDonate.Location = new System.Drawing.Point(187, 202);
             this.lbDonate.Name = "lbDonate";
             this.lbDonate.Size = new System.Drawing.Size(40, 13);
             this.lbDonate.TabIndex = 10;
@@ -146,7 +146,7 @@ namespace ShowMiiWads
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(228, 179);
+            this.label4.Location = new System.Drawing.Point(228, 202);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(160, 13);
             this.label4.TabIndex = 11;
@@ -166,7 +166,7 @@ namespace ShowMiiWads
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(396, 195);
+            this.ClientSize = new System.Drawing.Size(396, 221);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.lbDonate);
