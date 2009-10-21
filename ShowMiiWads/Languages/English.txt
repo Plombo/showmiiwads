@@ -1,6 +1,6 @@
 ﻿//Please write the name of your language IN YOUR LANGUAGE here! Example: *Français*
 *English*
-//This is an example language file for ShowMiiWads 1.1
+//This is an example language file for ShowMiiWads 1.1b
 //Use a '//' in front of a line to comment it out (just as seen in this line)
 //Be sure that the lines stay in exactly the same order as they are and don't
 //remove a line or add one (except for comments)!

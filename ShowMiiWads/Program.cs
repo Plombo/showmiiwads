@@ -54,9 +54,13 @@ namespace ShowMiiWads
             ds.ReadXmlSchema(Application.StartupPath + "\\ShowMiiWads.cfg");
             ds.ReadXml(Application.StartupPath + "\\ShowMiiWads.cfg");
 
-            nandpath = ds.Tables["Settings"].Rows[0]["NandPath"].ToString();
-            foldercount = Convert.ToInt32(ds.Tables["Folders"].Rows[0]["Foldercount"]);
-            splash = ds.Tables["Settings"].Rows[0]["SplashScreen"].ToString();
+            try
+            {
+                nandpath = ds.Tables["Settings"].Rows[0]["NandPath"].ToString();
+                foldercount = Convert.ToInt32(ds.Tables["Folders"].Rows[0]["Foldercount"]);
+                splash = ds.Tables["Settings"].Rows[0]["SplashScreen"].ToString();
+            }
+            catch { }
         }
     }
 }

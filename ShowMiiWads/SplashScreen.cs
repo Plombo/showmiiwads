@@ -87,17 +87,21 @@ namespace ShowMiiWads
             ds.ReadXmlSchema(Application.StartupPath + "\\ShowMiiWads.cfg");
             ds.ReadXml(Application.StartupPath + "\\ShowMiiWads.cfg");
 
-            nandpath = ds.Tables["Settings"].Rows[0]["NandPath"].ToString();
-            language = ds.Tables["Settings"].Rows[0]["Language"].ToString();
-            foldercount = Convert.ToInt32(ds.Tables["Folders"].Rows[0]["Foldercount"]);
-            string[] folders = new string[foldercount];
-
-            for (int i = 0; i < foldercount; i++)
+            try
             {
-                folders[i] = ds.Tables["Folders"].Rows[0]["Folder" + i.ToString()].ToString();
-            }
+                nandpath = ds.Tables["Settings"].Rows[0]["NandPath"].ToString();
+                language = ds.Tables["Settings"].Rows[0]["Language"].ToString();
+                foldercount = Convert.ToInt32(ds.Tables["Folders"].Rows[0]["Foldercount"]);
+                string[] folders = new string[foldercount];
 
-            return folders;
+                for (int i = 0; i < foldercount; i++)
+                {
+                    folders[i] = ds.Tables["Folders"].Rows[0]["Folder" + i.ToString()].ToString();
+                }
+
+                return folders;
+            }
+            catch { return new string[0]; }
         }
 
         /// <summary>

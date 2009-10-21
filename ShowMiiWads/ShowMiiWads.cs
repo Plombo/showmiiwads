@@ -17,7 +17,6 @@
  */
 
 //#define Debug //Skips the updatecheck on startup
-#define NewSettings //Will delete old cfg files in order to avoid crashes
 //#define x64 //Turn on while compiling for x64
 
 using System;
@@ -39,7 +38,7 @@ namespace ShowMiiWads
     public partial class ShowMiiWads : Form
     {
         //Define global variables
-        public const string version = "1.1";
+        public const string version = "1.1b";
         private string language = "English";
         private string langfile = "";
         private string oldlang = "";
@@ -786,10 +785,8 @@ namespace ShowMiiWads
 
                 try
                 {
-#if NewSettings
                     if (ds.Tables["Settings"].Rows[0]["Version"].ToString() == version)
                     {
-#endif
                         langfile = ds.Tables["Settings"].Rows[0]["LangFile"].ToString();
                         addsub = ds.Tables["Settings"].Rows[0]["AddSub"].ToString();
                         savefolders = ds.Tables["Settings"].Rows[0]["SaveFolders"].ToString();
@@ -914,14 +911,12 @@ namespace ShowMiiWads
                             }
                         }
                         else LoadNew();
-#if NewSettings
                     }
                     else
                     {
                         File.Delete(CfgPath);
                         LoadSettings();
                     }
-#endif
                 }
                 catch
                 {
@@ -1076,12 +1071,12 @@ namespace ShowMiiWads
                             string line;
                             while ((line = reader.ReadLine()) != null)
                             {
-                                if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
+                                if (!line.StartsWith("//") && !(line.StartsWith("*") && line.EndsWith("*")))
                                     count++;
                             }
                         }
 
-                        if (langcount == count)
+                        if (langcount <= count)
                         {
                             StreamReader filestream = new StreamReader(langfile, Encoding.Default);
 
@@ -1097,7 +1092,6 @@ namespace ShowMiiWads
                         }
                         else
                         {
-                            //Zu viele oder zu wenig Zeilen
                             MessageBox.Show(Messages[64], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
                             btnFromFile.Checked = false;
                             if (oldlang != "") { language = oldlang; }
@@ -1842,29 +1836,22 @@ namespace ShowMiiWads
 
         private void btnFromFile_Click(object sender, EventArgs e)
         {
-            if (btnFromFile.Checked == true)
-            {
-                OpenFileDialog opendlg = new OpenFileDialog();
-                opendlg.Filter = Messages[63] + " (*.slang) | *.slang";
-                opendlg.InitialDirectory = Application.StartupPath;
+            OpenFileDialog opendlg = new OpenFileDialog();
+            opendlg.Filter = Messages[63] + " (*.slang) | *.slang";
+            opendlg.InitialDirectory = Application.StartupPath;
 
-                if (opendlg.ShowDialog() == DialogResult.OK)
-                {
-                    oldlang = language;
-                    language = "File";
-                    langfile = opendlg.FileName;
-                    LoadLanguage();
-                    SaveSettings();
-                    ReloadChannelTitles();
-                }
-                else
-                {
-                    btnFromFile.Checked = false;
-                }
+            if (opendlg.ShowDialog() == DialogResult.OK)
+            {
+                oldlang = language;
+                language = "File";
+                langfile = opendlg.FileName;
+                LoadLanguage();
+                SaveSettings();
+                ReloadChannelTitles();
             }
             else
             {
-                btnFromFile.Checked = true;
+                btnFromFile.Checked = false;
             }
         }
 
@@ -2214,7 +2201,7 @@ namespace ShowMiiWads
                 string file = lvWads.SelectedItems[0].Text;
                 string oldid = lvWads.SelectedItems[0].SubItems[1].Text;
 
-                if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("System"))
+                if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("System:"))
                 {
                     MessageBox.Show(Messages[62], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -2813,7 +2800,7 @@ namespace ShowMiiWads
         {
             if (lvWads.SelectedItems.Count == 1)
             {
-                if (!lvWads.SelectedItems[0].SubItems[8].Text.Contains("System") || !lvWads.SelectedItems[0].SubItems[8].Text.Contains("Hidden"))
+                if (!lvWads.SelectedItems[0].SubItems[8].Text.Contains("System:") || !lvWads.SelectedItems[0].SubItems[8].Text.Contains("Hidden"))
                 {
                     if (File.Exists(ckey) || File.Exists(key))
                     {
@@ -2892,9 +2879,19 @@ namespace ShowMiiWads
             {
                 DisableButtons();
             }
-            if (lvNand.SelectedItems.Count == 0 && lvNand.Visible == true)
+
+            if (lvNand.Visible == true)
             {
-                DisableButtons();
+                if (lvNand.SelectedItems.Count == 0)
+                    DisableButtons();
+
+                EditFeatures(false);
+                btnCopy.Enabled = false;
+                btnCut.Enabled = false;
+                btnPaste.Enabled = false;
+                btnRename.Enabled = false;
+                btnDelete.Enabled = true;
+                btnRestore.Enabled = false;
             }
         }
 
@@ -3884,7 +3881,7 @@ namespace ShowMiiWads
             }
             else if (lvNand.SelectedItems.Count == 1)
             {
-                if (!lvNand.SelectedItems[0].SubItems[8].Text.Contains("System") && !lvNand.SelectedItems[0].SubItems[8].Text.Contains("Hidden"))
+                if (!lvNand.SelectedItems[0].SubItems[8].Text.Contains("System:") && !lvNand.SelectedItems[0].SubItems[8].Text.Contains("Hidden"))
                 {
                     cmNandPreview.Enabled = true;
                     btnPreview.Enabled = true;
@@ -3970,7 +3967,7 @@ namespace ShowMiiWads
 
             if (lvWads.SelectedItems.Count == 1)
             {
-                if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("System"))
+                if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("System:"))
                 {
                     cmChangeTitle.Enabled = false;
                     cmChangeID.Enabled = false;

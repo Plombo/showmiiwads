@@ -11,6 +11,10 @@ want to have your translation included into the application, contact me..
 -----------------------------------------------------------------------------------------
 Changelog:
 
+Version 1.1b
+	- Fixed a bug with slang files, so external translations can be loaded again
+	- Fixed crashes caused by old ShowMiiWads.cfg Files
+
 Version 1.1
 	- 64 bit Version is now available
 	- Improved speed. Now, information is loaded at application startup and saved in a file.
