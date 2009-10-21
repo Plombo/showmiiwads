@@ -52,6 +52,7 @@ namespace ChannelNameBox
         public ChannelNameDialog()
         {
             InitializeComponent();
+            this.Icon = global::ShowMiiWads.Properties.Resources.ShowMiiWads_Icon;
         }
 
         private void txtChanged(object sender, EventArgs e)

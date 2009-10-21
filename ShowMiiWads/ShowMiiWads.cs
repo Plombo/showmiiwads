@@ -16,6 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+//#define Debug //Skips the updatecheck on startup
+#define NewSettings //Will delete old cfg files in order to avoid crashes
+//#define x64 //Turn on while compiling for x64
+
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -27,13 +31,15 @@ using System.Windows.Forms;
 using InputBoxes;
 using ChannelNameBox;
 using System.Net;
+using System.Text;
+using System.Xml;
 
 namespace ShowMiiWads
 {
-    public partial class Main : Form
+    public partial class ShowMiiWads : Form
     {
         //Define global variables
-        public const string version = "1.0b";
+        public const string version = "1.1";
         private string language = "English";
         private string langfile = "";
         private string oldlang = "";
@@ -52,20 +58,26 @@ namespace ShowMiiWads
         private string wstate = "Normal";
         public static string accepted = "false";
         private string savefolders = "true";
-        private string copyfile = "";
+        private string[] copyfile = new string[1];
         private string copyaction = "";
         private string nandpath = "";
         private string showpath = "true";
         private string addsub = "false";
         private string backup = "false";
+        private string splash = "true";
         private string ckey = Application.StartupPath + "\\common-key.bin";
         private string key = Application.StartupPath + "\\key.bin";
         private string[] mru = new string[5] {"", "", "", "", ""};
-        public static string ImageTempPath = Path.GetTempPath() + "\\smwtemp0000images\\";
+        public static string ImageTempPath = Path.GetTempPath() + "\\ShowMiiWads_TempImages\\";
+        public string ListPath = Path.GetTempPath() + "\\ShowMiiWads.list";
+        public string ListPathNand = Path.GetTempPath() + "\\ShowMiiNand.list";
+        private string CfgPath = Application.StartupPath + "\\ShowMiiWads.cfg";
 
-        public Main()
+        public ShowMiiWads()
         {
             InitializeComponent();
+            //Get Icon
+            this.Icon = global::ShowMiiWads.Properties.Resources.ShowMiiWads_Icon;
             //Display WaitCursor
             Cursor.Current = Cursors.WaitCursor;
             //Set Caption
@@ -88,14 +100,16 @@ namespace ShowMiiWads
             LoadSettings();
             //Define EventHandler for Wad Processes
             Wii.Tools.ProgressChanged += new EventHandler<Wii.ProgressChangedEventArgs>(WadProgressChanged);
+#if !Debug
             //Check for Updates
             UpdateCheck(true);
+#endif
             //Cursor back to default
             Cursor.Current = Cursors.Default;
         }
 
         /// <summary>
-        /// Sets the Value of the ProgressBar to the current state.
+        /// Sets the Value of the ProgressBar to the current state (given by Wii.cs).
         /// Set the Tag of the ProgressBar to "NoProgress" to disable this
         /// </summary>
         /// <param name="sender"></param>
@@ -113,13 +127,13 @@ namespace ShowMiiWads
         {
             Assembly _assembly;
             _assembly = Assembly.GetExecutingAssembly();
-            StreamReader countstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.English.txt"));
+            StreamReader countstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.Languages.English.txt"));
             langcount = 0;
             string thisline = "";
 
             while ((thisline = countstream.ReadLine()) != null)
             {
-                if (!thisline.StartsWith("//"))
+                if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
                     langcount++;
             }
         }
@@ -159,7 +173,7 @@ namespace ShowMiiWads
                                 string[,] continfo = Wii.WadInfo.GetContentInfo(tmd);
                                 string cid = "00000000";
 
-                                for (int j = 0; j < Wii.WadInfo.GetContentNum(tmd); j++)
+                                for (int j = 0; j < continfo.GetLength(0); j++)
                                 {
                                     if (continfo[j, 1] == "00000000")
                                         cid = continfo[j, 0];
@@ -238,6 +252,8 @@ namespace ShowMiiWads
                         }
                     }
                 }
+
+                SaveListNand();
             }
 
             lbFileCount.Text = lvNand.Items.Count.ToString();
@@ -383,6 +399,284 @@ namespace ShowMiiWads
 
             lbFileCount.Text = lvWads.Items.Count.ToString();
             lbFolderCount.Text = lvWads.Groups.Count.ToString();
+
+            SaveList();
+        }
+
+        /// <summary>
+        /// Only reloads the Channel Titles. To use after language changed
+        /// </summary>
+        private void ReloadChannelTitles()
+        {
+            Cursor.Current = Cursors.WaitCursor;
+
+            if (lvWads.Visible == true)
+            {
+                for (int i = 0; i < lvWads.Items.Count; i++)
+                {
+                    pbProgress.Value = (i + 1) * 100 / lvWads.Items.Count;
+
+                    if (File.Exists(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text))
+                    {
+                        switch (language)
+                        {
+                            case "Dutch":
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[6];
+                                break;
+                            case "Italian":
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[5];
+                                break;
+                            case "Spanish":
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[4];
+                                break;
+                            case "French":
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[3];
+                                break;
+                            case "German":
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[2];
+                                break;
+                            default:
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[1];
+                                break;
+                            case "Japanese":
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[0];
+                                break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < lvNand.Items.Count; i++)
+                {
+                    pbProgress.Value = (i + 1) * 100 / lvNand.Items.Count;
+
+                    string path1 = lvNand.Items[i].SubItems[7].Text.Remove(8);
+                    string path2 = lvNand.Items[i].SubItems[7].Text.Remove(0, 9);
+
+                    byte[] tmd = Wii.Tools.LoadFileToByteArray(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\title.tmd");
+                    string[,] continfo = Wii.WadInfo.GetContentInfo(tmd);
+                    string cid = "00000000";
+
+                    for (int j = 0; j < continfo.GetLength(0); j++)
+                    {
+                        if (continfo[j, 1] == "00000000")
+                            cid = continfo[j, 0];
+                    }
+
+                    switch (language)
+                    {
+                        case "Dutch":
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[6];
+                            break;
+                        case "Italian":
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[5];
+                            break;
+                        case "Spanish":
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[4];
+                            break;
+                        case "French":
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[3];
+                            break;
+                        case "German":
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[2];
+                            break;
+                        default:
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[1];
+                            break;
+                        case "Japanese":
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[0];
+                            break;
+                    }
+                }
+            }
+
+            pbProgress.Value = 100;
+            Cursor.Current = Cursors.Default;
+        }
+
+        /// <summary>
+        /// Only reloads Region Flags. To use after Region changed
+        /// </summary>
+        private void ReloadRegionFlags()
+        {
+            if (lvWads.Visible == true)
+            {
+                for (int i = 0; i < lvWads.Items.Count; i++)
+                {
+                    if (File.Exists(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text))
+                    {
+                        byte[] wadfile = Wii.Tools.LoadFileToByteArray(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text);
+                        lvWads.Items[i].SubItems[5].Text = Wii.WadInfo.GetRegionFlag(wadfile);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Only reloads Title IDs. To use after ID changed
+        /// </summary>
+        private void ReloadTitleIDs()
+        {
+            if (lvWads.Visible == true)
+            {
+                for (int i = 0; i < lvWads.Items.Count; i++)
+                {
+                    if (File.Exists(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text))
+                    {
+                        byte[] wadfile = Wii.Tools.LoadFileToByteArray(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text);
+                        lvWads.Items[i].SubItems[1].Text = Wii.WadInfo.GetTitleID(wadfile, 1);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes the entries of lvWads to an Xml-File
+        /// </summary>
+        private void SaveList()
+        {
+            DataSet ds = new DataSet("ShowMiiWads");
+
+            for (int i = 0; i < lvWads.Groups.Count; i++)
+            {
+                DataTable dt = new DataTable((string)lvWads.Groups[i].Tag);
+
+                for (int z = 0; z < lvWads.Columns.Count; z++)
+                {
+                    dt.Columns.Add(lvWads.Columns[z].Text);
+                }
+
+                for (int j = 0; j < lvWads.Groups[i].Items.Count; j++)
+                {
+                    dt.Rows.Add(new object[] { lvWads.Groups[i].Items[j].Text,
+                        lvWads.Groups[i].Items[j].SubItems[1].Text,
+                        lvWads.Groups[i].Items[j].SubItems[2].Text,
+                        lvWads.Groups[i].Items[j].SubItems[3].Text,
+                        lvWads.Groups[i].Items[j].SubItems[4].Text,
+                        lvWads.Groups[i].Items[j].SubItems[5].Text,
+                        lvWads.Groups[i].Items[j].SubItems[6].Text,
+                        lvWads.Groups[i].Items[j].SubItems[7].Text,
+                        lvWads.Groups[i].Items[j].SubItems[8].Text,
+                        lvWads.Groups[i].Items[j].SubItems[9].Text,
+                        lvWads.Groups[i].Items[j].SubItems[10].Text });
+                }
+
+                ds.Tables.Add(dt);
+            }
+
+            ds.WriteXml(ListPath);
+        }
+
+        /// <summary>
+        /// Writes the entries of lvNand to an Xml-File
+        /// </summary>
+        private void SaveListNand()
+        {
+            DataSet dsnand = new DataSet("ShowMiiNand");
+            DataTable dtnand = new DataTable(nandpath);
+
+            for (int z = 0; z < lvWads.Columns.Count; z++)
+            {
+                dtnand.Columns.Add(lvNand.Columns[z].Text);
+            }
+
+            for (int a = 0; a < lvNand.Items.Count; a++)
+            {
+                dtnand.Rows.Add(new object[] { lvNand.Items[a].Text,
+                        lvNand.Items[a].SubItems[1].Text,
+                        lvNand.Items[a].SubItems[1].Text,
+                        lvNand.Items[a].SubItems[1].Text,
+                        lvNand.Items[a].SubItems[1].Text,
+                        lvNand.Items[a].SubItems[1].Text,
+                        lvNand.Items[a].SubItems[1].Text,
+                        lvNand.Items[a].SubItems[1].Text,
+                        lvNand.Items[a].SubItems[1].Text,
+                        lvNand.Items[a].SubItems[1].Text,
+                        lvNand.Items[a].SubItems[1].Text });
+            }
+
+            dsnand.Tables.Add(dtnand);
+            dsnand.WriteXml(ListPathNand);
+        }
+
+        /// <summary>
+        /// Adds all entry from the Xml to lvWads
+        /// </summary>
+        private void LoadList()
+        {
+            DataSet ds = new DataSet();
+            ds.ReadXmlSchema(ListPath);
+            ds.ReadXml(ListPath);
+
+            lvWads.Groups.Clear();
+            lvWads.Items.Clear();
+
+            for (int i = 0; i < ds.Tables.Count; i++)
+            {
+                if (Directory.Exists(ds.Tables[i].TableName))
+                {
+                    lvWads.Groups.Add(ds.Tables[i].TableName, ds.Tables[i].TableName);
+                    lvWads.Groups[lvWads.Groups.Count - 1].Tag = ds.Tables[i].TableName;
+
+                    for (int j = 0; j < ds.Tables[i].Rows.Count; j++)
+                    {
+                        if (File.Exists(ds.Tables[i].TableName + "\\" + ds.Tables[i].Rows[j][0].ToString()))
+                        {
+                            lvWads.Items.Add(new ListViewItem(new string[] { 
+                                ds.Tables[i].Rows[j][0].ToString(),
+                                ds.Tables[i].Rows[j][1].ToString(),
+                                ds.Tables[i].Rows[j][2].ToString(),
+                                ds.Tables[i].Rows[j][3].ToString(),
+                                ds.Tables[i].Rows[j][4].ToString(),
+                                ds.Tables[i].Rows[j][5].ToString(),
+                                ds.Tables[i].Rows[j][6].ToString(),
+                                ds.Tables[i].Rows[j][7].ToString(),
+                                ds.Tables[i].Rows[j][8].ToString(),
+                                ds.Tables[i].Rows[j][9].ToString(),
+                                ds.Tables[i].Rows[j][10].ToString() })).Group = lvWads.Groups[lvWads.Groups.Count - 1];
+                        }
+                    }
+                }
+            }
+
+            foreach (ListViewGroup lvg in lvWads.Groups)
+                lvg.Header = lvg.Header + " (" + lvg.Items.Count.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Adds all entry from the Xml to lvNand
+        /// </summary>
+        private void LoadListNand()
+        {
+            DataSet ds = new DataSet();
+            ds.ReadXmlSchema(ListPathNand);
+            ds.ReadXml(ListPathNand);
+
+            lvNand.Items.Clear();
+
+            try
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    if (File.Exists(nandpath + "\\ticket\\" + ds.Tables[0].Rows[i][7].ToString() + ".tik"))
+                    {
+                        lvNand.Items.Add(new ListViewItem(new string[] { 
+                        ds.Tables[i].Rows[i][0].ToString(),
+                        ds.Tables[i].Rows[i][1].ToString(),
+                        ds.Tables[i].Rows[i][2].ToString(),
+                        ds.Tables[i].Rows[i][3].ToString(),
+                        ds.Tables[i].Rows[i][4].ToString(),
+                        ds.Tables[i].Rows[i][5].ToString(),
+                        ds.Tables[i].Rows[i][6].ToString(),
+                        ds.Tables[i].Rows[i][7].ToString(),
+                        ds.Tables[i].Rows[i][8].ToString(),
+                        ds.Tables[i].Rows[i][9].ToString(),
+                        ds.Tables[i].Rows[i][10].ToString() }));
+                    }
+                }
+            }
+            catch { }
         }
 
         /// <summary>
@@ -414,6 +708,7 @@ namespace ShowMiiWads
             folders.Columns.Add("MRU3");
             folders.Columns.Add("MRU4");
             settings.Columns.Add("CreateBackups");
+            settings.Columns.Add("SplashScreen");
 
             folders.Columns.Add("Foldercount");
 
@@ -437,6 +732,7 @@ namespace ShowMiiWads
             settingsrow["AutoSize"] = autosize;
             settingsrow["ShowPath"] = showpath;
             settingsrow["CreateBackups"] = backup;
+            settingsrow["SplashScreen"] = splash;
             windowrow["WindowWidth"] = wwidth;
             windowrow["WindowHeight"] = wheight;
             windowrow["LocationX"] = locx;
@@ -473,7 +769,7 @@ namespace ShowMiiWads
             ds.Tables.Add(window);
             ds.Tables.Add(folders);
 
-            ds.WriteXml(Application.StartupPath + "\\ShowMiiWads.cfg");
+            ds.WriteXml(CfgPath);
         }
 
         /// <summary>
@@ -481,17 +777,19 @@ namespace ShowMiiWads
         /// </summary>
         private void LoadSettings()
         {
-            if (File.Exists(@Application.StartupPath + "\\ShowMiiWads.cfg"))
+            if (File.Exists(CfgPath))
             {
                 DataSet ds = new DataSet("ShowMiiWads");
 
-                ds.ReadXmlSchema(Application.StartupPath + "\\ShowMiiWads.cfg");
-                ds.ReadXml(Application.StartupPath + "\\ShowMiiWads.cfg");
+                ds.ReadXmlSchema(CfgPath);
+                ds.ReadXml(CfgPath);
 
                 try
                 {
-                    //if (ds.Tables["Settings"].Rows[0]["Version"].ToString() == version)
-                    //{
+#if NewSettings
+                    if (ds.Tables["Settings"].Rows[0]["Version"].ToString() == version)
+                    {
+#endif
                         langfile = ds.Tables["Settings"].Rows[0]["LangFile"].ToString();
                         addsub = ds.Tables["Settings"].Rows[0]["AddSub"].ToString();
                         savefolders = ds.Tables["Settings"].Rows[0]["SaveFolders"].ToString();
@@ -511,21 +809,12 @@ namespace ShowMiiWads
                         mru[3] = ds.Tables["Folders"].Rows[0]["MRU3"].ToString();
                         mru[4] = ds.Tables["Folders"].Rows[0]["MRU4"].ToString();
                         backup = ds.Tables["Settings"].Rows[0]["CreateBackups"].ToString();
+                        splash = ds.Tables["Settings"].Rows[0]["SplashScreen"].ToString();
 
                         int foldercount = Convert.ToInt32(ds.Tables["Folders"].Rows[0]["Foldercount"]);
 
-                        if (foldercount > 0)
-                        {
-                            for (int x = 0; x < foldercount; x++)
-                            {
-                                if (Directory.Exists(ds.Tables["Folders"].Rows[0]["Folder" + x.ToString()].ToString()))
-                                {
-                                    AddWads(ds.Tables["Folders"].Rows[0]["Folder" + x.ToString()].ToString());
-                                }
-                            }
-                        }
-
                         LoadLanguage();
+                        SetWindowProperties(wwidth, wheight, locx, locy, wstate);
 
                         switch (autosize)
                         {
@@ -567,7 +856,15 @@ namespace ShowMiiWads
                                 break;
                         }
 
-                        SetWindowProperties(wwidth, wheight, locx, locy, wstate);
+                        switch (addsub)
+                        {
+                            case "true":
+                                btnAddSub.Checked = true;
+                                break;
+                            default:
+                                btnAddSub.Checked = false;
+                                break;
+                        }
 
                         switch (accepted)
                         {
@@ -593,17 +890,42 @@ namespace ShowMiiWads
                                 break;
                         }
 
-                        btnRefresh_Click(null, null);
-                    //}
-                    //else
-                    //{
-                    //    File.Delete(Application.StartupPath + "\\ShowMiiWads.cfg");
-                    //    LoadSettings();
-                    //}
+                        switch (splash)
+                        {
+                            case "false":
+                                btnShowSplash.Checked = false;
+                                break;
+                            default:
+                                btnShowSplash.Checked = true;
+                                break;
+                        }
+
+                        if (splash == "false")
+                        {
+                            if (foldercount > 0)
+                            {
+                                for (int x = 0; x < foldercount; x++)
+                                {
+                                    if (Directory.Exists(ds.Tables["Folders"].Rows[0]["Folder" + x.ToString()].ToString()))
+                                    {
+                                        AddWads(ds.Tables["Folders"].Rows[0]["Folder" + x.ToString()].ToString());
+                                    }
+                                }
+                            }
+                        }
+                        else LoadNew();
+#if NewSettings
+                    }
+                    else
+                    {
+                        File.Delete(CfgPath);
+                        LoadSettings();
+                    }
+#endif
                 }
                 catch
                 {
-                    File.Delete(Application.StartupPath + "\\ShowMiiWads.cfg");
+                    File.Delete(CfgPath);
                     LoadSettings();
                 }
             }
@@ -681,62 +1003,95 @@ namespace ShowMiiWads
             switch (language)
             {
                 case "German":
-                    StreamReader germanstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.German.txt"));
+                    StreamReader germanstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.Languages.German.txt"));
 
                     while ((thisline = germanstream.ReadLine()) != null)
                     {
-                        if (!thisline.StartsWith("//"))
+                        if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
                             Messages[++counter] = thisline;
                     }
 
+                    UncheckLangButtons();
                     btnGerman.Checked = true;
-                    btnEnglish.Checked = false;
-                    btnFrench.Checked = false;
-                    btnFromFile.Checked = false;
                     germanstream.Close();
                     break;
                 case "French":
-                    StreamReader frenchstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.French.txt"));
+                    StreamReader frenchstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.Languages.French.txt"));
 
                     while ((thisline = frenchstream.ReadLine()) != null)
                     {
-                        if (!thisline.StartsWith("//"))
+                        if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
                             Messages[++counter] = thisline;
                     }
 
+                    UncheckLangButtons();
                     btnFrench.Checked = true;
-                    btnEnglish.Checked = false;
-                    btnGerman.Checked = false;
-                    btnFromFile.Checked = false;
                     frenchstream.Close();
+                    break;
+                case "Italian":
+                    StreamReader italianstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.Languages.Italian.txt"));
+
+                    while ((thisline = italianstream.ReadLine()) != null)
+                    {
+                        if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
+                            Messages[++counter] = thisline;
+                    }
+
+                    UncheckLangButtons();
+                    btnItalian.Checked = true;
+                    italianstream.Close();
+                    break;
+                case "Spanish":
+                    StreamReader spanishstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.Languages.Spanish.txt"));
+
+                    while ((thisline = spanishstream.ReadLine()) != null)
+                    {
+                        if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
+                            Messages[++counter] = thisline;
+                    }
+
+                    UncheckLangButtons();
+                    btnSpanish.Checked = true;
+                    spanishstream.Close();
+                    break;
+                case "Norwegian":
+                    StreamReader norwegianstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.Languages.Norwegian.txt"));
+
+                    while ((thisline = norwegianstream.ReadLine()) != null)
+                    {
+                        if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
+                            Messages[++counter] = thisline;
+                    }
+
+                    UncheckLangButtons();
+                    btnNorwegian.Checked = true;
+                    norwegianstream.Close();
                     break;
                 case "File":
                     if (File.Exists(langfile))
                     {
                         int count = 0;
-                        using (StreamReader reader = new StreamReader(langfile))
+                        using (StreamReader reader = new StreamReader(langfile, Encoding.Default))
                         {
                             string line;
                             while ((line = reader.ReadLine()) != null)
                             {
-                                if (!line.StartsWith("//"))
+                                if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
                                     count++;
                             }
                         }
 
                         if (langcount == count)
                         {
-                            StreamReader filestream = new StreamReader(langfile);
+                            StreamReader filestream = new StreamReader(langfile, Encoding.Default);
 
                             while ((thisline = filestream.ReadLine()) != null)
                             {
-                                if (!thisline.StartsWith("//"))
+                                if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
                                     Messages[++counter] = thisline;
                             }
 
-                            btnEnglish.Checked = false;
-                            btnGerman.Checked = false;
-                            btnFrench.Checked = false;
+                            UncheckLangButtons();
                             btnFromFile.Checked = true;
                             filestream.Close();
                         }
@@ -763,23 +1118,46 @@ namespace ShowMiiWads
                     }
                     break;
                 default:
-                    StreamReader englishstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.English.txt"));
+                    StreamReader englishstream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.Languages.English.txt"));
 
                     while ((thisline = englishstream.ReadLine()) != null)
                     {
-                        if (!thisline.StartsWith("//"))
+                        if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
                             Messages[++counter] = thisline;
                     }
 
+                    UncheckLangButtons();
                     btnEnglish.Checked = true;
-                    btnGerman.Checked = false;
-                    btnFrench.Checked = false;
-                    btnFromFile.Checked = false;
                     englishstream.Close();
                     break;
             }
 
+            for (int i = 0; i < Messages.Length; i++)
+            {
+                if (Messages[i].Contains("//"))
+                {
+                    if (Messages[i][Messages[i].IndexOf("//") - 1] == ' ')
+                        Messages[i] = Messages[i].Remove(Messages[i].IndexOf("//") - 1);
+                    else
+                        Messages[i] = Messages[i].Remove(Messages[i].IndexOf("//"));
+                }
+            }
+
             RefreshTexts();
+        }
+
+        /// <summary>
+        /// Unchecks all language buttons
+        /// </summary>
+        private void UncheckLangButtons()
+        {
+            btnEnglish.Checked = false;
+            btnGerman.Checked = false;
+            btnFrench.Checked = false;
+            btnItalian.Checked = false;
+            btnSpanish.Checked = false;
+            btnNorwegian.Checked = false;
+            btnFromFile.Checked = false;
         }
 
         /// <summary>
@@ -788,9 +1166,6 @@ namespace ShowMiiWads
         private void RefreshTexts()
         {
             btnAbout.Text = Messages[7];
-            btnEnglish.Text = Messages[5];
-            btnGerman.Text = Messages[6];
-            btnFrench.Text = Messages[94];
             btnRefresh.Text = Messages[4];
             btnChangeID.Text = Messages[22];
             btnRename.Text = Messages[23];
@@ -805,10 +1180,9 @@ namespace ShowMiiWads
             btnNandPath.Text = Messages[61];
             btnToNand.Text = Messages[60];
             btnToFolder.Text = Messages[55];
-            btnFolderFree.Text = Messages[70];
             btnExport.Text = Messages[71];
             btnShowPath.Text = Messages[72];
-            btnChannelName.Text = Messages[73];
+            btnChangeTitle.Text = Messages[73];
             btnFromFile.Text = Messages[77];
             btnPackWad.Text = Messages[80];
             btnPackWadWithoutTrailer.Text = Messages[81];
@@ -820,6 +1194,7 @@ namespace ShowMiiWads
             btnUpdateCheck.Text = Messages[114];
             btnCreateBackups.Text = Messages[117];
             btnRestore.Text = Messages[118];
+            btnShowSplash.Text = Messages[122];
 
             cmRestore.Text = Messages[118];
             cmNandPreview.Text = Messages[99];
@@ -835,13 +1210,12 @@ namespace ShowMiiWads
             cmToNand.Text = Messages[60];
             cmToFolder.Text = Messages[55];
             cmExtract.Text = Messages[40];
-            cmFolderFree.Text = Messages[70];
-            cmChannelName.Text = Messages[73];
+            cmChangeTitle.Text = Messages[73];
             cmNandDelete.Text = Messages[30];
             cmInstall.Text = Messages[84];
             cmInstallWad.Text = Messages[90];
             cmInstallFolder.Text = Messages[91];
-
+            
             tsFile.Text = Messages[0];
             tsHelp.Text = Messages[2];
             tsLanguage.Text = Messages[1];
@@ -875,6 +1249,18 @@ namespace ShowMiiWads
             lvVersion.Text = Messages[87];
             lvTitle.Text = Messages[89];
             lvType.Text = Messages[88];
+
+            lvNandName.Text = Messages[8];
+            lvNandID.Text = Messages[9];
+            lvNandBlocks.Text = Messages[10];
+            lvNandContent.Text = Messages[14];
+            lvNandSize.Text = Messages[11];
+            lvNandIOS.Text = Messages[12];
+            lvNandPath.Text = Messages[15];
+            lvNandRegion.Text = Messages[13];
+            lvNandVersion.Text = Messages[87];
+            lvNandTitle.Text = Messages[89];
+            lvNandType.Text = Messages[88];
         }
 
         /// <summary>
@@ -1073,7 +1459,7 @@ namespace ShowMiiWads
                     try
                     {
                         fiWad.MoveTo(@thispath + "\\" + newname);
-                        btnRefresh_Click(null, null);
+                        LoadNew();
                     }
                     catch (Exception ex)
                     {
@@ -1087,24 +1473,222 @@ namespace ShowMiiWads
             }
         }
 
-        /// <summary>
-        /// Delete the given Wad file
-        /// </summary>
-        /// <param name="Wadfile">The Wad file to delete</param>
-        private void DeleteWad(string Wadfile)
+        private void LoadNew()
         {
-            if (File.Exists(Wadfile))
+            if (lvWads.Visible == true)
             {
-                if (MessageBox.Show(Messages[33], Messages[32], MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    File.Delete(Wadfile);
+                if (File.Exists(ListPath))
+                    LoadNewWads();
+                else
                     btnRefresh_Click(null, null);
-                }
+
+                lvWads.Sort();
             }
             else
             {
-                MessageBox.Show(Messages[31], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (File.Exists(ListPathNand))
+                    LoadNewNand();
+                else
+                    btnRefresh_Click(null, null);
+
+                lvNand.Sort();
             }
+        }
+
+        private void LoadNewWads()
+        {
+            lvWads.Groups.Clear();
+            lvWads.Items.Clear();
+            LoadList();
+
+            pbProgress.Value = 0;
+            int counter = 0;
+
+            foreach (ListViewGroup lvg in lvWads.Groups)
+            {
+                pbProgress.Value = (++counter * 100) / lvWads.Groups.Count;
+                string[] files = Directory.GetFiles((string)lvg.Tag, "*.wad");
+
+                foreach (string thisFile in files)
+                {
+                    bool exists = false;
+
+                    for (int i = 0; i < lvg.Items.Count; i++)
+                    {
+                        if (lvg.Items[i].Text == thisFile.Remove(0, thisFile.LastIndexOf('\\') + 1)) exists = true;
+                    }
+
+                    if (exists == false)
+                    {
+                        string[] Infos = new string[11];
+
+                        try
+                        {
+                            byte[] wadfile = Wii.Tools.LoadFileToByteArray(thisFile);
+
+                            Infos[0] = thisFile.Remove(0, thisFile.LastIndexOf('\\') + 1);
+                            Infos[1] = Wii.WadInfo.GetTitleID(wadfile, 0);
+                            Infos[2] = Wii.WadInfo.GetNandBlocks(wadfile);
+                            Infos[3] = Wii.WadInfo.GetNandSize(wadfile, true);
+                            Infos[4] = Wii.WadInfo.GetIosFlag(wadfile);
+                            Infos[5] = Wii.WadInfo.GetRegionFlag(wadfile);
+                            Infos[6] = Wii.WadInfo.GetContentNum(wadfile).ToString();
+                            Infos[7] = Wii.WadInfo.GetNandPath(wadfile, 0);
+                            Infos[8] = Wii.WadInfo.GetChannelType(wadfile, 0);
+                            Infos[9] = Wii.WadInfo.GetTitleVersion(wadfile).ToString();
+
+                            switch (language)
+                            {
+                                case "Dutch":
+                                    Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[6];
+                                    break;
+                                case "Italian":
+                                    Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[5];
+                                    break;
+                                case "Spanish":
+                                    Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[4];
+                                    break;
+                                case "French":
+                                    Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[3];
+                                    break;
+                                case "German":
+                                    Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[2];
+                                    break;
+                                default:
+                                    Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[1];
+                                    break;
+                                case "Japanese":
+                                    Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[0];
+                                    break;
+                            }
+
+                            lvWads.Items.Add(new ListViewItem(Infos)).Group = lvg;
+                        }
+                        catch { }
+                    }
+                }
+            }
+
+            pbProgress.Value = 100;
+            SaveList();
+            lbFileCount.Text = lvWads.Items.Count.ToString();
+            lbFolderCount.Text = lvWads.Groups.Count.ToString();
+        }
+
+        private void LoadNewNand()
+        {
+            lvNand.Items.Clear();
+            LoadListNand();
+            if (Directory.Exists(nandpath + "\\ticket"))
+            {
+                pbProgress.Value = 0;
+                int counter = 0;
+
+                string[] tiks = Directory.GetFiles(nandpath + "\\ticket\\", "*.tik", SearchOption.AllDirectories);
+
+                foreach (string tik in tiks)
+                {
+                    pbProgress.Value = (++counter * 100) / tiks.Length;
+                    bool exists = false;
+
+                    for (int i = 0; i < lvNand.Items.Count; i++)
+                    {
+                        if (tik.Remove(0, tik.LastIndexOf('\\') + 1) == lvNand.Items[i].Text) exists = true;
+                    }
+
+                    if (exists == false)
+                    {
+                        string[] Infos = new string[11];
+
+                        try
+                        {
+                            string path1 = tik.Remove(tik.LastIndexOf('\\'));
+                            path1 = path1.Remove(0, path1.LastIndexOf('\\') + 1);
+                            string path2 = tik.Remove(0, tik.LastIndexOf('\\') + 1);
+                            path2 = path2.Remove(path2.LastIndexOf('.'));
+
+                            byte[] tikarray = Wii.Tools.LoadFileToByteArray(tik);
+                            if (File.Exists(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\title.tmd"))
+                            {
+                                byte[] tmd = Wii.Tools.LoadFileToByteArray(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\title.tmd");
+                                string[,] continfo = Wii.WadInfo.GetContentInfo(tmd);
+                                string cid = "00000000";
+
+                                for (int j = 0; j < continfo.GetLength(0); j++)
+                                {
+                                    if (continfo[j, 1] == "00000000")
+                                        cid = continfo[j, 0];
+                                }
+
+                                byte[] nullapp = Wii.Tools.LoadFileToByteArray(nandpath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app");
+
+                                Infos[0] = tik.Remove(0, tik.LastIndexOf('\\') + 1);
+                                Infos[1] = Wii.WadInfo.GetTitleID(tikarray, 0);
+                                //Infos[2] = Wii.WadInfo.GetNandBlocks(tmd);
+                                //Infos[3] = Wii.WadInfo.GetNandSize(tmd, true);
+                                Infos[4] = Wii.WadInfo.GetIosFlag(tmd);
+                                Infos[5] = Wii.WadInfo.GetRegionFlag(tmd);
+                                //Infos[6] = Wii.WadInfo.GetContentNum(tmd).ToString();
+                                Infos[7] = Wii.WadInfo.GetNandPath(tikarray, 0);
+                                Infos[8] = Wii.WadInfo.GetChannelType(tikarray, 0);
+                                Infos[9] = Wii.WadInfo.GetTitleVersion(tmd).ToString();
+
+                                switch (language)
+                                {
+                                    case "Dutch":
+                                        Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[6];
+                                        break;
+                                    case "Italian":
+                                        Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[5];
+                                        break;
+                                    case "Spanish":
+                                        Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[4];
+                                        break;
+                                    case "French":
+                                        Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[3];
+                                        break;
+                                    case "German":
+                                        Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[2];
+                                        break;
+                                    default:
+                                        Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[1];
+                                        break;
+                                    case "Japanese":
+                                        Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[0];
+                                        break;
+                                }
+
+                                string[] titlefiles = Directory.GetFiles(nandpath + "\\title\\" + path1 + "\\" + path2, "*", SearchOption.AllDirectories);
+                                Infos[6] = (titlefiles.Length - 1).ToString();
+                                int nandsize = 0;
+
+                                foreach (string titlefile in titlefiles)
+                                {
+                                    FileInfo fi = new FileInfo(titlefile);
+                                    nandsize += (int)fi.Length;
+                                }
+
+                                FileInfo fitik = new FileInfo(tik);
+                                nandsize += (int)fitik.Length;
+
+                                double blocks = (double)((Convert.ToDouble(nandsize) / 1024) / 128);
+                                Infos[2] = Math.Ceiling(blocks).ToString();
+
+                                string size = Convert.ToString(Math.Round(Convert.ToDouble(nandsize) * 0.0009765625 * 0.0009765625, 2));
+                                if (size.Length > 4) { size = size.Remove(4); }
+                                Infos[3] = size + " MB";
+
+                                lvNand.Items.Add(new ListViewItem(Infos));
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+
+            pbProgress.Value = 100;
+            SaveListNand();
+            lbFileCount.Text = lvNand.Items.Count.ToString();
         }
 
         /// <summary>
@@ -1137,10 +1721,13 @@ namespace ShowMiiWads
                     lbFileCount.Text = "0";
                     lbFolderCount.Text = "0";
                 }
+
+                SaveList();
             }
             else if (lvNand.Visible == true)
             {
                 AddNand();
+                SaveListNand();
             }
         }
 
@@ -1149,6 +1736,11 @@ namespace ShowMiiWads
             About about = new About();
             about.Text = Messages[17];
             about.lbSMW.Text = "ShowMiiWads " + version + " by Leathl";
+
+#if x64
+            about.x64 = true;
+#endif
+
             about.ShowDialog();
         }
 
@@ -1156,14 +1748,11 @@ namespace ShowMiiWads
         {
             if (btnEnglish.Checked == true)
             {
-                btnGerman.Checked = false;
-                btnFrench.Checked = false;
-                btnFromFile.Checked = false;
                 language = "English";
                 langfile = "";
                 LoadLanguage();
                 SaveSettings();
-                btnRefresh_Click(null, null);
+                ReloadChannelTitles();
             }
             else
             {
@@ -1175,14 +1764,11 @@ namespace ShowMiiWads
         {
             if (btnGerman.Checked == true)
             {
-                btnEnglish.Checked = false;
-                btnFrench.Checked = false;
-                btnFromFile.Checked = false;
                 language = "German";
                 langfile = "";
                 LoadLanguage();
                 SaveSettings();
-                btnRefresh_Click(null, null);
+                ReloadChannelTitles();
             }
             else
             {
@@ -1194,18 +1780,63 @@ namespace ShowMiiWads
         {
             if (btnFrench.Checked == true)
             {
-                btnEnglish.Checked = false;
-                btnGerman.Checked = false;
-                btnFromFile.Checked = false;
                 language = "French";
                 langfile = "";
                 LoadLanguage();
                 SaveSettings();
-                btnRefresh_Click(null, null);
+                ReloadChannelTitles();
             }
             else
             {
                 btnFrench.Checked = true;
+            }
+        }
+
+        private void btnItalian_Click(object sender, EventArgs e)
+        {
+            if (btnItalian.Checked == true)
+            {
+                language = "Italian";
+                langfile = "";
+                LoadLanguage();
+                SaveSettings();
+                ReloadChannelTitles();
+            }
+            else
+            {
+                btnItalian.Checked = true;
+            }
+        }
+
+        private void btnSpanish_Click(object sender, EventArgs e)
+        {
+            if (btnSpanish.Checked == true)
+            {
+                language = "Spanish";
+                langfile = "";
+                LoadLanguage();
+                SaveSettings();
+                ReloadChannelTitles();
+            }
+            else
+            {
+                btnSpanish.Checked = true;
+            }
+        }
+
+        private void btnNorwegian_Click(object sender, EventArgs e)
+        {
+            if (btnNorwegian.Checked == true)
+            {
+                language = "Norwegian";
+                langfile = "";
+                LoadLanguage();
+                SaveSettings();
+                ReloadChannelTitles();
+            }
+            else
+            {
+                btnNorwegian.Checked = true;
             }
         }
 
@@ -1224,7 +1855,7 @@ namespace ShowMiiWads
                     langfile = opendlg.FileName;
                     LoadLanguage();
                     SaveSettings();
-                    btnRefresh_Click(null, null);
+                    ReloadChannelTitles();
                 }
                 else
                 {
@@ -1251,7 +1882,7 @@ namespace ShowMiiWads
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (lvWads.SelectedItems.Count != 0)
+                if (lvWads.SelectedItems.Count > 0)
                 {
                     cmWads.Show(lvWads, e.Location);
                 }
@@ -1270,23 +1901,42 @@ namespace ShowMiiWads
         {
             if (lvWads.Visible == true)
             {
-                if (lvWads.SelectedItems.Count == 1)
+                if (lvWads.SelectedItems.Count > 0)
                 {
-                    DeleteWad(lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text);
+                    if (MessageBox.Show(string.Format(Messages[33], lvWads.SelectedItems.Count), Messages[32], MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        for (int i = 0; i < lvWads.SelectedItems.Count; i++)
+                        {
+                            string wadfile = lvWads.SelectedItems[i].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[i].Text;
+
+                            if (File.Exists(wadfile))
+                            {
+                                File.Delete(wadfile);
+                            }
+                        }
+
+                        LoadNew();
+                    }
                 }
             }
             else
             {
-                if (lvNand.SelectedItems.Count == 1)
+                pbProgress.Value = 0;
+                int counter = 0;
+                int selected = lvNand.SelectedItems.Count;
+
+                foreach (ListViewItem item in lvNand.SelectedItems)
                 {
-                    if (File.Exists(nandpath + "\\ticket\\" + lvNand.SelectedItems[0].SubItems[7].Text.Remove(8) + "\\" + lvNand.SelectedItems[0].Text))
-                        File.Delete(nandpath + "\\ticket\\" + lvNand.SelectedItems[0].SubItems[7].Text.Remove(8) + "\\" + lvNand.SelectedItems[0].Text);
+                    pbProgress.Value = (++counter) * 100 / selected;
 
-                    if (Directory.Exists(nandpath + "\\title\\" + lvNand.SelectedItems[0].SubItems[7].Text.Replace('/', '\\')))
-                        Directory.Delete(nandpath + "\\title\\" + lvNand.SelectedItems[0].SubItems[7].Text.Replace('/', '\\'), true);
+                    if (File.Exists(nandpath + "\\ticket\\" + item.SubItems[7].Text.Remove(8) + "\\" + item.Text))
+                        File.Delete(nandpath + "\\ticket\\" + item.SubItems[7].Text.Remove(8) + "\\" + item.Text);
 
-                    btnRefresh_Click(null, null);
+                    if (Directory.Exists(nandpath + "\\title\\" + item.SubItems[7].Text))
+                        Directory.Delete(nandpath + "\\title\\" + item.SubItems[7].Text, true);
                 }
+
+                LoadNew();
             }
         }
 
@@ -1379,12 +2029,12 @@ namespace ShowMiiWads
                             if (Directory.GetFiles(drop[i], "*.wad").Length > 0)
                             {
                                 NewMRU(drop[i]);
-
-                                //Wads aus Verzeichnis adden
-                                if (addsub != "true") { this.BeginInvoke(AddWadsDel, new object[] { drop[i] }); }
-                                else { this.BeginInvoke(AddWadsSubDel, new object[] { drop[i] }); }
-                                this.Activate();
                             }
+
+                            //Wads aus Verzeichnis adden
+                            if (addsub != "true") { this.BeginInvoke(AddWadsDel, new object[] { drop[i] }); }
+                            else { this.BeginInvoke(AddWadsSubDel, new object[] { drop[i] }); }
+                            this.Activate();
                         }
                     }
                     else if (File.Exists(drop[i]) && drop[i].Remove(0, drop[i].LastIndexOf('.')) == ".wad")
@@ -1466,6 +2116,10 @@ namespace ShowMiiWads
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (File.Exists(ListPath)) File.Delete(ListPath);
+            if (File.Exists(ListPathNand)) File.Delete(ListPathNand);
+            if (Directory.Exists(ImageTempPath)) Directory.Delete(ImageTempPath, true);
+
             SaveSettings();
         }
 
@@ -1492,10 +2146,10 @@ namespace ShowMiiWads
                     if (Directory.GetFiles(path.SelectedPath, "*.wad").Length > 0)
                     {
                         NewMRU(path.SelectedPath);
-
-                        if (addsub != "true") { AddWads(path.SelectedPath); }
-                        else { AddWadsSub(path.SelectedPath); }
                     }
+
+                    if (addsub != "true") { AddWads(path.SelectedPath); }
+                    else { AddWadsSub(path.SelectedPath); }
                 }
             }
         }
@@ -1548,6 +2202,8 @@ namespace ShowMiiWads
                 lbFolderCount.Text = lvWads.Groups.Count.ToString();
                 lbFileCount.Text = lvWads.Items.Count.ToString();
             }
+
+            SaveList();
         }
 
         private void cmChangeID_Click(object sender, EventArgs e)
@@ -1566,7 +2222,9 @@ namespace ShowMiiWads
                 {
                     if (ChangeTitleID(path + "\\" + file, oldid) == true)
                     {
-                        btnRefresh_Click(null, null);
+                        lvWads.SelectedItems[0].Remove();
+                        SaveList();
+                        LoadNew();
                     }
                 }
             }
@@ -1574,98 +2232,163 @@ namespace ShowMiiWads
 
         private void cmRegionFree_Click(object sender, EventArgs e)
         {
-            if (lvWads.SelectedItems.Count == 1)
-            {
-                if (cmRegionFree.Checked == false)
-                {
-                    string path = lvWads.SelectedItems[0].Group.Tag.ToString();
-                    string file = lvWads.SelectedItems[0].Text;
+            int changed = 0;
 
-                    if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("System"))
+            if (lvWads.SelectedItems.Count > 0)
+            {
+                pbProgress.Tag = "NoProgress";
+                pbProgress.Value = 0;
+                Cursor.Current = Cursors.WaitCursor;
+                int counter = 0;
+                int selected = lvWads.SelectedItems.Count;
+
+                foreach (ListViewItem lvi in lvWads.SelectedItems)
+                {
+                    pbProgress.Value = (++counter * 100) / selected;
+
+                    if (lvi.SubItems[5].Text != "Region Free" && !string.IsNullOrEmpty(lvi.SubItems[5].Text))
                     {
-                        MessageBox.Show(Messages[62], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
+                        string path = lvi.Group.Tag.ToString();
+                        string file = lvi.Text;
+
+
                         if (ChangeRegion(path + "\\" + file, 'f') == true)
                         {
-                            btnRefresh_Click(null, null);
+                            changed++;
                         }
                     }
                 }
             }
+
+            if (changed > 0)
+            {
+                ReloadRegionFlags();
+                SaveList();
+            }
+            Cursor.Current = Cursors.Default;
+            pbProgress.Value = 100;
+            pbProgress.Tag = "";
         }
+    
 
         private void cmPal_Click(object sender, EventArgs e)
         {
-            if (lvWads.SelectedItems.Count == 1)
-            {
-                if (cmPal.Checked == false)
-                {
-                    string path = lvWads.SelectedItems[0].Group.Tag.ToString();
-                    string file = lvWads.SelectedItems[0].Text;
+            int changed = 0;
 
-                    if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("System"))
+            if (lvWads.SelectedItems.Count > 0)
+            {
+                pbProgress.Tag = "NoProgress";
+                pbProgress.Value = 0;
+                Cursor.Current = Cursors.WaitCursor;
+                int counter = 0;
+                int selected = lvWads.SelectedItems.Count;
+
+                foreach (ListViewItem lvi in lvWads.SelectedItems)
+                {
+                    pbProgress.Value = (++counter * 100) / selected;
+
+                    if (lvi.SubItems[5].Text != "Europe" && !string.IsNullOrEmpty(lvi.SubItems[5].Text))
                     {
-                        MessageBox.Show(Messages[62], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
+                        string path = lvi.Group.Tag.ToString();
+                        string file = lvi.Text;
+
+
                         if (ChangeRegion(path + "\\" + file, 'p') == true)
                         {
-                            btnRefresh_Click(null, null);
+                            changed++;
                         }
                     }
                 }
             }
+
+            if (changed > 0)
+            {
+                ReloadRegionFlags();
+                SaveList();
+            }
+            Cursor.Current = Cursors.Default;
+            pbProgress.Value = 100;
+            pbProgress.Tag = "";
         }
 
         private void cmNtscU_Click(object sender, EventArgs e)
         {
-            if (lvWads.SelectedItems.Count == 1)
-            {
-                if (cmNtscU.Checked == false)
-                {
-                    string path = lvWads.SelectedItems[0].Group.Tag.ToString();
-                    string file = lvWads.SelectedItems[0].Text;
+            int changed = 0;
 
-                    if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("System"))
+            if (lvWads.SelectedItems.Count > 0)
+            {
+                pbProgress.Tag = "NoProgress";
+                pbProgress.Value = 0;
+                Cursor.Current = Cursors.WaitCursor;
+                int counter = 0;
+                int selected = lvWads.SelectedItems.Count;
+
+                foreach (ListViewItem lvi in lvWads.SelectedItems)
+                {
+                    pbProgress.Value = (++counter * 100) / selected;
+
+                    if (lvi.SubItems[5].Text != "USA" && !string.IsNullOrEmpty(lvi.SubItems[5].Text))
                     {
-                        MessageBox.Show(Messages[62], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
+                        string path = lvi.Group.Tag.ToString();
+                        string file = lvi.Text;
+
+
                         if (ChangeRegion(path + "\\" + file, 'u') == true)
                         {
-                            btnRefresh_Click(null, null);
+                            changed++;
                         }
                     }
                 }
             }
+
+            if (changed > 0)
+            {
+                ReloadRegionFlags();
+                SaveList();
+            }
+            Cursor.Current = Cursors.Default;
+            pbProgress.Value = 100;
+            pbProgress.Tag = "";
         }
 
         private void cmNtscJ_Click(object sender, EventArgs e)
         {
-            if (lvWads.SelectedItems.Count == 1)
-            {
-                if (cmNtscJ.Checked == false)
-                {
-                    string path = lvWads.SelectedItems[0].Group.Tag.ToString();
-                    string file = lvWads.SelectedItems[0].Text;
+            int changed = 0;
 
-                    if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("System"))
+            if (lvWads.SelectedItems.Count > 0)
+            {
+                pbProgress.Tag = "NoProgress";
+                pbProgress.Value = 0;
+                Cursor.Current = Cursors.WaitCursor;
+                int counter = 0;
+                int selected = lvWads.SelectedItems.Count;
+
+                foreach (ListViewItem lvi in lvWads.SelectedItems)
+                {
+                    pbProgress.Value = (++counter * 100) / selected;
+
+                    if (lvi.SubItems[5].Text != "Japan" && !string.IsNullOrEmpty(lvi.SubItems[5].Text))
                     {
-                        MessageBox.Show(Messages[62], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
+                        string path = lvi.Group.Tag.ToString();
+                        string file = lvi.Text;
+
+
                         if (ChangeRegion(path + "\\" + file, 'j') == true)
                         {
-                            btnRefresh_Click(null, null);
+                            changed++;
                         }
                     }
                 }
             }
+
+            if (changed > 0)
+            {
+                ReloadRegionFlags();
+                SaveList();
+            }
+            Cursor.Current = Cursors.Default;
+            pbProgress.Value = 100;
+            pbProgress.Tag = "";
         }
 
         private void btnDisclaimer_Click(object sender, EventArgs e)
@@ -1711,69 +2434,82 @@ namespace ShowMiiWads
 
         private void cmCopy_Click(object sender, EventArgs e)
         {
-            if (lvWads.SelectedItems.Count == 1)
+            if (lvWads.SelectedItems.Count > 0)
             {
-                copyfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text;
+                string[] copy = new string[lvWads.SelectedItems.Count];
+
+                for (int i = 0; i < lvWads.SelectedItems.Count; i++)
+                {
+                    copy[i] = lvWads.SelectedItems[i].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[i].Text;
+                }
+
+                copyfile = copy;
                 copyaction = "copy";
             }
         }
 
         private void cmCut_Click(object sender, EventArgs e)
         {
-            if (lvWads.SelectedItems.Count == 1)
+            if (lvWads.SelectedItems.Count > 0)
             {
-                copyfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text;
+                string[] cut = new string[lvWads.SelectedItems.Count];
+
+                for (int i = 0; i < lvWads.SelectedItems.Count; i++)
+                {
+                    cut[i] = lvWads.SelectedItems[i].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[i].Text;
+                }
+
+                copyfile = cut;
                 copyaction = "cut";
             }
         }
 
         private void cmPaste_Click(object sender, EventArgs e)
         {
-            if (lvWads.SelectedItems.Count == 1)
+            if (lvWads.SelectedItems.Count > 0)
             {
-                if (copyfile != "")
+                string newfolder = lvWads.SelectedItems[0].Group.Tag.ToString();
+
+                for (int i = 0; i < copyfile.Length; i++)
                 {
-                    string newfolder = lvWads.SelectedItems[0].Group.Tag.ToString();
-                    string filename = copyfile.Remove(0, copyfile.LastIndexOf('\\') + 1);
-
-                    if (File.Exists(copyfile))
+                    if (!string.IsNullOrEmpty(copyfile[i]))
                     {
-                        bool over = false;
-                        bool exists = false;
-
-                        if (File.Exists(newfolder + "\\" + filename))
+                        string filename = copyfile[i].Remove(0, copyfile[i].LastIndexOf('\\') + 1);
+                        
+                        if (File.Exists(copyfile[i]))
                         {
-                            exists = true;
-                            if (MessageBox.Show(Messages[49], Messages[51], MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            {
-                                over = true;
-                            }
-                        }
+                            bool over = false;
+                            bool exists = false;
 
-                        if (over == true || exists == false)
-                        {
-                            try
+                            if (File.Exists(newfolder + "\\" + filename))
                             {
-                                File.Copy(copyfile, newfolder + "\\" + filename);
-
-                                if (copyaction == "cut")
+                                exists = true;
+                                if (MessageBox.Show(filename + "\r\n" + Messages[49], Messages[51], MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                                 {
-                                    File.Delete(copyfile);
-                                    copyfile = "";
+                                    over = true;
                                 }
-
-                                btnRefresh_Click(null, null);
                             }
-                            catch (Exception ex)
+
+                            if (over == true || exists == false)
                             {
-                                MessageBox.Show("Error occured (004): " + ex.Message + "\r\r" + ex.Source, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                try
+                                {
+                                    File.Copy(copyfile[i], newfolder + "\\" + filename);
+
+                                    if (copyaction == "cut")
+                                    {
+                                        File.Delete(copyfile[i]);
+                                        copyfile[i] = "";
+                                    }
+
+                                    LoadNew();
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message, Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        //Sourcefile does not exist
-                        MessageBox.Show(Messages[50], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -1781,25 +2517,39 @@ namespace ShowMiiWads
 
         private void cmWads_Opening(object sender, CancelEventArgs e)
         {
-            cmPal.Checked = false;
-            cmNtscU.Checked = false;
-            cmNtscJ.Checked = false;
-            cmRegionFree.Checked = false;
-
-            switch (lvWads.SelectedItems[0].SubItems[5].Text)
+            if (lvWads.SelectedItems.Count == 1)
             {
-                case "Europe":
-                    cmPal.Checked = true;
-                    break;
-                case "Japan":
-                    cmNtscJ.Checked = true;
-                    break;
-                case "USA":
-                    cmNtscU.Checked = true;
-                    break;
-                default:
-                    cmRegionFree.Checked = true;
-                    break;
+                cmPal.Checked = false;
+                cmNtscU.Checked = false;
+                cmNtscJ.Checked = false;
+                cmRegionFree.Checked = false;
+
+                switch (lvWads.SelectedItems[0].SubItems[5].Text)
+                {
+                    case "Europe":
+                        cmPal.Checked = true;
+                        break;
+                    case "Japan":
+                        cmNtscJ.Checked = true;
+                        break;
+                    case "USA":
+                        cmNtscU.Checked = true;
+                        break;
+                    default:
+                        cmRegionFree.Checked = true;
+                        break;
+                }
+            }
+            else
+            {
+                btnPal.Checked = false;
+                cmPal.Checked = false;
+                btnNtscU.Checked = false;
+                cmNtscU.Checked = false;
+                btnNtscJ.Checked = false;
+                cmNtscJ.Checked = false;
+                btnRegionFree.Checked = false;
+                cmRegionFree.Checked = false;
             }
         }
 
@@ -1828,24 +2578,56 @@ namespace ShowMiiWads
                         break;
                 }
             }
+            else
+            {
+                btnPal.Checked = false;
+                cmPal.Checked = false;
+                btnNtscU.Checked = false;
+                cmNtscU.Checked = false;
+                btnNtscJ.Checked = false;
+                cmNtscJ.Checked = false;
+                btnRegionFree.Checked = false;
+                cmRegionFree.Checked = false;
+            }
         }
 
         private void cmToNAND_Click(object sender, EventArgs e)
         {
-            if (lvWads.SelectedItems.Count == 1)
+            if (lvWads.SelectedItems.Count > 0)
             {
-                string wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text;
-
-                if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("System"))
+                if (File.Exists(ckey) || File.Exists(key))
                 {
-                    //Systemtitel können nicht in den NAND entpackt werden
-                    MessageBox.Show(Messages[62], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (nandpath != "")
+                    {
+                        pbProgress.Tag = "NoProgress";
+                        pbProgress.Value = 0;
+                        Cursor.Current = Cursors.WaitCursor;
+                        int selected = lvWads.SelectedItems.Count;
+
+                        for (int i = 0; i < lvWads.SelectedItems.Count; i++)
+                        {
+                            pbProgress.Value = ((i + 1) * 100) / selected;
+
+                            string wadfile = lvWads.SelectedItems[i].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[i].Text;
+
+                            try { Wii.WadUnpack.UnpackToNand(wadfile, nandpath); }
+                            catch (Exception ex) { MessageBox.Show(ex.Message, Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(Messages[57], Messages[58], MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
                 else
                 {
-                    CopyToNand(wadfile);
+                    MessageBox.Show(Messages[52], Messages[53], MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
+
+            pbProgress.Tag = "";
+            pbProgress.Value = 100;
+            Cursor.Current = Cursors.Default;
         }
 
         /// <summary>
@@ -1860,9 +2642,8 @@ namespace ShowMiiWads
             {
                 if (nandpath != "")
                 {
-                    Cursor.Current = Cursors.WaitCursor;
-                    Wii.WadUnpack.UnpackToNand(wadfile, nandpath);
-                    Cursor.Current = Cursors.Default;
+                    try { Wii.WadUnpack.UnpackToNand(wadfile, nandpath); }
+                    catch (Exception ex) { MessageBox.Show(ex.Message, Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error); }
                 }
                 else
                 {
@@ -1897,120 +2678,43 @@ namespace ShowMiiWads
 
         private void cmToFolder_Click(object sender, EventArgs e)
         {
-            if (lvWads.SelectedItems.Count == 1)
+            if (lvWads.SelectedItems.Count > 0)
             {
-                string wadfile = lvWads.SelectedItems[0].Group.Tag + "\\" + lvWads.SelectedItems[0].Text;
-                string wadname = lvWads.SelectedItems[0].Text.Remove(lvWads.SelectedItems[0].Text.Length - 4);
-
-                FolderBrowserDialog fd = new FolderBrowserDialog();
-                fd.Description = string.Format(Messages[39], wadname);
-                if (!lvWads.SelectedItems[0].SubItems[8].Text.Contains("System"))
+                if (File.Exists(ckey) || File.Exists(key))
                 {
-                    if (File.Exists(ckey) || File.Exists(key))
+                    FolderBrowserDialog fd = new FolderBrowserDialog();
+                    fd.Description = Messages[39];
+                    fd.SelectedPath = Application.StartupPath;
+
+                    if (fd.ShowDialog() == DialogResult.OK)
                     {
-                        if (fd.ShowDialog() == DialogResult.OK)
+                        pbProgress.Tag = "NoProgress";
+                        pbProgress.Value = 0;
+                        Cursor.Current = Cursors.WaitCursor;
+                        int selected = lvWads.SelectedItems.Count;
+
+                        for (int i = 0; i < lvWads.SelectedItems.Count; i++)
                         {
-                            Cursor.Current = Cursors.WaitCursor;
+                            pbProgress.Value = ((i + 1) * 100) / selected;
+
+                            string wadfile = lvWads.SelectedItems[i].Group.Tag + "\\" + lvWads.SelectedItems[i].Text;
+                            string wadname = lvWads.SelectedItems[i].Text.Remove(lvWads.SelectedItems[i].Text.Length - 4);
 
                             try { Wii.WadUnpack.UnpackWad(wadfile, fd.SelectedPath + "\\" + wadname); }
-                            catch (Exception ex) { MessageBox.Show(ex.Message); }
-
-                            Cursor.Current = Cursors.Default;
+                            catch (Exception ex) { MessageBox.Show(ex.Message, Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error); }
                         }
-                    }
-                    else
-                    {
-                        //Common-Key fehlt
-                        MessageBox.Show(Messages[52], Messages[53], MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
                 {
-                    //Systemtitles can't be extracted
-                    MessageBox.Show(Messages[62], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //Common-Key fehlt
+                    MessageBox.Show(Messages[52], Messages[53], MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-        }
 
-        private void cmFolderFree_Click(object sender, EventArgs e)
-        {
-            if (lvWads.SelectedItems.Count == 1)
-            {
-                string path = lvWads.SelectedItems[0].Group.Tag.ToString();
-                int tochange = 0;
-
-                for (int i = 0; i < lvWads.Groups[path].Items.Count; i++)
-                {
-                    if (!lvWads.Groups[path].Items[i].SubItems[8].Text.Contains("System"))
-                    {
-                        if (!lvWads.Groups[path].Items[i].SubItems[5].Text.Contains("Free"))
-                        {
-                            tochange++;
-                        }
-                    }
-                }
-
-                if (tochange > 0)
-                {
-                    if (MessageBox.Show(Messages[67], Messages[68], MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
-                        string[] wads = new string[lvWads.Groups[path].Items.Count];
-
-                        for (int i = 0; i < lvWads.Groups[path].Items.Count; i++)
-                        {
-                            if (!lvWads.Groups[path].Items[i].SubItems[8].Text.Contains("System"))
-                            {
-                                if (!lvWads.Groups[path].Items[i].SubItems[5].Text.Contains("Free"))
-                                {
-                                    wads[i] = lvWads.Groups[path].Items[i].Text;
-                                }
-                            }
-                        }
-
-                        int failed = 0;
-                        int counter = 0;
-                        int changed = 0;
-
-                        foreach (string thiswad in wads)
-                        {
-                            pbProgress.Value = (counter * 100) / wads.Length;
-                            counter++;
-
-                            try
-                            {
-                                if (thiswad.Remove(0, thiswad.LastIndexOf('.')) == ".wad")
-                                {
-                                    if (ChangeRegion(path + "\\" + thiswad, 'f') == false)
-                                    {
-                                        failed++;
-                                    }
-                                    else
-                                    {
-                                        changed++;
-                                    }
-                                }
-                            }
-                            catch { }
-                        }
-
-                        if (changed > 0)
-                        {
-                            btnRefresh_Click(null, null);
-                        }
-
-                        if (failed > 0)
-                        {
-                            MessageBox.Show(Messages[66], Messages[65], MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-
-                        pbProgress.Value = 100;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show(Messages[69], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
+            pbProgress.Tag = "";
+            pbProgress.Value = 100;
+            Cursor.Current = Cursors.Default;
         }
 
         private void btnShowPath_Click(object sender, EventArgs e)
@@ -2018,12 +2722,20 @@ namespace ShowMiiWads
             if (btnShowPath.Checked == true)
             {
                 showpath = "true";
-                btnRefresh_Click(null, null);
+
+                foreach (ListViewGroup lvg in lvWads.Groups)
+                {
+                    lvg.Header = lvg.Tag + " " + lvg.Header.Remove(0, lvg.Header.LastIndexOf('('));
+                }
             }
             else
             {
                 showpath = "false";
-                btnRefresh_Click(null, null);
+
+                foreach (ListViewGroup lvg in lvWads.Groups)
+                {
+                    lvg.Header = lvg.Header.Remove(0, lvg.Header.LastIndexOf('\\') + 1);
+                }
             }
         }
 
@@ -2101,7 +2813,7 @@ namespace ShowMiiWads
         {
             if (lvWads.SelectedItems.Count == 1)
             {
-                if (!lvWads.SelectedItems[0].SubItems[8].Text.Contains("System"))
+                if (!lvWads.SelectedItems[0].SubItems[8].Text.Contains("System") || !lvWads.SelectedItems[0].SubItems[8].Text.Contains("Hidden"))
                 {
                     if (File.Exists(ckey) || File.Exists(key))
                     {
@@ -2136,7 +2848,9 @@ namespace ShowMiiWads
                                     CreateBackup(wadfile);
 
                                     Wii.WadEdit.ChangeChannelTitle(wadfile, newtitles[0], newtitles[1], newtitles[2], newtitles[3], newtitles[4], newtitles[5], newtitles[6]);
-                                    btnRefresh_Click(null, null);
+                                    lvWads.SelectedItems[0].Remove();
+                                    SaveList();
+                                    LoadNew();
 
                                     Cursor.Current = Cursors.Default;
                                 }
@@ -2171,37 +2885,16 @@ namespace ShowMiiWads
                 {
                     tsMru.DropDownItems.Add(new ToolStripMenuItem(mru[i], null, mruItems_Click));
                 }
-                else
-                {
-                    break;
-                }
+                else break;
             }
 
-            if (lvWads.Visible == true)
+            if (lvWads.SelectedItems.Count == 0 && lvWads.Visible == true)
             {
-                btnCopy.Enabled = true;
-                btnCut.Enabled = true;
-                btnPaste.Enabled = true;
-                btnRename.Enabled = true;
-                btnOpen.Enabled = true;
-                btnExport.Enabled = true;
-                tsMru.Enabled = true;
-
-                if (accepted == "true") EditFeatures(true);
-                else EditFeatures(false);
-                
+                DisableButtons();
             }
-            else
+            if (lvNand.SelectedItems.Count == 0 && lvNand.Visible == true)
             {
-                btnCopy.Enabled = false;
-                btnCut.Enabled = false;
-                btnPaste.Enabled = false;
-                btnRename.Enabled = false;
-                btnOpen.Enabled = false;
-                tsMru.Enabled = false;
-
-                if (accepted == "true") EditFeatures(true);
-                else EditFeatures(false);
+                DisableButtons();
             }
         }
 
@@ -2249,25 +2942,22 @@ namespace ShowMiiWads
 
         private void lvWads_VisibleChanged(object sender, EventArgs e)
         {
-            if (lvWads.Visible == false)
-            { lvWads.Enabled = false; }
-            else
-            {
-                lvWads.Enabled = true;
-                btnRefresh_Click(null, null);
-            }
-        
+            //if (lvWads.Visible == false)
+            //{ lvWads.Enabled = false; }
+            //else
+            //{
+            //    lvWads.Enabled = true;
+            //}
         }
 
         private void lvNand_VisibleChanged(object sender, EventArgs e)
         {
-            if (lvNand.Visible == false)
-            { lvNand.Enabled = false; }
-            else
-            {
-                lvNand.Enabled = true;
-                btnRefresh_Click(null, null);
-            }
+            //if (lvNand.Visible == false)
+            //{ lvNand.Enabled = false; }
+            //else
+            //{
+            //    lvNand.Enabled = true;
+            //}
         }
 
         private void btnShowMiiWads_Click(object sender, EventArgs e)
@@ -2275,8 +2965,8 @@ namespace ShowMiiWads
             if (btnShowMiiWads.Checked == true)
             {
                 btnShowMiiNand.Checked = false;
-                lvWads.Visible = true;
-                lvNand.Visible = false;
+                if (File.Exists(ListPath))
+                    LoadNewWads();
 
                 lbFiles.Text = Messages[16] + ":";
                 lbFolders.Text = Messages[37] + ":";
@@ -2291,6 +2981,12 @@ namespace ShowMiiWads
                 lbQueueInstall.Visible = false;
 
                 this.Text = "ShowMiiWads " + version + " by Leathl";
+
+                lvWads.Visible = true;
+                lvNand.Visible = false;
+
+                if (!File.Exists(ListPath))
+                    btnRefresh_Click(null, null);
             }
             else { btnShowMiiWads.Checked = true; }
         }
@@ -2302,8 +2998,8 @@ namespace ShowMiiWads
                 if (nandpath != "")
                 {
                     btnShowMiiWads.Checked = false;
-                    lvWads.Visible = false;
-                    lvNand.Visible = true;
+                    if (File.Exists(ListPathNand))
+                        LoadNewNand();
 
                     lbFiles.Text = Messages[86] + ":";
                     lbFolders.Text = "";
@@ -2311,6 +3007,12 @@ namespace ShowMiiWads
                     lbFileCount.Text = "0";
                     
                     this.Text = "ShowMiiNand " + version + " by Leathl";
+
+                    lvWads.Visible = false;
+                    lvNand.Visible = true;
+
+                    if (!File.Exists(ListPathNand))
+                        btnRefresh_Click(null, null);
                 }
                 else
                 {
@@ -2374,9 +3076,9 @@ namespace ShowMiiWads
 
         private void lvNand_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            if (lvNand.SelectedItems.Count > 0)
             {
-                if (lvNand.SelectedItems.Count != 0)
+                if (e.Button == MouseButtons.Right)
                 {
                     cmNand.Show(lvNand, e.Location);
                 }
@@ -2461,8 +3163,8 @@ namespace ShowMiiWads
             cmChangeRegion.Enabled = enordisable;
             tsExtract.Enabled = enordisable;
             cmExtract.Enabled = enordisable;
-            btnChannelName.Enabled = enordisable;
-            cmChannelName.Enabled = enordisable;
+            btnChangeTitle.Enabled = enordisable;
+            cmChangeTitle.Enabled = enordisable;
             tsTools.Enabled = enordisable;
             cmNandPackWad.Enabled = enordisable;
             cmInstall.Enabled = enordisable;
@@ -2653,7 +3355,7 @@ namespace ShowMiiWads
             lbQueueInstall.Visible = false;
             lbQueueDiscard.Visible = false;
 
-            btnRefresh_Click(null, null);
+            LoadNew(); ;
         }
 
         private void cmInstallWad_Click(object sender, EventArgs e)
@@ -2666,7 +3368,7 @@ namespace ShowMiiWads
                 Cursor.Current = Cursors.WaitCursor;
                 CopyToNand(ofd.FileName);
                 Cursor.Current = Cursors.Default;
-                btnRefresh_Click(null, null);
+                LoadNew();
             }
         }
 
@@ -2690,7 +3392,7 @@ namespace ShowMiiWads
 
                 pbProgress.Tag = "";
                 Cursor.Current = Cursors.Default;
-                btnRefresh_Click(null, null);
+                LoadNew();
             }
         }
 
@@ -2710,45 +3412,58 @@ namespace ShowMiiWads
 
         private void btnPackToWad_Click(object sender, EventArgs e)
         {
-            if (lvNand.SelectedItems.Count == 1)
+            FolderBrowserDialog fld = new FolderBrowserDialog();
+            fld.SelectedPath = Application.StartupPath;
+            fld.Description = "Choose the folder where the packed wads will be saved"; //TODO: Messages[x]
+
+            if (fld.ShowDialog() == DialogResult.OK)
             {
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "Wad|*.wad";
+                pbProgress.Tag = "NoProgress";
+                Cursor.Current = Cursors.WaitCursor;
+                int counter = 0;
 
-                switch (lvNand.SelectedItems[0].SubItems[8].Text)
+                foreach (ListViewItem lvi in lvNand.SelectedItems)
                 {
-                    case "System: IOS":
-                        sfd.FileName = lvNand.SelectedItems[0].SubItems[1].Text + "-v" + lvNand.SelectedItems[0].SubItems[9].Text;
-                        break;
-                    case "System: Boot2":
-                        sfd.FileName = "Boot2-v" + lvNand.SelectedItems[0].SubItems[9].Text;
-                        break;
-                    case "System: MIOS":
-                        sfd.FileName = "MIOS-v" + lvNand.SelectedItems[0].SubItems[9].Text;
-                        break;
-                    case "System: BC":
-                        sfd.FileName = "BC-v" + lvNand.SelectedItems[0].SubItems[9].Text;
-                        break;
-                    case "Hidden Channel":
-                        sfd.FileName = "Hidden Channel - " + lvNand.SelectedItems[0].SubItems[1].Text;
-                        break;
-                    default:
-                        sfd.FileName = lvNand.SelectedItems[0].SubItems[10].Text + " - " + lvNand.SelectedItems[0].SubItems[1].Text;
-                        break;
-                }
+                    pbProgress.Value = (++counter * 100) / lvNand.SelectedItems.Count;
+                    string filename = "";
 
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    Cursor.Current = Cursors.WaitCursor;
-                    string path = lvNand.SelectedItems[0].SubItems[7].Text;
+                    switch (lvi.SubItems[8].Text)
+                    {
+                        case "System: IOS":
+                            filename = lvi.SubItems[1].Text + "-v" + lvi.SubItems[9].Text;
+                            break;
+                        case "System: Boot2":
+                            filename = "Boot2-v" + lvi.SubItems[9].Text;
+                            break;
+                        case "System: MIOS":
+                            filename = "MIOS-v" + lvi.SubItems[9].Text;
+                            break;
+                        case "System: BC":
+                            filename = "BC-v" + lvi.SubItems[9].Text;
+                            break;
+                        case "Hidden Channel":
+                            filename = "Hidden Channel - " + lvi.SubItems[1].Text;
+                            break;
+                        default:
+                            if (!string.IsNullOrEmpty(lvi.SubItems[10].Text))
+                                filename = lvi.SubItems[10].Text + " - " + lvi.SubItems[1].Text;
+                            else
+                                filename = lvi.SubItems[8].Text + " - " + lvi.SubItems[1].Text;
+                            break;
+                    }
 
-                    try { Wii.WadPack.PackWadFromNand(nandpath, path, sfd.FileName); }
-                    catch (Exception ex) { MessageBox.Show(ex.Message); }
 
-                    pbProgress.Value = 100;
-                    Cursor.Current = Cursors.Default;
+                    string path = lvi.SubItems[7].Text;
+                    string result = fld.SelectedPath + "\\" + filename + ".wad";
+
+                    try { Wii.WadPack.PackWadFromNand(nandpath, path, result); }
+                    catch (Exception ex) { MessageBox.Show(filename + "\r\n" + ex.Message, Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error); }
                 }
             }
+
+            pbProgress.Value = 100;
+            pbProgress.Tag = "";
+            Cursor.Current = Cursors.Default;
         }
 
         private void cmPreview_Click(object sender, EventArgs e)
@@ -2757,7 +3472,9 @@ namespace ShowMiiWads
             {
                 if (lvWads.SelectedItems.Count == 1)
                 {
-                    if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("Channel"))
+                    if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("Channel") ||
+                        lvWads.SelectedItems[0].SubItems[8].Text.Contains("Console") ||
+                        lvWads.SelectedItems[0].SubItems[8].Text.Contains("WiiWare"))
                     {
                         if (!lvWads.SelectedItems[0].SubItems[8].Text.Contains("Hidden"))
                         {
@@ -2834,7 +3551,9 @@ namespace ShowMiiWads
             {
                 if (lvNand.SelectedItems.Count == 1)
                 {
-                    if (lvNand.SelectedItems[0].SubItems[8].Text.Contains("Channel"))
+                    if (lvNand.SelectedItems[0].SubItems[8].Text.Contains("Channel") ||
+                        lvNand.SelectedItems[0].SubItems[8].Text.Contains("Console") ||
+                        lvNand.SelectedItems[0].SubItems[8].Text.Contains("WiiWare"))
                     {
                         try
                         {
@@ -3019,11 +3738,14 @@ namespace ShowMiiWads
             if (!version.Contains("Beta"))
             {
                 try
-                {
+                {                 
                     WebClient GetVersion = new WebClient();
-                    string newversion = GetVersion.DownloadString("http://showmiiwads.googlecode.com/svn/version.txt");
+                    string newversion = GetVersion.DownloadString("http://showmiiwads.googlecode.com/svn/newversion.txt");
+                    string address = newversion.Remove(newversion.LastIndexOf("\r")).Remove(0, newversion.IndexOf("\n") + 1);
+                    string address64 = newversion.Remove(0, newversion.LastIndexOf("\n") + 1);
+                    newversion = newversion.Remove(newversion.IndexOf("\r"));
                     newversion.Replace(" ", "");
-
+                    
                     if (newversion == version)
                     {
                         if (silentifno == false)
@@ -3037,7 +3759,28 @@ namespace ShowMiiWads
                         string part3 = mes.Remove(0, mes.LastIndexOf('>') + 1);
 
                         if (MessageBox.Show(part1 + "\r\n" + part2 + "\r\n" + part3, Messages[65], MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-                            System.Diagnostics.Process.Start("http://showmiiwads.googlecode.com/");
+                        {
+                            SaveFileDialog sfd = new SaveFileDialog();
+                            sfd.Filter = "*.rar|*.rar";
+                            sfd.InitialDirectory = Application.StartupPath;
+
+#if x64
+                            sfd.FileName = address64.Remove(0, address64.LastIndexOf('/') + 1);
+#else
+                            sfd.FileName = address.Remove(0, address.LastIndexOf('/') + 1);
+#endif
+
+                            if (sfd.ShowDialog() == DialogResult.OK)
+                            {
+                                GetVersion.DownloadFileCompleted += new AsyncCompletedEventHandler(GetVersion_DownloadFileCompleted);
+                                
+#if x64
+                                GetVersion.DownloadFileAsync(new Uri(address64), sfd.FileName);
+#else
+                                GetVersion.DownloadFileAsync(new Uri(address), sfd.FileName);
+#endif
+                            }
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -3046,6 +3789,11 @@ namespace ShowMiiWads
                         MessageBox.Show(ex.Message, Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void GetVersion_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            MessageBox.Show(Messages[121], Messages[65], MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void CreateBackup(string FileToBackup)
@@ -3079,13 +3827,229 @@ namespace ShowMiiWads
                 {
                     File.Delete(wadfile);
                     File.Move(wadfile + ".backup", wadfile);
-                    btnRefresh_Click(null, null);
+
+                    lvWads.SelectedItems[0].Remove();
+                    SaveList();
+                    LoadNew();
+
                     MessageBox.Show(Messages[115], Messages[65], MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     MessageBox.Show(Messages[116], Messages[19], MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        private void cmRemoveAllFolders_Click(object sender, EventArgs e)
+        {
+            lvWads.Groups.Clear();
+            lvWads.Items.Clear();
+
+            lbFileCount.Text = lvWads.Items.Count.ToString();
+            lbFolderCount.Text = lvWads.Groups.Count.ToString();
+        }
+
+        private void cmRefreshFolder_Click(object sender, EventArgs e)
+        {
+            ListViewGroup thisgroup = lvWads.SelectedItems[0].Group;
+            string thisheader = thisgroup.Tag.ToString();
+
+            for (int i = lvWads.Groups[thisgroup.Name].Items.Count; i > 0; i--)
+            {
+                lvWads.Groups[thisgroup.Name].Items.RemoveAt(i - 1);
+            }
+            
+            lvWads.Groups.Remove(thisgroup);
+
+            for (int j = lvWads.Items.Count; j > 0; j--)
+            {
+                if (lvWads.Items[j - 1].Group == null || lvWads.Items[j - 1].Group.Tag.ToString() == thisheader)
+                {
+                    lvWads.Items.RemoveAt(j - 1);
+                }
+            }
+
+            lvWads.Groups.Remove(thisgroup);
+
+            AddWads(thisheader);
+        }
+
+        private void lvNand_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvNand.SelectedItems.Count > 1)
+            {
+                cmNandPreview.Enabled = false;
+                btnPreview.Enabled = false;
+            }
+            else if (lvNand.SelectedItems.Count == 1)
+            {
+                if (!lvNand.SelectedItems[0].SubItems[8].Text.Contains("System") && !lvNand.SelectedItems[0].SubItems[8].Text.Contains("Hidden"))
+                {
+                    cmNandPreview.Enabled = true;
+                    btnPreview.Enabled = true;
+                }
+                else
+                {
+                    cmNandPreview.Enabled = false;
+                    btnPreview.Enabled = false;
+                }
+            }
+        }
+
+        private void EnableButtons()
+        {
+            cmCopy.Enabled = true;
+            cmCut.Enabled = true;
+            cmPaste.Enabled = true;
+            cmRename.Enabled = true;
+            cmDelete.Enabled = true;
+            cmPreview.Enabled = true;
+            cmRestore.Enabled = true;
+
+            cmRemoveFolder.Enabled = true;
+            cmRefreshFolder.Enabled = true;
+
+            btnCopy.Enabled = true;
+            btnCut.Enabled = true;
+            btnPaste.Enabled = true;
+            btnRename.Enabled = true;
+            btnDelete.Enabled = true;
+            btnPreview.Enabled = true;
+            btnRestore.Enabled = true;
+
+            if (accepted == "true")
+            {
+                cmChangeTitle.Enabled = true;
+                cmChangeID.Enabled = true;
+                cmChangeRegion.Enabled = true;
+                cmExtract.Enabled = true;
+
+                btnChangeTitle.Enabled = true;
+                btnChangeID.Enabled = true;
+                tsChangeRegion.Enabled = true;
+                tsExtract.Enabled = true;
+            }
+        }
+
+        private void DisableButtons()
+        {
+            cmCopy.Enabled = false;
+            cmCut.Enabled = false;
+            cmPaste.Enabled = false;
+            cmRename.Enabled = false;
+            cmDelete.Enabled = false;
+            cmPreview.Enabled = false;
+            cmRestore.Enabled = false;
+
+            cmRemoveFolder.Enabled = false;
+            cmRefreshFolder.Enabled = false;
+
+            btnCopy.Enabled = false;
+            btnCut.Enabled = false;
+            btnPaste.Enabled = false;
+            btnRename.Enabled = false;
+            btnDelete.Enabled = false;
+            btnPreview.Enabled = false;
+            btnRestore.Enabled = false;
+
+            cmChangeTitle.Enabled = false;
+            cmChangeID.Enabled = false;
+            cmChangeRegion.Enabled = false;
+            cmExtract.Enabled = false;
+
+            btnChangeTitle.Enabled = false;
+            btnChangeID.Enabled = false;
+            tsChangeRegion.Enabled = false;
+            tsExtract.Enabled = false;
+        }
+
+        private void lvWads_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EnableButtons();
+
+            if (lvWads.SelectedItems.Count == 1)
+            {
+                if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("System"))
+                {
+                    cmChangeTitle.Enabled = false;
+                    cmChangeID.Enabled = false;
+                    cmChangeRegion.Enabled = false;
+                    cmPreview.Enabled = false;
+                    cmRestore.Enabled = false;
+
+                    btnChangeTitle.Enabled = false;
+                    btnChangeID.Enabled = false;
+                    tsChangeRegion.Enabled = false;
+                    btnPreview.Enabled = false;
+                }
+                else if (lvWads.SelectedItems[0].Text.Contains("Hidden"))
+                {
+                    cmChangeTitle.Enabled = false;
+                    cmPreview.Enabled = false;
+
+                    btnChangeTitle.Enabled = false;
+                    btnPreview.Enabled = false;
+                }
+            }
+            else if (lvWads.SelectedItems.Count > 1)
+            {
+                bool allsamegroup = true;
+
+                for (int i = 0; i < lvWads.SelectedItems.Count; i++)
+                {
+                    if (lvWads.SelectedItems[i].Group != lvWads.SelectedItems[0].Group)
+                        allsamegroup = false;
+                }
+
+                if (allsamegroup == true)
+                {
+                    cmChangeTitle.Enabled = false;
+                    cmChangeID.Enabled = false;
+                    cmPreview.Enabled = false;
+                    cmRestore.Enabled = false;
+                    cmRename.Enabled = false;
+
+                    btnRename.Enabled = false;
+                    btnChangeTitle.Enabled = false;
+                    btnChangeID.Enabled = false;
+                    btnPreview.Enabled = false;
+                }
+                else
+                {
+                    cmChangeTitle.Enabled = false;
+                    cmChangeID.Enabled = false;
+                    cmPreview.Enabled = false;
+                    cmRestore.Enabled = false;
+                    cmRename.Enabled = false;
+                    cmPaste.Enabled = false;
+
+                    btnPaste.Enabled = false;
+                    btnRename.Enabled = false;
+                    btnChangeTitle.Enabled = false;
+                    btnChangeID.Enabled = false;
+                    btnPreview.Enabled = false;
+
+                    cmRemoveFolder.Enabled = false;
+                    cmRefreshFolder.Enabled = false;
+                }
+            }
+        }
+
+        private void ShowMiiWads_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void btnShowSplash_Click(object sender, EventArgs e)
+        {
+            if (btnShowSplash.Checked == true)
+            {
+                splash = "true";
+            }
+            else
+            {
+                splash = "false";
             }
         }
     }

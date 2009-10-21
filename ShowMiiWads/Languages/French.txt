@@ -1,10 +1,11 @@
-﻿Fichier
+﻿*Français*
+Fichier
 Langage
 Aide
 Sauvegarder les dossiers
 Rafraîchir
-Anglais
-Allemand
+---Empty
+---Empty
 À-propos
 Nom de fichier
 Title ID
@@ -31,13 +32,13 @@ Veuillez saisir le nouveau nom de fichier pour le WAD suivant
 Effacer
 Le fichier n'existe pas !
 Effacer le fichier ?
-Voulez-vous vraiment effacer ce fichier ?
+Voulez-vous vraiment effacer ce(s) {0} fichier(s) ?
 Ajuster la taille des colonnes automatiquement
 Format de la texture
 Taille
 Dossiers
 Effacer ce fichier
-Un dossier nommé '{0}' sera créé dans le dossier choisi
+Un dossier sera créer pour chaque fichier
 Extraire
 Changer le Title ID
 Saisissez le nouveau Title ID
@@ -48,7 +49,7 @@ Copier
 Couper
 Coller
 Le fichier existe déjà. Voulez-vous le réécrire ?
-Le fichier source n'existe pas.
+---Empty
 Réécrire ?
 La (common-)key.bin doit être présente dans le dossier de l'application !
 La Common-Key est absente
@@ -65,10 +66,10 @@ Slang les fichiers
 Le fichier slang est invalide !
 Informations
 {0} Erreurs survenues
-Êtes-vous sûr de vouloir changer la région de tous les Wads présents dans ce dossier ?
+---Empty
 Êtes-vous sûr ?
 Il n'y a aucun Wads à dézoner dans ce dossier !
-Opération de dézonage terminée
+---Empty
 Exporter dans le fichier
 Montrer le chemin dans le nom de groupe
 Changer le titre de la chaine
@@ -91,8 +92,8 @@ Titre de la chaine
 Fichier
 Dossier
 Tous les fichiers wads dans le dossier séléctionné seront installés
-Ajouter un sous-dossier
-Français
+Ajouter les sous-dossiers
+---Empty
 La prévisualisation fonctionne uniquement sur les chaines!
 Le fichier c'est pas une archive U8 valide!
 Seul les TPL contenant 1 texture sont supportés!
@@ -111,9 +112,13 @@ Vous auriez du saisir '{0}'!
 Créer la Common-Key
 '{0}' existe déjà!
 Vous avez déjà la dernière version.
-La version {0} est disponible.<s>Ici: {1}<s>Voulez-vous ouvrir cette page?
+La version {0} est disponible.<s>Vous la trouverez ici: {1}<s>Voulez-vous la télécharger?
 Recherche de mise à jour
 Sauvegarde restaurée avec succès
 Aucune sauvegarde de ce fichier n'a été crée!
-Faites des sauvegardes avant d'éditer vos fichiers
+Créer une sauvegarde avant l'édition d'un fichier
 Restauration
+---Empty
+---Empty
+Téléchargement terminé!
+Montrer l'écran de démarrage

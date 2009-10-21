@@ -12,7 +12,7 @@
     <AssemblyName>ShowMiiWads</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>ShowMiiWads Icon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\ShowMiiWads_Icon.ico</ApplicationIcon>
     <TargetFrameworkSubset>
     </TargetFrameworkSubset>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -27,13 +27,13 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>Full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -79,11 +79,11 @@
     <Compile Include="InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main.cs">
+    <Compile Include="ShowMiiWads.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main.Designer.cs">
-      <DependentUpon>Main.cs</DependentUpon>
+    <Compile Include="ShowMiiWads.Designer.cs">
+      <DependentUpon>ShowMiiWads.cs</DependentUpon>
     </Compile>
     <Compile Include="Preview.cs">
       <SubType>Form</SubType>
@@ -96,8 +96,8 @@
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
-      <DependentUpon>Main.cs</DependentUpon>
+    <EmbeddedResource Include="ShowMiiWads.resx">
+      <DependentUpon>ShowMiiWads.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -119,13 +119,19 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Sorter.cs" />
+    <Compile Include="SplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SplashScreen.Designer.cs">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="Wii.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="English.txt">
+    <EmbeddedResource Include="Languages\English.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="German.txt" />
+    <EmbeddedResource Include="Languages\German.txt" />
     <EmbeddedResource Include="InputBox.resx">
       <DependentUpon>InputBox.cs</DependentUpon>
     </EmbeddedResource>
@@ -137,21 +143,28 @@
     <EmbeddedResource Include="Disclaimer.resx">
       <DependentUpon>Disclaimer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="French.txt" />
+    <EmbeddedResource Include="Languages\French.txt" />
     <EmbeddedResource Include="Preview.resx">
       <DependentUpon>Preview.cs</DependentUpon>
     </EmbeddedResource>
     <Content Include="FAQ.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Languages\Italian.txt" />
+    <EmbeddedResource Include="Languages\Norwegian.txt" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ShowMiiWads Icon.ico" />
-    <Content Include="showmiiwads.png" />
+    <None Include="Resources\ShowMiiWads_Loading.png" />
+    <None Include="Resources\ShowMiiWads_Logo.png" />
+    <None Include="Resources\ShowMiiWads_Icon.ico" />
+    <EmbeddedResource Include="Languages\Spanish.txt" />
+    <EmbeddedResource Include="SplashScreen.resx">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -185,9 +198,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -197,7 +207,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>rename english.txt example.slang</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)Languages\english.txt" "$(TargetDir)example.slang"
+del /F /S /Q languages</PostBuildEvent>
     <PreBuildEvent>del example.slang</PreBuildEvent>
   </PropertyGroup>
 </Project>

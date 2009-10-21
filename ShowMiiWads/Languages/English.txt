@@ -1,4 +1,6 @@
-﻿//This is an example language file for ShowMiiWads 1.0
+﻿//Please write the name of your language IN YOUR LANGUAGE here! Example: *Français*
+*English*
+//This is an example language file for ShowMiiWads 1.1
 //Use a '//' in front of a line to comment it out (just as seen in this line)
 //Be sure that the lines stay in exactly the same order as they are and don't
 //remove a line or add one (except for comments)!
@@ -6,13 +8,14 @@
 //{0}, {1}, ... are placeholder.
 //<s> is a new line.
 //Don't change the amout of placeholders or new lines, else you probably will get errors!
+//Don't delete "---Empty" lines, just leave them as they are!
 File
 Language
 Help
 Save Folders
 Refresh
-English
-German
+---Empty
+---Empty
 About
 Filename
 Title ID
@@ -39,13 +42,13 @@ Please enter the new name for the following WAD file
 Delete
 File does not exist!
 Delete File?
-Do you really want to delete this File?
+Do you really want to delete {0} File(s)?
 Resize Columns Automatically
 Texture Format
 Size
 Folders
 Remove This Folder
-A folder called '{0}' will be created in the chosen directory
+A separate folder will be created for each file
 Extract
 Change Title ID
 Enter the new Title ID
@@ -56,7 +59,7 @@ Copy
 Cut
 Paste
 The destination file does already exist. Would you like to overwrite?
-The source file doesn't exist.
+---Empty
 Overwrite?
 The (common-)key.bin must be in the application directory!
 Common-Key not found
@@ -73,10 +76,10 @@ Slang Files
 The slang file is invalid!
 Information
 {0} Errors occured
-Are you sure you want to change the Region for all Wad files in this folder?
+---Empty
 Are you sure?
 There are no Wads to change to Region Free in this folder!
-Complete Folder To Region Free
+---Empty
 Export To File
 Show Path In Groupnames
 Change Channel Title
@@ -100,7 +103,7 @@ File
 Folder
 All wad files in the selected folder will be installed
 Add Subfolders
-French
+---Empty
 Previewing only works with Channels!
 File is no valid U8 Archive!
 Only TPL files containing 1 Texture are supported!
@@ -119,9 +122,13 @@ You should have typed '{0}'!
 Create Common-Key
 '{0}' already exists!
 You already have the latest version.
-Version {0} is available.<s>Get it at: {1}<s>Do you want the page to be opened?
+Version {0} is available.<s>Get it at: {1}<s>Do you want it to be downloaded?
 Check For Update
 Backup has been restored
 No Backup of this file has been created!
 Create Backups Before Editing
 Restore Backup
+---Empty
+---Empty
+Download completed!
+Show Splash Screen

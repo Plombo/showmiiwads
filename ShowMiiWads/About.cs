@@ -22,9 +22,12 @@ namespace ShowMiiWads
 {
     public partial class About : Form
     {
+        public bool x64 = false;
+
         public About()
         {
             InitializeComponent();
+            this.Icon = global::ShowMiiWads.Properties.Resources.ShowMiiWads_Icon;
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -37,6 +40,11 @@ namespace ShowMiiWads
         {
             System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8731272");
             lbDonate.LinkVisited = true;
+        }
+
+        private void About_Load(object sender, System.EventArgs e)
+        {
+            if (x64 == true) lbPlatform.Text = "You're running the 64 bit Version";
         }
     }
 }

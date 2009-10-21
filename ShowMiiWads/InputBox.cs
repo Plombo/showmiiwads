@@ -43,7 +43,7 @@ namespace InputBoxes
             // Required for Windows Form Designer support
             //
             InitializeComponent();
-            
+            this.Icon = global::ShowMiiWads.Properties.Resources.ShowMiiWads_Icon;
             //
             // TODO: Add any constructor code after InitializeComponent call
             //
@@ -77,7 +77,6 @@ namespace InputBoxes
         ///
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputBoxDialog));
             this.lblPrompt = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -133,11 +132,9 @@ namespace InputBoxes
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.lblPrompt);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "InputBoxDialog";
-            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "InputBox";

@@ -1,0 +1,124 @@
+﻿*Italiano*
+File
+Lingua
+Aiuto
+Salva Cartelle
+Aggiorna
+---Empty
+---Empty
+Informazioni
+Nome File
+Title ID
+Blocchi
+Dimensione File
+IOS Flag
+Region Flag
+Contenuto
+Percorso
+Files
+Informazioni
+Cambio del Title ID fallito!
+Errore
+Scegli una cartella
+Modifica
+Cambia Title ID
+Rinomina
+Cambia Region Flag
+Opzioni
+Esci
+Annulla
+Rinomina
+Prego inserire il nuovo nome per il seguente file WAD
+Cancella
+Il File non esiste!
+Cancellare il File?
+Vuoi veramente cancellare {0} File?
+Ridimensiona Colonne Automaticamente
+Formato Texture
+Dimensione
+Cartelle
+Elimina questa cartella
+Una cartella separata verrà creata per ogni File
+Estrai
+Cambia Title ID
+Enter the new Title ID
+Il Title ID può contenere solo caratteri e numeri!
+Il Title ID deve essere di 4 caratteri!
+Apri Cartella
+Copia
+Taglia
+Incolla
+Il file di destinazione esiste già. Vuoi sovrascriverlo?
+Il file sorgente non esiste.
+Sovrascrivere?
+Il file (common-)key.bin deve essere nella cartella dell'applicazione!
+Common-Key non trovata
+Salva Wad
+Nella cartella
+Scegli la cartella per il tuo NAND Backup
+Devi definire il percorso del NAND Backup (Opzioni)!
+NAND Backup non trovato
+Salva
+Nella NAND
+Cambia il percorso del NAND Backup
+Le funzioni di modifica sono limitate ai Titoli dei Canali!
+Slang Files
+Lo Slang File non è valido!
+Informazioni
+{0} Errori verificati
+Sei sicuro di voler cambiare Regione a tutti i WAD presenti in questa cartella?
+Sei sicuro?
+Non ci sono Wad da trasformare in Region Free in questa cartella!
+Trasforma in Region Free tutti i file nella cartella
+Esporta in un file
+Mostra Percorso In Nome Gruppo
+Cambia Titolo al Canale
+Scegli la cartella che include i contenuti da Confezionare
+Il Titolo del Canale non è stato trovato!
+Aperti di recente
+Da File
+Strumenti
+Vista
+Confeziona Wad
+Confeziona Wad (senza Trailer)
+Ci sono Files mancanti!
+Coda
+Installa
+Scarta
+Titoli Installati
+Versione
+Tipo
+Titolo Canale
+File
+Cartella
+Tutti i file WAD nella cartella selezionata verranno installati
+Aggiungi Sottocartelle
+---Empty
+Anteprima funzionante solo per i Canali!
+Il File non è un valido Archivio U8!
+Sono supportati solo i file TPL contenenti 1 Texture!
+La Texture ha un formato non supportato!
+Anteprima
+Scompatta Archivio U8
+Converti Tpl in Png
+Chiudi
+Salva Tutto
+Immagini Banner
+Icone
+Entrambi
+I Canali Nascosti non hanno Banner o Icone!
+Prego digitare '{0}' per creare '{1}'
+Avresti dovuto scrivere '{0}'!
+Crea Common-Key
+'{0}' già esistente!
+Hai già l'ultima versione.
+La Versione {0} è disponibile.<s>Prendila a: {1}<s>Vuoi scaricarla?
+Controlla Aggiornamenti
+Il Backup è stato ripristinato
+Il Backup di questo file non è stato creato!
+Crea Backups Prima Di Modificare
+Ripristina Backup
+---Empty
+---Empty
+Download completato!
+Mostra Splash Screen

@@ -47,7 +47,6 @@ namespace ShowMiiWads
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Preview));
             this.Panel = new System.Windows.Forms.Panel();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
@@ -160,12 +159,12 @@ namespace ShowMiiWads
             this.cmSave,
             this.cmSaveAll});
             this.cmPic.Name = "cmPic";
-            this.cmPic.Size = new System.Drawing.Size(153, 70);
+            this.cmPic.Size = new System.Drawing.Size(116, 48);
             // 
             // cmSave
             // 
             this.cmSave.Name = "cmSave";
-            this.cmSave.Size = new System.Drawing.Size(152, 22);
+            this.cmSave.Size = new System.Drawing.Size(115, 22);
             this.cmSave.Text = "Save";
             this.cmSave.Click += new System.EventHandler(this.cmSave_Click);
             // 
@@ -176,7 +175,7 @@ namespace ShowMiiWads
             this.cmIconImages,
             this.cmBothImages});
             this.cmSaveAll.Name = "cmSaveAll";
-            this.cmSaveAll.Size = new System.Drawing.Size(152, 22);
+            this.cmSaveAll.Size = new System.Drawing.Size(115, 22);
             this.cmSaveAll.Text = "Save All";
             // 
             // cmBannerImages
@@ -271,7 +270,6 @@ namespace ShowMiiWads
             this.Controls.Add(this.pbPic);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.Panel);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(650, 500);

@@ -35,12 +35,12 @@ namespace ShowMiiWads
             if (rbAccept.Checked == true)
             {
                 //Enable editing Features
-                Main.accepted = "true";
+                ShowMiiWads.accepted = "true";
                 this.Close(); 
             }
             else if (rbNoUse.Checked == true)
             {
-                Main.accepted = "nouse";
+                ShowMiiWads.accepted = "nouse";
                 this.Close(); 
             }
         }

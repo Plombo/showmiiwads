@@ -1,10 +1,11 @@
-﻿Datei
+﻿*Deutsch*
+Datei
 Sprache
 Hilfe
 Ordner Speichern
 Aktualisieren
-Englisch
-Deutsch
+---Empty
+---Empty
 Über
 Dateiname
 Title ID
@@ -31,13 +32,13 @@ Bitte geben sie den neuen Namen für folgende WAD Datei ein
 Löschen
 Datei ist nicht vorhanden!
 Datei löschen?
-Möchten sie diese Datei wirklich löschen?
+Möchten sie {0} Datei(en) wirklich löschen?
 Spalten Automatisch Anpassen
 Texturformat
 Größe
 Ordner
 Diesen Ordner Entfernen
-Der Ordner "{0}" wird im gewählten Verzeichnis erstellt
+Für jede Datei wird ein separater Ordner erstellt
 Extrahieren
 Title ID ändern
 Geben sie die neue Title ID ein
@@ -48,7 +49,7 @@ Kopieren
 Ausschneiden
 Einfügen
 Die Zieldatei existiert bereits. Wollen sie sie überschreiben?
-Die Quelldatei existiert nicht.
+---Empty
 Überschreiben?
 Die (common-)key.bin befindet sich nicht im Programmverzeichnis!
 Common-Key nicht gefunden
@@ -65,10 +66,10 @@ Slang Dateien
 Die slang Datei ist ungültig!
 Information
 {0} Fehler sind aufgetreten
-Sind sie sicher, dass sie die Region für alle Wad Dateien in diesem Ordner ändern möchten?
+---Empty
 Sind sie sicher?
 Es sind keine Wads, die zu Region Free geändert werden können, im Ordner!
-Kompletten Ordner Zu Region Free
+---Empty
 In Datei Exportieren
 Zeige Pfad In Gruppennamen
 Channel Title Ändern
@@ -92,7 +93,7 @@ Datei
 Ordner
 Alle Wad Dateien im gewählten Ordner weden installiert
 Unterordner Hinzufügen
-Französisch
+---Empty
 Die Vorschau ist nur für Channel!
 Datei ist kein gültiges U8 Archiv!
 Nur TPL Dateien mit 1 Textur werden unterstützt!
@@ -111,9 +112,13 @@ Nicht '{0}' eingegeben!
 Erstelle Common-Key
 '{0}' existiert bereits!
 Es ist keine neue Version verfügbar.
-Version {0} ist verfügbar.<s>Download: {1}<s>Soll die Seite geöffnet werden?
+Version {0} ist verfügbar.<s>Download: {1}<s>Soll die Datei heruntergeladen werden?
 Nach Updates Suchen
 Backup wurde wiederhergestellt
 Von dieser Datei wurde kein Backup gemacht!
 Erstelle Backups Vor Dem Editieren
 Backup Wiederherstellen
+---Empty
+---Empty
+Download abgeschlossen!
+Zeige Splash Screen

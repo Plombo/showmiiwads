@@ -1,0 +1,124 @@
+﻿*Norsk*
+Fil
+Språk
+Hjelp
+Lagringsmappe
+Oppdater
+---Empty
+---Empty
+Om
+Filnavn
+Tittel-ID
+Datablokker
+Filstørrelse
+IOS-flagg
+Region-flagg
+Innhold
+Sti
+Filer
+Om
+Endring av tittel-ID mislyktes!
+Feil
+Velg en mappe
+Endre
+Endre tittel-ID
+Endre navn
+Endre region-flagg
+Alternativer
+Avslutt
+Avbryt
+Gi nytt navn
+Vennligst skriv nytt navn for følgende WAD-fil
+Slett
+Filen finnes ikke!
+Slett fil?
+Vil du virkelig slette {0} fil(er)?
+Endre kolonnestørrelse automatisk
+Teksturformat
+Størrelse
+Mapper
+Fjern denne mappen
+En separat mappe vil bli opprettet for hver fil
+Pakk ut
+Endre tittel-ID
+Skriv inn ny tittel-ID
+Tittel-IDen må kun inneholde bokstaver og tall!
+Tittel-IDen må være på minimum 4 tegn!
+Åpne mappe
+Kopier
+Klipp ut
+Lim inn
+Den angitte filen finnes allerede, vil du overskrive den?
+Kildefilen finnes ikke.
+Overskrive?
+(common-)key.bin må være i "application"-mappen!
+Fant ikke Common-Key
+Lagre WAD
+Til mappe
+Velg målmappe for NAND-Backup
+Du må definere målmappen til NAND-Backup (Alternativer)!
+Fant ikke NAND-Backup
+Lagre
+Til NAND
+Endre målmappen til NAND-Backup
+Endringsfunksjonen er begrenset til kanal-titler (Channel titles)!
+Språkfiler
+Språkfilen er ugyldig!
+Informasjon
+{0} feil oppstod
+Er du sikker på at du vil endre regionen(e) for alle WAD-filene i denne mappen??
+Er du sikker?
+Det er ingen WADs å gjøre regionfri i denne mappen!
+Ferdig mappe til regionfri (Region Free)
+Eksporter til fil
+Vis målmappe i gruppenavn
+Endre kanal-tittel (Channel title)
+Velg mappen med innhold for å pakke
+Kanal-tittelen (Channel title) ble ikke funnet!
+Nylig åpnet
+Fra fil
+Verktøy
+Vis
+Pakk WAD
+Pakk WAD (uten Trailer)
+Det mangler filer!
+Kø
+Installer
+Kast
+Installerte titler
+Versjon
+Type
+Kanal-tittel (Channel title)
+Fil
+Mappe
+Alle WAD-filer i den valgte mappen vil bli installert
+Legg til undermappe(r)
+---Empty
+Forhåndsvisning fungerer kun med kanaler!
+Filen er ikke et gyldig U8-arkiv!
+Kun TPL-filer som inneholder 1 tekstur er supportert!
+Teksturen har et usupportert format!
+Forhåndsvis
+Pakk ut U8-arkiv
+Konverter Tpl til Png
+Lukk
+Lagre alle
+Fanebilder (banner images)
+Ikonbilder (icon images)
+Begge
+Skjult kanal har hverken faner eller ikoner!
+Vennligst trykk '{0}' for å opprette '{1}'
+Du skulle trykket '{0}'!
+Opprett Common-Key
+'{0}' finnes allerede!
+Du har den nyeste versjonen.
+Versjon {0} er tilgjenglig.<s>Skaff den på: {1}<s>Vil du den skal lastes ned?
+Sjekk for oppdateringer
+Backup er gjenopprettet
+Ingen backup av denne filen har blitt opprettet!
+Opprett backup(er) før endring
+Gjenopprett backup
+---Empty
+---Empty
+Nedlasting fullført!
+Vis oppstartsbilde

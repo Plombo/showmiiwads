@@ -253,7 +253,6 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ChannelNameDialog";
-            this.ShowIcon = false;
             this.Load += new System.EventHandler(this.ChannelNameDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

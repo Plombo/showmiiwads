@@ -11,6 +11,24 @@ want to have your translation included into the application, contact me..
 -----------------------------------------------------------------------------------------
 Changelog:
 
+Version 1.1
+	- 64 bit Version is now available
+	- Improved speed. Now, information is loaded at application startup and saved in a file.
+	  Whenever it reloads, the information is read out of the file, only new files are
+	  added. If you need to completely refresh the whole list, use 'File -> Refresh' (F5).
+	  When the language is changed, only the Channel Titles column will be reloaded
+	- Multiple selections are now possible. If you want to select a whole folder,
+	  just left click the header once.
+	- Added Splash Screen with ProgressBar to show the loading status (can be disabled)
+	- Added Option to remove all folders
+	- Added Option to refresh single folders
+	- New Icon (Thanks to NeoRame!)
+	- Bugfixes and tiny improvements
+	- Application will now ask you to download a new version, if available
+	- Italian translation added (Thanks to Tetsuo Shima)
+	- Spanish translation added (Thanks to putifruti) (Incomplete, 2 sentences still Eng)
+	- Norwegian translation added (Thanks to pesaroso)
+
 Version 1.0b
 	- Fixed a bug where every entry was added multiple times in ShowMiiNand
 	- Fixed VC / WiiWare detection (Thanks to giantpune for the hint!)
@@ -50,7 +68,7 @@ Version 0.3
 	- Option to show either foldername or full path in groupheader
 	- Export list to file (txt and csv, same file with different extension)
 	- Added 'Recently Opened' folders menu
-    - Changing of Channel Title (Displayed when holding cursor over a channel on wii)
+   	- Changing of Channel Title (Displayed when holding cursor over a channel on wii)
 	  -> You can also see the title for other languages by clicking
 	     'Change Channel Title'. Only the english title is displayed in the column.
 
@@ -74,7 +92,7 @@ Version 0.1
 	- Rename Wad files
 	- Delete Wad files
 	- Multilanguage (English + German)
-	- .NET Framework 3.5 needed for full funcionality
+	- .NET Framework 3.5 needed for full functionality
 -----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------
@@ -95,13 +113,12 @@ Thanks:
 Xuzz, SquidMan, megazig, Matt_P, Omega and The Lemon Man for Wii.py (which was the base for TPL conversion) 
 SquidMan for Zetsubou (which was a reference for TPL conversion)
 Andre Perrot for gbalzss (which was the base for LZ77 decompression)
-NeoRame for the Logo
-Blitzur for Betatesting
-kedest for Betatesting
-nutta_nic for Betatesting
-Dteyn for Betatesting
-acesniper for Betatesting
-carbonyle for French translation
+NeoRame for the Logo + Icon
+Blitzur, kedest, nutta_nic, Dteyn and acesniper for Betatesting
+carbonyle and Cyan for French translation
+Tetsuo Shima for Italian translation
+putifruti for Spanish translation
+pesaroso for Norwegian translation
 Everyone for using this application
 -----------------------------------------------------------------------------------------
 

@@ -16,9 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-//Wii.py by icefire / Xuzz was the base for TPL conversion
+//Wii.py by Xuzz, SquidMan, megazig, Matt_P, Omega and The Lemon Man was the base for TPL conversion
 //Zetsubou by SquidMan was a reference for TPL conversion
 //gbalzss by Andre Perrot was the base for LZ77 decompression
+//Thanks to the authors!
 
 using System;
 using System.Collections.Generic;
@@ -546,6 +547,18 @@ namespace Wii
         /// </summary>
         /// <param name="app"></param>
         /// <returns></returns>
+        public static string[] GetChannelTitlesFromApp(string app)
+        {
+            byte[] tmp = Tools.LoadFileToByteArray(app);
+            return GetChannelTitlesFromApp(tmp);
+        }
+
+        /// <summary>
+        /// Returns the title for each language of a 00.app file
+        /// Order: Jap, Eng, Ger, Fra, Spa, Ita, Dut
+        /// </summary>
+        /// <param name="app"></param>
+        /// <returns></returns>
         public static string[] GetChannelTitlesFromApp(byte[] app)
         {
             string[] titles = new string[7];
@@ -801,10 +814,11 @@ namespace Wii
         public static string GetRegionFlag(byte[] wadtmd)
         {
             int tmdpos = 0;
+            string channeltype = GetChannelType(wadtmd, 1);
 
             if (IsThisWad(wadtmd) == true) { tmdpos = GetTmdPos(wadtmd); }
 
-            if (GetChannelType(wadtmd, 1).Contains("Channel"))
+            if (channeltype.Contains("Channel") || channeltype.Contains("WiiWare") || channeltype.Contains("Console"))
             {
                 int region = Tools.HexStringToInt(wadtmd[tmdpos + 0x19d].ToString("x2"));
                 return RegionCode[region];

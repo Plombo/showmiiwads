@@ -18,11 +18,16 @@
 
 using System;
 using System.Windows.Forms;
+using System.Data;
 
 namespace ShowMiiWads
 {
     static class Program
     {
+        private static string nandpath = "";
+        private static int foldercount = 0;
+        private static string splash = "true";
+
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
@@ -31,7 +36,27 @@ namespace ShowMiiWads
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+
+            if (System.IO.File.Exists(Application.StartupPath + "\\ShowMiiWads.cfg"))
+            {
+                LoadSettings();
+
+                if (foldercount == 0 && string.IsNullOrEmpty(nandpath)) { Application.Run(new ShowMiiWads()); }
+                else if (splash != "false") { Application.Run(new SplashScreen()); }
+                else { Application.Run(new ShowMiiWads()); }
+            }
+            else { Application.Run(new ShowMiiWads()); }
+        }
+
+        private static void LoadSettings()
+        {
+            DataSet ds = new DataSet();
+            ds.ReadXmlSchema(Application.StartupPath + "\\ShowMiiWads.cfg");
+            ds.ReadXml(Application.StartupPath + "\\ShowMiiWads.cfg");
+
+            nandpath = ds.Tables["Settings"].Rows[0]["NandPath"].ToString();
+            foldercount = Convert.ToInt32(ds.Tables["Folders"].Rows[0]["Foldercount"]);
+            splash = ds.Tables["Settings"].Rows[0]["SplashScreen"].ToString();
         }
     }
 }
