@@ -23,16 +23,16 @@ using System.IO;
 
 namespace ShowMiiWads
 {
-    public partial class SplashScreen : Form
+    public partial class ShowMiiWads_SplashScreen : Form
     {
         int foldercount = 0;
         string language = "English";
         string nandpath = "";
-        ShowMiiWads smw = new ShowMiiWads();
+        ShowMiiWads_Main smw = new ShowMiiWads_Main();
         Timer t1 = new Timer();
         Timer t2 = new Timer();
 
-        public SplashScreen()
+        public ShowMiiWads_SplashScreen()
         {
             InitializeComponent();
             this.Icon = global::ShowMiiWads.Properties.Resources.ShowMiiWads_Icon;
@@ -120,83 +120,86 @@ namespace ShowMiiWads
                 }
             }
 
-            string[] wadfiles = Directory.GetFiles(path, "*.wad", SearchOption.TopDirectoryOnly);
-
-            if (wadfiles.Length > 0 && thisexists == false)
+            if (Directory.Exists(path))
             {
-                string[,] Infos = new string[wadfiles.Length, 11];
-                int i = 0;
+                string[] wadfiles = Directory.GetFiles(path, "*.wad", SearchOption.TopDirectoryOnly);
 
-                lvWads.Groups.Add(new ListViewGroup(path, path));
-                lvWads.Groups[lvWads.Groups.Count - 1].Tag = path;
-
-                foreach (string thisFile in wadfiles)
+                if (wadfiles.Length > 0 && thisexists == false)
                 {
-                    try
+                    string[,] Infos = new string[wadfiles.Length, 11];
+                    int i = 0;
+
+                    lvWads.Groups.Add(new ListViewGroup(path, path));
+                    lvWads.Groups[lvWads.Groups.Count - 1].Tag = path;
+
+                    foreach (string thisFile in wadfiles)
                     {
-                        byte[] wadfile = Wii.Tools.LoadFileToByteArray(thisFile);
-
-                        Infos[i, 0] = thisFile.Remove(0, thisFile.LastIndexOf('\\') + 1);
-                        Infos[i, 1] = Wii.WadInfo.GetTitleID(wadfile, 0);
-                        Infos[i, 2] = Wii.WadInfo.GetNandBlocks(wadfile);
-                        Infos[i, 3] = Wii.WadInfo.GetNandSize(wadfile, true);
-                        Infos[i, 4] = Wii.WadInfo.GetIosFlag(wadfile);
-                        Infos[i, 5] = Wii.WadInfo.GetRegionFlag(wadfile);
-                        Infos[i, 6] = Wii.WadInfo.GetContentNum(wadfile).ToString();
-                        Infos[i, 7] = Wii.WadInfo.GetNandPath(wadfile, 0);
-                        Infos[i, 8] = Wii.WadInfo.GetChannelType(wadfile, 0);
-                        Infos[i, 9] = Wii.WadInfo.GetTitleVersion(wadfile).ToString();
-
-                        switch (language)
+                        try
                         {
-                            case "Dutch":
-                                Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[6];
-                                break;
-                            case "Italian":
-                                Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[5];
-                                break;
-                            case "Spanish":
-                                Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[4];
-                                break;
-                            case "French":
-                                Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[3];
-                                break;
-                            case "German":
-                                Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[2];
-                                break;
-                            default:
-                                Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[1];
-                                break;
-                            case "Japanese":
-                                Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[0];
-                                break;
+                            byte[] wadfile = Wii.Tools.LoadFileToByteArray(thisFile);
+
+                            Infos[i, 0] = thisFile.Remove(0, thisFile.LastIndexOf('\\') + 1);
+                            Infos[i, 1] = Wii.WadInfo.GetTitleID(wadfile, 0);
+                            Infos[i, 2] = Wii.WadInfo.GetNandBlocks(wadfile);
+                            Infos[i, 3] = Wii.WadInfo.GetNandSize(wadfile, true);
+                            Infos[i, 4] = Wii.WadInfo.GetIosFlag(wadfile);
+                            Infos[i, 5] = Wii.WadInfo.GetRegionFlag(wadfile);
+                            Infos[i, 6] = Wii.WadInfo.GetContentNum(wadfile).ToString();
+                            Infos[i, 7] = Wii.WadInfo.GetNandPath(wadfile, 0);
+                            Infos[i, 8] = Wii.WadInfo.GetChannelType(wadfile, 0);
+                            Infos[i, 9] = Wii.WadInfo.GetTitleVersion(wadfile).ToString();
+
+                            switch (language)
+                            {
+                                case "Dutch":
+                                    Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[6];
+                                    break;
+                                case "Italian":
+                                    Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[5];
+                                    break;
+                                case "Spanish":
+                                    Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[4];
+                                    break;
+                                case "French":
+                                    Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[3];
+                                    break;
+                                case "German":
+                                    Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[2];
+                                    break;
+                                default:
+                                    Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[1];
+                                    break;
+                                case "Japanese":
+                                    Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[0];
+                                    break;
+                            }
+
+                            i++;
+                        }
+                        catch { }
+                    }
+
+
+                    for (int j = 0; j < wadfiles.Length; j++)
+                    {
+                        lvWads.Items.Insert(lvWads.Items.Count, new ListViewItem(new String[] { Infos[j, 0], Infos[j, 1], Infos[j, 2], Infos[j, 3], Infos[j, 4], Infos[j, 5], Infos[j, 6], Infos[j, 7], Infos[j, 8], Infos[j, 9], Infos[j, 10] })).Group = lvWads.Groups[path];
+                    }
+
+                    for (int x = 0; x < lvWads.Items.Count; x++)
+                    {
+                        if (lvWads.Items[x].Group == null)
+                        {
+                            lvWads.Items.Remove(lvWads.Items[x]);
                         }
 
-                        i++;
-                    }
-                    catch { }
-                }
-
-
-                for (int j = 0; j < wadfiles.Length; j++)
-                {
-                    lvWads.Items.Insert(lvWads.Items.Count, new ListViewItem(new String[] { Infos[j, 0], Infos[j, 1], Infos[j, 2], Infos[j, 3], Infos[j, 4], Infos[j, 5], Infos[j, 6], Infos[j, 7], Infos[j, 8], Infos[j, 9], Infos[j, 10] })).Group = lvWads.Groups[path];
-                }
-
-                for (int x = 0; x < lvWads.Items.Count; x++)
-                {
-                    if (lvWads.Items[x].Group == null)
-                    {
-                        lvWads.Items.Remove(lvWads.Items[x]);
+                        if (string.IsNullOrEmpty(lvWads.Items[x].Text))
+                        {
+                            lvWads.Items.Remove(lvWads.Items[x]);
+                        }
                     }
 
-                    if (string.IsNullOrEmpty(lvWads.Items[x].Text))
-                    {
-                        lvWads.Items.Remove(lvWads.Items[x]);
-                    }
+                    lvWads.Groups[lvWads.Groups.Count - 1].Header = lvWads.Groups[lvWads.Groups.Count - 1].Header + " (" + lvWads.Groups[lvWads.Groups.Count - 1].Items.Count + ")";
                 }
-
-                lvWads.Groups[lvWads.Groups.Count - 1].Header = lvWads.Groups[lvWads.Groups.Count - 1].Header + " (" + lvWads.Groups[lvWads.Groups.Count - 1].Items.Count + ")";
             }
         }
 
@@ -297,7 +300,7 @@ namespace ShowMiiWads
 
                                 string size = Convert.ToString(Math.Round(Convert.ToDouble(nandsize) * 0.0009765625 * 0.0009765625, 2));
                                 if (size.Length > 4) { size = size.Remove(4); }
-                                Infos[i, 3] = size + " MB";
+                                Infos[i, 3] = size.Replace(",", ".") + " MB";
                             }
                         }
                         catch //(Exception ex)
@@ -371,15 +374,15 @@ namespace ShowMiiWads
             {
                 dtnand.Rows.Add(new object[] { lvNand.Items[a].Text,
                         lvNand.Items[a].SubItems[1].Text,
-                        lvNand.Items[a].SubItems[1].Text,
-                        lvNand.Items[a].SubItems[1].Text,
-                        lvNand.Items[a].SubItems[1].Text,
-                        lvNand.Items[a].SubItems[1].Text,
-                        lvNand.Items[a].SubItems[1].Text,
-                        lvNand.Items[a].SubItems[1].Text,
-                        lvNand.Items[a].SubItems[1].Text,
-                        lvNand.Items[a].SubItems[1].Text,
-                        lvNand.Items[a].SubItems[1].Text });
+                        lvNand.Items[a].SubItems[2].Text,
+                        lvNand.Items[a].SubItems[3].Text,
+                        lvNand.Items[a].SubItems[4].Text,
+                        lvNand.Items[a].SubItems[5].Text,
+                        lvNand.Items[a].SubItems[6].Text,
+                        lvNand.Items[a].SubItems[7].Text,
+                        lvNand.Items[a].SubItems[8].Text,
+                        lvNand.Items[a].SubItems[9].Text,
+                        lvNand.Items[a].SubItems[10].Text });
             }
 
             dsnand.Tables.Add(dtnand);

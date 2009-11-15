@@ -14,8 +14,8 @@ Language
 Help
 Save Folders
 Refresh
----Empty
----Empty
+Choose the folder where the packed wads will be saved
+Close && Discard
 About
 Filename
 Title ID
@@ -38,7 +38,7 @@ Options
 Exit
 Cancel
 Rename
-Please enter the new name for the following WAD file
+Please enter a new name or template.<s><s>Variables
 Delete
 File does not exist!
 Delete File?
@@ -59,7 +59,7 @@ Copy
 Cut
 Paste
 The destination file does already exist. Would you like to overwrite?
----Empty
+Close && Save
 Overwrite?
 The (common-)key.bin must be in the application directory!
 Common-Key not found
@@ -76,10 +76,10 @@ Slang Files
 The slang file is invalid!
 Information
 {0} Errors occured
----Empty
+Successfully unpacked U8 Archive
 Are you sure?
 There are no Wads to change to Region Free in this folder!
----Empty
+Successfully converted Image to Tpl
 Export To File
 Show Path In Groupnames
 Change Channel Title
@@ -103,14 +103,14 @@ File
 Folder
 All wad files in the selected folder will be installed
 Add Subfolders
----Empty
+Select the Folder to pack to a U8 Archive
 Previewing only works with Channels!
 File is no valid U8 Archive!
 Only TPL files containing 1 Texture are supported!
 The Texture has an unsupported format!
 Preview
 Unpack U8 Archive
-Convert Tpl To Png
+Convert Tpl To Image
 Close
 Save All
 Banner Images
@@ -128,7 +128,41 @@ Backup has been restored
 No Backup of this file has been created!
 Create Backups Before Editing
 Restore Backup
----Empty
----Empty
+Shall the resultant U8 file be Lz77 compressed?<s>Do not compress 00000000.app files!
+Question
 Download completed!
 Show Splash Screen
+Enter Channel Titles
+Successfully packed U8 Archive
+This is no valid 00000000.app<s>The file was saved without a header!
+Successfully compressed file
+Successfully decompressed file
+Successfully inserted new Dol file
+Insert Dol
+Change IOS Slot
+Change Title Version
+With IMD5 Header
+With IMET Header
+Without Header
+Lz77 Compress
+Lz77 Decompress
+As RGB565 (Moderate Quality)
+As RGB5A3 (Low Quality)
+As RGBA8 (High Quality)
+Remove All Folders
+Refresh This Folder
+Backup
+Restore
+Backup All
+Restore All
+Savedata
+Convert Image To Tpl
+Pack U8 Archive
+Enter Title Version
+Enter a new Title Version.<s>Please note that the maximum is 65535.
+You must enter a proper Title Version
+Enter IOS Slot
+Enter a new IOS Slot
+You must enter a proper Slot Number
+{0} error(s) occurred!
+Replace

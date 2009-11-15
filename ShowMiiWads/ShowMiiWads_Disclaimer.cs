@@ -15,36 +15,47 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
+ 
+using System;
 using System.Windows.Forms;
 
 namespace ShowMiiWads
 {
-    public partial class About : Form
+    public partial class ShowMiiWads_Disclaimer : Form
     {
-        public bool x64 = false;
-
-        public About()
+        public bool firststart = false;
+        
+        public ShowMiiWads_Disclaimer()
         {
             InitializeComponent();
-            this.Icon = global::ShowMiiWads.Properties.Resources.ShowMiiWads_Icon;
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void btnOK_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://showmiiwads.googlecode.com/");
-            linkLabel1.LinkVisited = true;
+            if (rbAccept.Checked == true)
+            {
+                //Enable editing Features
+                ShowMiiWads_Main.accepted = "true";
+                this.Close(); 
+            }
+            else if (rbNoUse.Checked == true)
+            {
+                ShowMiiWads_Main.accepted = "nouse";
+                this.Close(); 
+            }
         }
 
-        private void lbDonate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void Disclaimer_Load(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8731272");
-            lbDonate.LinkVisited = true;
-        }
-
-        private void About_Load(object sender, System.EventArgs e)
-        {
-            if (x64 == true) lbPlatform.Text = "You're running the 64 bit Version";
+            if (firststart == false)
+            {
+                this.CenterToParent();
+            }
+            else
+            {
+                this.CenterToScreen();
+                firststart = false;
+            }
         }
     }
 }

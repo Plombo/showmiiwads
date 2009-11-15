@@ -11,6 +11,22 @@ want to have your translation included into the application, contact me..
 -----------------------------------------------------------------------------------------
 Changelog:
 
+Version 1.2
+	- Fixed a bug that caused ShowMiiNand not to load the List with the saved entries
+	- You can replace Banner and Icon images (the resultant U8's can be Lz77 compressed!)
+	- Added Dol Insertion (uses Waninkokos Nandloader)
+	- Installation to Nand does now update uid.sys, if required
+	- Improved Virtual Console detection to display System (NES, SNES, ...)
+	- Fixed U8 Unpacking (Now works with every proper U8 archive)
+	- Added batch renaming including variables, e.g. {titleid} (use 'Rename' button)
+	- Added ability to Backup and Restore save data
+	- Added some Tools (U8 Packing, Lz77 Compression, ...)
+	- Deleted 'Pack Wad Without Trailer', just delete the trailer file if you don't want it :P
+	- Bugfixes and Improvements
+	
+	- Added editing of IOS Slot		 (Note: Both these features are untested and dangerous!)
+	- Added editing of Title Version (Use them at your own risk and only with BootMii/boot2!)
+
 Version 1.1b
 	- Fixed a bug with slang files, so external translations can be loaded again
 	- Fixed crashes caused by old ShowMiiWads.cfg Files
@@ -116,7 +132,8 @@ Thanks:
 
 Xuzz, SquidMan, megazig, Matt_P, Omega and The Lemon Man for Wii.py (which was the base for TPL conversion) 
 SquidMan for Zetsubou (which was a reference for TPL conversion)
-Andre Perrot for gbalzss (which was the base for LZ77 decompression)
+Andre Perrot for gbalzss (which was the base for LZ77 (de-)compression)
+Waninkoko for his Nandloader
 NeoRame for the Logo + Icon
 Blitzur, kedest, nutta_nic, Dteyn and acesniper for Betatesting
 carbonyle and Cyan for French translation

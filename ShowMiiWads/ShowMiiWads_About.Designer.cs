@@ -18,7 +18,7 @@
 
 namespace ShowMiiWads
 {
-    partial class About
+    partial class ShowMiiWads_About
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -46,7 +46,7 @@ namespace ShowMiiWads
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(About));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowMiiWads_About));
             this.lbSMW = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();

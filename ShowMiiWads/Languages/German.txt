@@ -4,8 +4,8 @@ Sprache
 Hilfe
 Ordner Speichern
 Aktualisieren
----Empty
----Empty
+Wählen sie den Ordner, in dem die gepackten Wads gespeichert werden
+Schließen && Verwerfen
 Über
 Dateiname
 Title ID
@@ -28,7 +28,7 @@ Optionen
 Beenden
 Abbrechen
 Umbenennen
-Bitte geben sie den neuen Namen für folgende WAD Datei ein
+Bitten geben sie einen neuen Namen oder ein Muster ein.<s><s>Variablen
 Löschen
 Datei ist nicht vorhanden!
 Datei löschen?
@@ -49,7 +49,7 @@ Kopieren
 Ausschneiden
 Einfügen
 Die Zieldatei existiert bereits. Wollen sie sie überschreiben?
----Empty
+Schließen && Speichern
 Überschreiben?
 Die (common-)key.bin befindet sich nicht im Programmverzeichnis!
 Common-Key nicht gefunden
@@ -66,10 +66,10 @@ Slang Dateien
 Die slang Datei ist ungültig!
 Information
 {0} Fehler sind aufgetreten
----Empty
+U8 Archiv erfolgreich entpackt
 Sind sie sicher?
 Es sind keine Wads, die zu Region Free geändert werden können, im Ordner!
----Empty
+Bild wurde erfolgreich zu Tpl konvertiert
 In Datei Exportieren
 Zeige Pfad In Gruppennamen
 Channel Title Ändern
@@ -93,14 +93,14 @@ Datei
 Ordner
 Alle Wad Dateien im gewählten Ordner weden installiert
 Unterordner Hinzufügen
----Empty
+Wählen sie den Ordner, den sie zu einem U8 Archiv packen wollen
 Die Vorschau ist nur für Channel!
 Datei ist kein gültiges U8 Archiv!
 Nur TPL Dateien mit 1 Textur werden unterstützt!
 Die Textur hat ein ungültiges Format!
 Vorschau
 U8 Archiv Entpacken
-Tpl In Png Konvertieren
+Tpl Zu Bilddatei Konvertieren
 Schließen
 Alle Speichern
 Banner Bilder
@@ -118,7 +118,41 @@ Backup wurde wiederhergestellt
 Von dieser Datei wurde kein Backup gemacht!
 Erstelle Backups Vor Dem Editieren
 Backup Wiederherstellen
----Empty
----Empty
+Soll die resultierende U8 Datei Lz77 komprimiert werden?<s>Komprimieren sie keine 00000000.app Dateien!
+Frage
 Download abgeschlossen!
 Zeige Splash Screen
+Channel Titles eingeben
+U8 Archiv erfolgreich gepackt
+Dies ist keine gültige 00000000.app<s>Die Datei wurde ohne Header gespeichert!
+Datei erfolgreich komprimiert
+Datei erfolgreich dekomprimiert
+Dol Datei erfolgreich eingefügt
+Dol Einfügen
+IOS Slot Ändern
+Title Version Ändern
+Mit IMD5 Header
+Mit IMET Header
+Ohne Header
+Lz77 Komprimieren
+Lz77 Dekomprimieren
+Als RGB565 (Mittlere Qualität)
+Als RGB5A3 (Niedrige Qualität)
+Als RGBA8 (Hohe Qualität)
+Alle Ordner Entfernen
+Diesen Ordner Aktualisieren
+Sichern
+Wiederherstellen
+Alle Sichern
+Alle Wiederherstellen
+Speicherdaten
+Bilddatei Zu Tpl Konvertieren
+U8 Archiv Packen
+Title Version Eingeben
+Geben sie eine neue Title Version ein.<s>Das Maximum ist 65535.
+Das ist keine gültige Title Version
+IOS Slot eingeben
+Geben sie einen neuen IOS Slot ein
+Das ist kein gültiger IOS Slot
+{0} Fehler aufgetreten!
+Ersetzen

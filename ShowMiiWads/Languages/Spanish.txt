@@ -1,11 +1,12 @@
-﻿*Español*
+﻿//Spanish Translation by putifruti
+*Español*
 Archivo
 Idioma
 Ayuda
 Guardar carpetas
 Actualizar
----Empty
----Empty
+Choose the folder where the packed wads will be saved //Not translated
+Close && Discard //Not translated
 Acerca de
 Nombre
 Title ID
@@ -28,7 +29,7 @@ Opciones
 Salir
 Cancelar
 Renamombrar
-Por favor introduce el nuevo nombre para el siguiente WAD
+Please enter a new name or template.<s><s>Variables //Not translated
 Eliminar
 ¡El fichero no existe!
 ¿Eliminar fichero?
@@ -49,7 +50,7 @@ Copiar
 Cortar
 Pegar
 El fichero destino existe. ¿Quieres sobreescribir?
----Empty
+Close && Save //Not translated
 ¿Sobreescribir?
 ¡El fichero (common-)key.bin debe estar en la carpeta de la aplicación!
 Common-Key no encontrada
@@ -66,10 +67,10 @@ Ficheros Slang
 ¡El fichero slang no es válido!
 Información
 {0} Errores occurridos
----Empty
+Successfully unpacked U8 Archive //Not translated
 ¿Estás seguro?
 ¡No hay Wads para cambiar a Region Free en esta carpeta!
----Empty
+Successfully converted Image to Tpl //Not translated
 Exportar a Fichero
 Mostrar ruta en Groupnames
 Cambiar Título de canal
@@ -93,14 +94,14 @@ Fichero
 Carpeta
 Todos los ficheros wad de la carpeta seleccionada serán instalados
 Añadir subcarpetas
----Empty
+Select the Folder to pack to a U8 Archive //Not translated
 ¡La vista previa solo funciona con Canales!
 ¡El fichero no es un archivo U8 válido!
 ¡Solo son soportados ficheros TPL que contengan 1 textura!
 ¡La textura tiene un formato no soportado!
 Vista previa
 Desempaquetar archivo U8
-Convertir Tpl a Png
+Convertir Tpl a Png //Changed
 Cerrar
 Guardar todo
 Imagenes del Banner
@@ -112,13 +113,47 @@ Escribe '{0}' para generar '{1}'
 Crear Common-Key
 ¡'{0}' ya existe!
 Ya tienes la última versión.
-Versión {0} disponible.<s>Consiguela en: {1}<s>Do you want it to be downloaded? //To be translated
+Versión {0} disponible.<s>Consiguela en: {1}<s>Do you want it to be downloaded? //Not translated
 Buscar actualización
 Backup ha sido restaurado
 ¡No se ha creado un Backup de este fichero!
 Crear Backups antes de editar
 Restaurar Backup
----Empty
----Empty
+Shall the resultant U8 file be Lz77 compressed?<s>Do not compress 00000000.app files! //Not translated
+Question //Not translated
 Descarga completa!
 Mostrar pantalla de bienvenida
+Enter Channel Titles
+Successfully packed U8 Archive
+This is no valid 00000000.app<s>The file was saved without a header!
+Successfully compressed file
+Successfully decompressed file
+Successfully inserted new Dol file
+Insert Dol
+Change IOS Slot
+Change Title Version
+With IMD5 Header
+With IMET Header
+Without Header
+Lz77 Compress
+Lz77 Decompress
+As RGB565 (Moderate Quality)
+As RGB5A3 (Low Quality)
+As RGBA8 (High Quality)
+Remove All Folders
+Refresh This Folder
+Backup
+Restore
+Backup All
+Restore All
+Savedata
+Convert Image To Tpl
+Pack U8 Archive
+Enter Title Version
+Enter a new Title Version.<s>Please note that the maximum is 65535.
+You must enter a proper Title Version
+Enter IOS Slot
+Enter a new IOS Slot
+You must enter a proper Slot Number
+{0} error(s) occurred!
+Replace

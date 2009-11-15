@@ -18,7 +18,7 @@
 
 namespace ShowMiiWads
 {
-    partial class ShowMiiWads
+    partial class ShowMiiWads_Main
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -68,11 +68,14 @@ namespace ShowMiiWads
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.cmChangeTitle = new System.Windows.Forms.ToolStripMenuItem();
             this.cmChangeID = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmChangeIosSlot = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmChangeTitleVersion = new System.Windows.Forms.ToolStripMenuItem();
             this.cmChangeRegion = new System.Windows.Forms.ToolStripMenuItem();
             this.cmRegionFree = new System.Windows.Forms.ToolStripMenuItem();
             this.cmPal = new System.Windows.Forms.ToolStripMenuItem();
             this.cmNtscU = new System.Windows.Forms.ToolStripMenuItem();
             this.cmNtscJ = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmInsertDol = new System.Windows.Forms.ToolStripMenuItem();
             this.cmExtract = new System.Windows.Forms.ToolStripMenuItem();
             this.cmToFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.cmToNand = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,11 +105,14 @@ namespace ShowMiiWads
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnChangeTitle = new System.Windows.Forms.ToolStripMenuItem();
             this.btnChangeID = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnChangeIosSlot = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnChangeTitleVersion = new System.Windows.Forms.ToolStripMenuItem();
             this.tsChangeRegion = new System.Windows.Forms.ToolStripMenuItem();
             this.btnRegionFree = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPal = new System.Windows.Forms.ToolStripMenuItem();
             this.btnNtscU = new System.Windows.Forms.ToolStripMenuItem();
             this.btnNtscJ = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnInsertDol = new System.Windows.Forms.ToolStripMenuItem();
             this.tsExtract = new System.Windows.Forms.ToolStripMenuItem();
             this.btnToFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.btnToNand = new System.Windows.Forms.ToolStripMenuItem();
@@ -129,13 +135,23 @@ namespace ShowMiiWads
             this.btnFrench = new System.Windows.Forms.ToolStripMenuItem();
             this.btnItalian = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSpanish = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnNorwegian = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.btnFromFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsTools = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPackWad = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnPackWadWithoutTrailer = new System.Windows.Forms.ToolStripMenuItem();
             this.btnUnpackU8 = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnConvertTpl = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsPackU8 = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnPackU8WithoutHeader = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnPackU8WithIMD5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnPackU8WithIMET = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnConvertFromTpl = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsConvertToTpl = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnAsRGBA8 = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnAsRGB565 = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnAsRGB5A3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnLz77Compress = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnLz77Decompress = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.btnCreateKey = new System.Windows.Forms.ToolStripMenuItem();
             this.tsView = new System.Windows.Forms.ToolStripMenuItem();
@@ -172,13 +188,17 @@ namespace ShowMiiWads
             this.cmInstall = new System.Windows.Forms.ToolStripMenuItem();
             this.cmInstallWad = new System.Windows.Forms.ToolStripMenuItem();
             this.cmInstallFolder = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsNandSaveData = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmNandBackupSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmNandRestoreSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmNandBackupSaveAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmNandRestoreSaveAll = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.cmNandPackWad = new System.Windows.Forms.ToolStripMenuItem();
             this.cmNandDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.cmNandPreview = new System.Windows.Forms.ToolStripMenuItem();
             this.lvQueue = new System.Windows.Forms.ListBox();
-            this.btnNorwegian = new System.Windows.Forms.ToolStripMenuItem();
             this.cmWads.SuspendLayout();
             this.msMain.SuspendLayout();
             this.ssMain.SuspendLayout();
@@ -204,12 +224,11 @@ namespace ShowMiiWads
             this.lvWads.FullRowSelect = true;
             this.lvWads.Location = new System.Drawing.Point(0, 24);
             this.lvWads.Name = "lvWads";
-            this.lvWads.Size = new System.Drawing.Size(914, 336);
+            this.lvWads.Size = new System.Drawing.Size(922, 345);
             this.lvWads.TabIndex = 1;
             this.lvWads.UseCompatibleStateImageBehavior = false;
             this.lvWads.View = System.Windows.Forms.View.Details;
             this.lvWads.Resize += new System.EventHandler(this.lvWads_Resize);
-            this.lvWads.VisibleChanged += new System.EventHandler(this.lvWads_VisibleChanged);
             this.lvWads.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvWads_MouseClick);
             this.lvWads.SelectedIndexChanged += new System.EventHandler(this.lvWads_SelectedIndexChanged);
             this.lvWads.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvWads_DragDrop);
@@ -294,7 +313,10 @@ namespace ShowMiiWads
             this.toolStripSeparator3,
             this.cmChangeTitle,
             this.cmChangeID,
+            this.cmChangeIosSlot,
+            this.cmChangeTitleVersion,
             this.cmChangeRegion,
+            this.cmInsertDol,
             this.cmExtract,
             this.toolStripSeparator11,
             this.cmPreview,
@@ -305,7 +327,7 @@ namespace ShowMiiWads
             this.toolStripSeparator16,
             this.cmRefreshFolder});
             this.cmWads.Name = "cmWads";
-            this.cmWads.Size = new System.Drawing.Size(189, 336);
+            this.cmWads.Size = new System.Drawing.Size(189, 402);
             this.cmWads.Opening += new System.ComponentModel.CancelEventHandler(this.cmWads_Opening);
             // 
             // cmCopy
@@ -364,6 +386,22 @@ namespace ShowMiiWads
             this.cmChangeID.Text = "Change Title ID";
             this.cmChangeID.Click += new System.EventHandler(this.cmChangeID_Click);
             // 
+            // cmChangeIosSlot
+            // 
+            this.cmChangeIosSlot.Enabled = false;
+            this.cmChangeIosSlot.Name = "cmChangeIosSlot";
+            this.cmChangeIosSlot.Size = new System.Drawing.Size(188, 22);
+            this.cmChangeIosSlot.Text = "Change IOS Slot";
+            this.cmChangeIosSlot.Click += new System.EventHandler(this.cmChangeIosSlot_Click);
+            // 
+            // cmChangeTitleVersion
+            // 
+            this.cmChangeTitleVersion.Enabled = false;
+            this.cmChangeTitleVersion.Name = "cmChangeTitleVersion";
+            this.cmChangeTitleVersion.Size = new System.Drawing.Size(188, 22);
+            this.cmChangeTitleVersion.Text = "Change Title Version";
+            this.cmChangeTitleVersion.Click += new System.EventHandler(this.cmChangeTitleVersion_Click);
+            // 
             // cmChangeRegion
             // 
             this.cmChangeRegion.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -403,6 +441,14 @@ namespace ShowMiiWads
             this.cmNtscJ.Size = new System.Drawing.Size(136, 22);
             this.cmNtscJ.Text = "NTSC-J";
             this.cmNtscJ.Click += new System.EventHandler(this.cmNtscJ_Click);
+            // 
+            // cmInsertDol
+            // 
+            this.cmInsertDol.Enabled = false;
+            this.cmInsertDol.Name = "cmInsertDol";
+            this.cmInsertDol.Size = new System.Drawing.Size(188, 22);
+            this.cmInsertDol.Text = "Insert Dol";
+            this.cmInsertDol.Click += new System.EventHandler(this.cmInsertDol_Click);
             // 
             // cmExtract
             // 
@@ -489,7 +535,7 @@ namespace ShowMiiWads
             this.tsHelp});
             this.msMain.Location = new System.Drawing.Point(0, 0);
             this.msMain.Name = "msMain";
-            this.msMain.Size = new System.Drawing.Size(914, 24);
+            this.msMain.Size = new System.Drawing.Size(922, 24);
             this.msMain.TabIndex = 2;
             this.msMain.Text = "menuStrip1";
             this.msMain.MouseEnter += new System.EventHandler(this.msMain_MouseEnter);
@@ -566,7 +612,10 @@ namespace ShowMiiWads
             this.toolStripSeparator2,
             this.btnChangeTitle,
             this.btnChangeID,
+            this.btnChangeIosSlot,
+            this.btnChangeTitleVersion,
             this.tsChangeRegion,
+            this.btnInsertDol,
             this.tsExtract,
             this.toolStripSeparator12,
             this.btnPreview,
@@ -637,6 +686,22 @@ namespace ShowMiiWads
             this.btnChangeID.Text = "Change Title ID";
             this.btnChangeID.Click += new System.EventHandler(this.cmChangeID_Click);
             // 
+            // btnChangeIosSlot
+            // 
+            this.btnChangeIosSlot.Enabled = false;
+            this.btnChangeIosSlot.Name = "btnChangeIosSlot";
+            this.btnChangeIosSlot.Size = new System.Drawing.Size(188, 22);
+            this.btnChangeIosSlot.Text = "Change IOS Slot";
+            this.btnChangeIosSlot.Click += new System.EventHandler(this.cmChangeIosSlot_Click);
+            // 
+            // btnChangeTitleVersion
+            // 
+            this.btnChangeTitleVersion.Enabled = false;
+            this.btnChangeTitleVersion.Name = "btnChangeTitleVersion";
+            this.btnChangeTitleVersion.Size = new System.Drawing.Size(188, 22);
+            this.btnChangeTitleVersion.Text = "Change Title Version";
+            this.btnChangeTitleVersion.Click += new System.EventHandler(this.cmChangeTitleVersion_Click);
+            // 
             // tsChangeRegion
             // 
             this.tsChangeRegion.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -676,6 +741,14 @@ namespace ShowMiiWads
             this.btnNtscJ.Size = new System.Drawing.Size(136, 22);
             this.btnNtscJ.Text = "NTSC-J";
             this.btnNtscJ.Click += new System.EventHandler(this.cmNtscJ_Click);
+            // 
+            // btnInsertDol
+            // 
+            this.btnInsertDol.Enabled = false;
+            this.btnInsertDol.Name = "btnInsertDol";
+            this.btnInsertDol.Size = new System.Drawing.Size(188, 22);
+            this.btnInsertDol.Text = "Insert Dol";
+            this.btnInsertDol.Click += new System.EventHandler(this.cmInsertDol_Click);
             // 
             // tsExtract
             // 
@@ -831,7 +904,7 @@ namespace ShowMiiWads
             this.btnEnglish.CheckOnClick = true;
             this.btnEnglish.CheckState = System.Windows.Forms.CheckState.Checked;
             this.btnEnglish.Name = "btnEnglish";
-            this.btnEnglish.Size = new System.Drawing.Size(152, 22);
+            this.btnEnglish.Size = new System.Drawing.Size(123, 22);
             this.btnEnglish.Text = "English";
             this.btnEnglish.Click += new System.EventHandler(this.btnEnglish_Click);
             // 
@@ -839,7 +912,7 @@ namespace ShowMiiWads
             // 
             this.btnGerman.CheckOnClick = true;
             this.btnGerman.Name = "btnGerman";
-            this.btnGerman.Size = new System.Drawing.Size(152, 22);
+            this.btnGerman.Size = new System.Drawing.Size(123, 22);
             this.btnGerman.Text = "Deutsch";
             this.btnGerman.Click += new System.EventHandler(this.btnGerman_Click);
             // 
@@ -847,7 +920,7 @@ namespace ShowMiiWads
             // 
             this.btnFrench.CheckOnClick = true;
             this.btnFrench.Name = "btnFrench";
-            this.btnFrench.Size = new System.Drawing.Size(152, 22);
+            this.btnFrench.Size = new System.Drawing.Size(123, 22);
             this.btnFrench.Text = "Français";
             this.btnFrench.Click += new System.EventHandler(this.btnFrench_Click);
             // 
@@ -855,7 +928,7 @@ namespace ShowMiiWads
             // 
             this.btnItalian.CheckOnClick = true;
             this.btnItalian.Name = "btnItalian";
-            this.btnItalian.Size = new System.Drawing.Size(152, 22);
+            this.btnItalian.Size = new System.Drawing.Size(123, 22);
             this.btnItalian.Text = "Italiano";
             this.btnItalian.Click += new System.EventHandler(this.btnItalian_Click);
             // 
@@ -863,20 +936,28 @@ namespace ShowMiiWads
             // 
             this.btnSpanish.CheckOnClick = true;
             this.btnSpanish.Name = "btnSpanish";
-            this.btnSpanish.Size = new System.Drawing.Size(152, 22);
+            this.btnSpanish.Size = new System.Drawing.Size(123, 22);
             this.btnSpanish.Text = "Español";
             this.btnSpanish.Click += new System.EventHandler(this.btnSpanish_Click);
+            // 
+            // btnNorwegian
+            // 
+            this.btnNorwegian.CheckOnClick = true;
+            this.btnNorwegian.Name = "btnNorwegian";
+            this.btnNorwegian.Size = new System.Drawing.Size(123, 22);
+            this.btnNorwegian.Text = "Norsk";
+            this.btnNorwegian.Click += new System.EventHandler(this.btnNorwegian_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(120, 6);
             // 
             // btnFromFile
             // 
             this.btnFromFile.CheckOnClick = true;
             this.btnFromFile.Name = "btnFromFile";
-            this.btnFromFile.Size = new System.Drawing.Size(152, 22);
+            this.btnFromFile.Size = new System.Drawing.Size(123, 22);
             this.btnFromFile.Text = "From File";
             this.btnFromFile.Click += new System.EventHandler(this.btnFromFile_Click);
             // 
@@ -884,9 +965,12 @@ namespace ShowMiiWads
             // 
             this.tsTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnPackWad,
-            this.btnPackWadWithoutTrailer,
             this.btnUnpackU8,
-            this.btnConvertTpl,
+            this.tsPackU8,
+            this.btnConvertFromTpl,
+            this.tsConvertToTpl,
+            this.btnLz77Compress,
+            this.btnLz77Decompress,
             this.toolStripSeparator14,
             this.btnCreateKey});
             this.tsTools.Name = "tsTools";
@@ -896,40 +980,109 @@ namespace ShowMiiWads
             // btnPackWad
             // 
             this.btnPackWad.Name = "btnPackWad";
-            this.btnPackWad.Size = new System.Drawing.Size(208, 22);
+            this.btnPackWad.Size = new System.Drawing.Size(206, 22);
             this.btnPackWad.Text = "Pack Wad";
             this.btnPackWad.Click += new System.EventHandler(this.btnPackWad_Click);
-            // 
-            // btnPackWadWithoutTrailer
-            // 
-            this.btnPackWadWithoutTrailer.Name = "btnPackWadWithoutTrailer";
-            this.btnPackWadWithoutTrailer.Size = new System.Drawing.Size(208, 22);
-            this.btnPackWadWithoutTrailer.Text = "Pack Wad Without Trailer";
-            this.btnPackWadWithoutTrailer.Click += new System.EventHandler(this.btnPackWadWithoutTrailer_Click);
             // 
             // btnUnpackU8
             // 
             this.btnUnpackU8.Name = "btnUnpackU8";
-            this.btnUnpackU8.Size = new System.Drawing.Size(208, 22);
+            this.btnUnpackU8.Size = new System.Drawing.Size(206, 22);
             this.btnUnpackU8.Text = "Unpack U8 Archive";
             this.btnUnpackU8.Click += new System.EventHandler(this.btnUnpackU8_Click);
             // 
-            // btnConvertTpl
+            // tsPackU8
             // 
-            this.btnConvertTpl.Name = "btnConvertTpl";
-            this.btnConvertTpl.Size = new System.Drawing.Size(208, 22);
-            this.btnConvertTpl.Text = "Convert Tpl To Png";
-            this.btnConvertTpl.Click += new System.EventHandler(this.btnConvertTpl_Click);
+            this.tsPackU8.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnPackU8WithoutHeader,
+            this.btnPackU8WithIMD5,
+            this.btnPackU8WithIMET});
+            this.tsPackU8.Name = "tsPackU8";
+            this.tsPackU8.Size = new System.Drawing.Size(206, 22);
+            this.tsPackU8.Text = "Pack U8 Archive";
+            // 
+            // btnPackU8WithoutHeader
+            // 
+            this.btnPackU8WithoutHeader.Name = "btnPackU8WithoutHeader";
+            this.btnPackU8WithoutHeader.Size = new System.Drawing.Size(293, 22);
+            this.btnPackU8WithoutHeader.Text = "Without Header";
+            this.btnPackU8WithoutHeader.Click += new System.EventHandler(this.btnPackU8WithoutHeader_Click);
+            // 
+            // btnPackU8WithIMD5
+            // 
+            this.btnPackU8WithIMD5.Name = "btnPackU8WithIMD5";
+            this.btnPackU8WithIMD5.Size = new System.Drawing.Size(293, 22);
+            this.btnPackU8WithIMD5.Text = "With IMD5 Header (Banner.bin / Icon.bin)";
+            this.btnPackU8WithIMD5.Click += new System.EventHandler(this.btnPackU8WithIMD5_Click);
+            // 
+            // btnPackU8WithIMET
+            // 
+            this.btnPackU8WithIMET.Name = "btnPackU8WithIMET";
+            this.btnPackU8WithIMET.Size = new System.Drawing.Size(293, 22);
+            this.btnPackU8WithIMET.Text = "With IMET Header (00000000.app)";
+            this.btnPackU8WithIMET.Click += new System.EventHandler(this.btnPackU8WithIMET_Click);
+            // 
+            // btnConvertFromTpl
+            // 
+            this.btnConvertFromTpl.Name = "btnConvertFromTpl";
+            this.btnConvertFromTpl.Size = new System.Drawing.Size(206, 22);
+            this.btnConvertFromTpl.Text = "Convert Tpl To Image";
+            this.btnConvertFromTpl.Click += new System.EventHandler(this.btnConvertFromTpl_Click);
+            // 
+            // tsConvertToTpl
+            // 
+            this.tsConvertToTpl.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnAsRGBA8,
+            this.btnAsRGB565,
+            this.btnAsRGB5A3});
+            this.tsConvertToTpl.Name = "tsConvertToTpl";
+            this.tsConvertToTpl.Size = new System.Drawing.Size(206, 22);
+            this.tsConvertToTpl.Text = "Convert Image To Tpl";
+            // 
+            // btnAsRGBA8
+            // 
+            this.btnAsRGBA8.Name = "btnAsRGBA8";
+            this.btnAsRGBA8.Size = new System.Drawing.Size(233, 22);
+            this.btnAsRGBA8.Text = "As RGBA8 (High Quality)";
+            this.btnAsRGBA8.Click += new System.EventHandler(this.btnAsRGBA8_Click);
+            // 
+            // btnAsRGB565
+            // 
+            this.btnAsRGB565.Name = "btnAsRGB565";
+            this.btnAsRGB565.Size = new System.Drawing.Size(233, 22);
+            this.btnAsRGB565.Text = "As RGB565 (Moderate Quality)";
+            this.btnAsRGB565.Click += new System.EventHandler(this.btnAsRGB565_Click);
+            // 
+            // btnAsRGB5A3
+            // 
+            this.btnAsRGB5A3.Name = "btnAsRGB5A3";
+            this.btnAsRGB5A3.Size = new System.Drawing.Size(233, 22);
+            this.btnAsRGB5A3.Text = "As RGB5A3 (Low Quality)";
+            this.btnAsRGB5A3.Click += new System.EventHandler(this.btnAsRGB5A3_Click);
+            // 
+            // btnLz77Compress
+            // 
+            this.btnLz77Compress.Name = "btnLz77Compress";
+            this.btnLz77Compress.Size = new System.Drawing.Size(206, 22);
+            this.btnLz77Compress.Text = "Lz77 Compress File";
+            this.btnLz77Compress.Click += new System.EventHandler(this.btnLz77Compress_Click);
+            // 
+            // btnLz77Decompress
+            // 
+            this.btnLz77Decompress.Name = "btnLz77Decompress";
+            this.btnLz77Decompress.Size = new System.Drawing.Size(206, 22);
+            this.btnLz77Decompress.Text = "Lz77 Decompress File";
+            this.btnLz77Decompress.Click += new System.EventHandler(this.btnLz77Decompress_Click);
             // 
             // toolStripSeparator14
             // 
             this.toolStripSeparator14.Name = "toolStripSeparator14";
-            this.toolStripSeparator14.Size = new System.Drawing.Size(205, 6);
+            this.toolStripSeparator14.Size = new System.Drawing.Size(203, 6);
             // 
             // btnCreateKey
             // 
             this.btnCreateKey.Name = "btnCreateKey";
-            this.btnCreateKey.Size = new System.Drawing.Size(208, 22);
+            this.btnCreateKey.Size = new System.Drawing.Size(206, 22);
             this.btnCreateKey.Text = "Create Common-Key.bin";
             this.btnCreateKey.Click += new System.EventHandler(this.btnCreateKey_Click);
             // 
@@ -1010,9 +1163,9 @@ namespace ShowMiiWads
             this.lbQueueInstall,
             this.lbQueueDiscard});
             this.ssMain.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.ssMain.Location = new System.Drawing.Point(0, 338);
+            this.ssMain.Location = new System.Drawing.Point(0, 347);
             this.ssMain.Name = "ssMain";
-            this.ssMain.Size = new System.Drawing.Size(914, 22);
+            this.ssMain.Size = new System.Drawing.Size(922, 22);
             this.ssMain.TabIndex = 3;
             this.ssMain.Text = "statusStrip1";
             // 
@@ -1106,13 +1259,12 @@ namespace ShowMiiWads
             this.lvNand.Location = new System.Drawing.Point(0, 24);
             this.lvNand.Name = "lvNand";
             this.lvNand.ShowGroups = false;
-            this.lvNand.Size = new System.Drawing.Size(914, 314);
+            this.lvNand.Size = new System.Drawing.Size(922, 323);
             this.lvNand.TabIndex = 4;
             this.lvNand.UseCompatibleStateImageBehavior = false;
             this.lvNand.View = System.Windows.Forms.View.Details;
             this.lvNand.Visible = false;
             this.lvNand.Resize += new System.EventHandler(this.lvNand_Resize);
-            this.lvNand.VisibleChanged += new System.EventHandler(this.lvNand_VisibleChanged);
             this.lvNand.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvNand_MouseClick);
             this.lvNand.SelectedIndexChanged += new System.EventHandler(this.lvNand_SelectedIndexChanged);
             this.lvNand.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvNand_DragDrop);
@@ -1190,13 +1342,14 @@ namespace ShowMiiWads
             // 
             this.cmNand.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmInstall,
+            this.tsNandSaveData,
             this.toolStripSeparator10,
             this.cmNandPackWad,
             this.cmNandDelete,
             this.toolStripSeparator13,
             this.cmNandPreview});
             this.cmNand.Name = "cmNand";
-            this.cmNand.Size = new System.Drawing.Size(144, 104);
+            this.cmNand.Size = new System.Drawing.Size(144, 126);
             // 
             // cmInstall
             // 
@@ -1220,6 +1373,45 @@ namespace ShowMiiWads
             this.cmInstallFolder.Size = new System.Drawing.Size(107, 22);
             this.cmInstallFolder.Text = "Folder";
             this.cmInstallFolder.Click += new System.EventHandler(this.cmInstallFolder_Click);
+            // 
+            // tsNandSaveData
+            // 
+            this.tsNandSaveData.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmNandBackupSave,
+            this.cmNandRestoreSave,
+            this.cmNandBackupSaveAll,
+            this.cmNandRestoreSaveAll});
+            this.tsNandSaveData.Name = "tsNandSaveData";
+            this.tsNandSaveData.Size = new System.Drawing.Size(143, 22);
+            this.tsNandSaveData.Text = "Savedata";
+            // 
+            // cmNandBackupSave
+            // 
+            this.cmNandBackupSave.Name = "cmNandBackupSave";
+            this.cmNandBackupSave.Size = new System.Drawing.Size(130, 22);
+            this.cmNandBackupSave.Text = "Backup";
+            this.cmNandBackupSave.Click += new System.EventHandler(this.cmNandBackupSave_Click);
+            // 
+            // cmNandRestoreSave
+            // 
+            this.cmNandRestoreSave.Name = "cmNandRestoreSave";
+            this.cmNandRestoreSave.Size = new System.Drawing.Size(130, 22);
+            this.cmNandRestoreSave.Text = "Restore";
+            this.cmNandRestoreSave.Click += new System.EventHandler(this.cmNandRestoreSave_Click);
+            // 
+            // cmNandBackupSaveAll
+            // 
+            this.cmNandBackupSaveAll.Name = "cmNandBackupSaveAll";
+            this.cmNandBackupSaveAll.Size = new System.Drawing.Size(130, 22);
+            this.cmNandBackupSaveAll.Text = "Backup All";
+            this.cmNandBackupSaveAll.Click += new System.EventHandler(this.cmNandBackupSaveAll_Click);
+            // 
+            // cmNandRestoreSaveAll
+            // 
+            this.cmNandRestoreSaveAll.Name = "cmNandRestoreSaveAll";
+            this.cmNandRestoreSaveAll.Size = new System.Drawing.Size(130, 22);
+            this.cmNandRestoreSaveAll.Text = "Restore All";
+            this.cmNandRestoreSaveAll.Click += new System.EventHandler(this.cmNandRestoreSaveAll_Click);
             // 
             // toolStripSeparator10
             // 
@@ -1261,19 +1453,11 @@ namespace ShowMiiWads
             this.lvQueue.TabIndex = 5;
             this.lvQueue.Visible = false;
             // 
-            // btnNorwegian
-            // 
-            this.btnNorwegian.CheckOnClick = true;
-            this.btnNorwegian.Name = "btnNorwegian";
-            this.btnNorwegian.Size = new System.Drawing.Size(152, 22);
-            this.btnNorwegian.Text = "Norsk";
-            this.btnNorwegian.Click += new System.EventHandler(this.btnNorwegian_Click);
-            // 
-            // ShowMiiWads
+            // ShowMiiWads_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(914, 360);
+            this.ClientSize = new System.Drawing.Size(922, 369);
             this.Controls.Add(this.lvQueue);
             this.Controls.Add(this.lvNand);
             this.Controls.Add(this.ssMain);
@@ -1281,7 +1465,7 @@ namespace ShowMiiWads
             this.Controls.Add(this.msMain);
             this.MainMenuStrip = this.msMain;
             this.MinimumSize = new System.Drawing.Size(930, 396);
-            this.Name = "ShowMiiWads";
+            this.Name = "ShowMiiWads_Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ShowMiiWads by Leathl";
             this.Load += new System.EventHandler(this.Main_Load);
@@ -1400,7 +1584,6 @@ namespace ShowMiiWads
         private System.Windows.Forms.ColumnHeader lvNandTitle;
         private System.Windows.Forms.ContextMenuStrip cmNand;
         private System.Windows.Forms.ToolStripMenuItem cmNandDelete;
-        private System.Windows.Forms.ToolStripMenuItem btnPackWadWithoutTrailer;
         private System.Windows.Forms.ToolStripMenuItem cmInstall;
         private System.Windows.Forms.ToolStripMenuItem cmInstallWad;
         private System.Windows.Forms.ToolStripMenuItem cmInstallFolder;
@@ -1420,7 +1603,7 @@ namespace ShowMiiWads
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
         private System.Windows.Forms.ToolStripMenuItem cmNandPreview;
         private System.Windows.Forms.ToolStripMenuItem btnUnpackU8;
-        private System.Windows.Forms.ToolStripMenuItem btnConvertTpl;
+        private System.Windows.Forms.ToolStripMenuItem btnConvertFromTpl;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
         private System.Windows.Forms.ToolStripMenuItem btnCreateKey;
         private System.Windows.Forms.ToolStripMenuItem btnUpdateCheck;
@@ -1435,6 +1618,27 @@ namespace ShowMiiWads
         private System.Windows.Forms.ToolStripMenuItem cmRefreshFolder;
         private System.Windows.Forms.ToolStripMenuItem btnShowSplash;
         private System.Windows.Forms.ToolStripMenuItem btnNorwegian;
+        private System.Windows.Forms.ToolStripMenuItem tsPackU8;
+        private System.Windows.Forms.ToolStripMenuItem tsConvertToTpl;
+        private System.Windows.Forms.ToolStripMenuItem btnAsRGBA8;
+        private System.Windows.Forms.ToolStripMenuItem btnAsRGB565;
+        private System.Windows.Forms.ToolStripMenuItem btnAsRGB5A3;
+        private System.Windows.Forms.ToolStripMenuItem btnPackU8WithoutHeader;
+        private System.Windows.Forms.ToolStripMenuItem btnPackU8WithIMD5;
+        private System.Windows.Forms.ToolStripMenuItem btnPackU8WithIMET;
+        private System.Windows.Forms.ToolStripMenuItem btnLz77Compress;
+        private System.Windows.Forms.ToolStripMenuItem btnLz77Decompress;
+        private System.Windows.Forms.ToolStripMenuItem cmInsertDol;
+        private System.Windows.Forms.ToolStripMenuItem btnInsertDol;
+        private System.Windows.Forms.ToolStripMenuItem cmChangeIosSlot;
+        private System.Windows.Forms.ToolStripMenuItem cmChangeTitleVersion;
+        private System.Windows.Forms.ToolStripMenuItem tsNandSaveData;
+        private System.Windows.Forms.ToolStripMenuItem cmNandBackupSave;
+        private System.Windows.Forms.ToolStripMenuItem cmNandRestoreSave;
+        private System.Windows.Forms.ToolStripMenuItem cmNandBackupSaveAll;
+        private System.Windows.Forms.ToolStripMenuItem cmNandRestoreSaveAll;
+        private System.Windows.Forms.ToolStripMenuItem btnChangeIosSlot;
+        private System.Windows.Forms.ToolStripMenuItem btnChangeTitleVersion;
     }
 }
 

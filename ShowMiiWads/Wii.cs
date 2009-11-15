@@ -18,7 +18,7 @@
 
 //Wii.py by Xuzz, SquidMan, megazig, Matt_P, Omega and The Lemon Man was the base for TPL conversion
 //Zetsubou by SquidMan was a reference for TPL conversion
-//gbalzss by Andre Perrot was the base for LZ77 decompression
+//gbalzss by Andre Perrot was the base for LZ77 (de-)compression
 //Thanks to the authors!
 
 using System;
@@ -26,7 +26,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Security.Cryptography;
-using System.Diagnostics;
+using System.Drawing;
+using System.Net;
 
 namespace Wii
 {
@@ -98,6 +99,22 @@ namespace Wii
         {
             List<byte> results = new List<byte>();
             foreach (UInt16 value in array)
+            {
+                byte[] converted = BitConverter.GetBytes(value);
+                results.AddRange(converted);
+            }
+            return results.ToArray();
+        }
+
+        /// <summary>
+        /// Converts UInt16 Array into Byte Array
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public static byte[] UIntArrayToByteArray(uint[] array)
+        {
+            List<byte> results = new List<byte>();
+            foreach (uint value in array)
             {
                 byte[] converted = BitConverter.GetBytes(value);
                 results.AddRange(converted);
@@ -189,6 +206,27 @@ namespace Wii
         }
 
         /// <summary>
+        /// Converts a Hex-String to Long
+        /// </summary>
+        /// <param name="hexstring"></param>
+        /// <returns></returns>
+        public static long HexStringToLong(string hexstring)
+        {
+            try { return long.Parse(hexstring, System.Globalization.NumberStyles.HexNumber); }
+            catch { throw new Exception("An Error occured, maybe the Wad file is corrupt!"); }
+        }
+
+        /// <summary>
+        /// Writes a Byte Array to a file
+        /// </summary>
+        /// <param name="file"></param>
+        public static void SaveFileFromByteArray(byte[] file, string destination)
+        {
+            using (FileStream fs = new FileStream(destination, FileMode.Create))
+                fs.Write(file, 0, file.Length);
+        }
+
+        /// <summary>
         /// Loads a file into a Byte Array
         /// </summary>
         /// <param name="sourcefile"></param>
@@ -208,11 +246,54 @@ namespace Wii
         }
 
         /// <summary>
+        /// Loads a file into a Byte Array
+        /// </summary>
+        /// <param name="sourcefile"></param>
+        /// <returns></returns>
+        public static byte[] LoadFileToByteArray(string sourcefile, int offset, int length)
+        {
+            if (File.Exists(sourcefile))
+            {
+                using (FileStream fs = new FileStream(sourcefile, FileMode.Open))
+                {
+                    if (fs.Length < length) length = (int)fs.Length;
+                    byte[] filearray = new byte[length];
+                    fs.Read(filearray, offset, length);
+                    return filearray;
+                }
+            }
+            else throw new FileNotFoundException("File couldn't be found:\r\n" + sourcefile);
+        }
+
+        /// <summary>
+        /// Checks the SHA1 of the Common-Key
+        /// </summary>
+        /// <param name="pathtocommonkey"></param>
+        /// <returns></returns>
+        public static bool CheckCommonKey(string pathtocommonkey)
+        {
+            byte[] sum = new byte[] { 0xEB, 0xEA, 0xE6, 0xD2, 0x76, 0x2D, 0x4D, 0x3E, 0xA1, 0x60, 0xA6, 0xD8, 0x32, 0x7F, 0xAC, 0x9A, 0x25, 0xF8, 0x06, 0x2B };
+            
+            FileInfo fi = new FileInfo(pathtocommonkey);
+            if (fi.Length != 16) return false;
+            else
+            {
+                byte[] ckey = LoadFileToByteArray(pathtocommonkey);
+
+                SHA1Managed sha1 = new SHA1Managed();
+                byte[] newsum = sha1.ComputeHash(ckey);
+
+                if (CompareByteArrays(sum, newsum) == true) return true;
+                else return false;
+            }
+        }
+
+        /// <summary>
         /// Creates the Common Key
         /// </summary>
         /// <param name="fat">Must be "45e"</param>
         /// <param name="destination">Destination Path</param>
-        public static void CreateCommonKey(string fat, string destination)
+        public static void CreateCommonKey(string fat, string destinationpath)
         {
             //What an effort, lol
             byte[] encryptedwater = new byte[] { 0x4d, 0x89, 0x21, 0x34, 0x62, 0x81, 0xe4, 0x02, 0x37, 0x36, 0xc4, 0xb4, 0xde, 0x40, 0x32, 0xab };
@@ -259,11 +340,63 @@ namespace Wii
             for (int i = 0; i < 32; i += 2)
                 cheese[++count] = byte.Parse(water.Remove(0, i).Remove(2), System.Globalization.NumberStyles.HexNumber);
 
-            if (destination[destination.Length - 1] != '\\') destination = destination + "\\";
-            using (FileStream keystream = new FileStream(destination + "\\common-key.bin", FileMode.Create))
+            if (destinationpath[destinationpath.Length - 1] != '\\') destinationpath = destinationpath + "\\";
+            using (FileStream keystream = new FileStream(destinationpath + "\\common-key.bin", FileMode.Create))
             {
                 keystream.Write(cheese, 0, cheese.Length);
             }
+        }
+
+        /// <summary>
+        /// Counts the appearance of a specific character in a string
+        /// </summary>
+        /// <param name="theString"></param>
+        /// <param name="theChar"></param>
+        /// <returns></returns>
+        public static int CountCharsInString(string theString, char theChar)
+        {
+            int count = 0;
+            foreach (char thisChar in theString)
+            {
+                if (thisChar == theChar)
+                    count++;
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Compares two Byte Arrays and returns true, if they match
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static bool CompareByteArrays(byte[] first, byte[] second)
+        {
+            if (first.Length != second.Length) return false;
+            else
+            {
+                for (int i = 0; i < first.Length; i++)
+                    if (first[i] != second[i]) return false;
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Converts a Hex String to a Byte Array
+        /// </summary>
+        /// <param name="hexstring"></param>
+        /// <returns></returns>
+        public static byte[] HexStringToByteArray(string hexstring)
+        {
+            byte[] ba = new byte[hexstring.Length / 2];
+
+            for (int i = 0; i < hexstring.Length / 2; i++)
+            {
+                ba[i] = byte.Parse(hexstring.Substring(i * 2, 2), System.Globalization.NumberStyles.HexNumber);
+            }
+
+            return ba;
         }
     }
 
@@ -385,7 +518,7 @@ namespace Wii
 
             if (type == 1)
             {
-                if (channeltype.Contains("Channel") || channeltype.Contains("Ware") || channeltype.Contains("Console"))
+                if (!channeltype.Contains("System:"))
                 {
                     string tmdid = Convert.ToChar(wadtiktmd[tmdpos + 0x190]).ToString() + Convert.ToChar(wadtiktmd[tmdpos + 0x191]).ToString() + Convert.ToChar(wadtiktmd[tmdpos + 0x192]).ToString() + Convert.ToChar(wadtiktmd[tmdpos + 0x193]).ToString();
                     return tmdid;
@@ -400,7 +533,7 @@ namespace Wii
             }
             else
             {
-                if (channeltype.Contains("Channel") || channeltype.Contains("Ware") || channeltype.Contains("Console"))
+                if (!channeltype.Contains("System:"))
                 {
                     string tikid = Convert.ToChar(wadtiktmd[tikpos + 0x1e0]).ToString() + Convert.ToChar(wadtiktmd[tikpos + 0x1e1]).ToString() + Convert.ToChar(wadtiktmd[tikpos + 0x1e2]).ToString() + Convert.ToChar(wadtiktmd[tikpos + 0x1e3]).ToString();
                     return tikid;
@@ -412,6 +545,50 @@ namespace Wii
                 }
                 else if (channeltype.Contains("System")) return "SYSTEM";
                 else return "";
+            }
+        }
+
+        /// <summary>
+        /// Returns the full title ID of the wad file as a hex string.
+        /// </summary>
+        /// <param name="wadfile"></param>
+        /// <param name="type">0 = Tik, 1 = Tmd</param>
+        /// <returns></returns>
+        public static string GetFullTitleID(byte[] wadtiktmd, int type)
+        {
+            int tikpos = 0;
+            int tmdpos = 0;
+
+            if (IsThisWad(wadtiktmd) == true)
+            {
+                //It's a wad
+                tikpos = GetTikPos(wadtiktmd);
+                tmdpos = GetTmdPos(wadtiktmd);
+            }
+
+            if (type == 1)
+            {
+                string tmdid = wadtiktmd[tmdpos + 0x18c].ToString("x2") +
+                    wadtiktmd[tmdpos + 0x18d].ToString("x2") +
+                    wadtiktmd[tmdpos + 0x18e].ToString("x2") +
+                    wadtiktmd[tmdpos + 0x18f].ToString("x2") +
+                    wadtiktmd[tmdpos + 0x190].ToString("x2") +
+                    wadtiktmd[tmdpos + 0x191].ToString("x2") +
+                    wadtiktmd[tmdpos + 0x192].ToString("x2") +
+                    wadtiktmd[tmdpos + 0x193].ToString("x2");
+                return tmdid;
+            }
+            else
+            {
+                string tikid = wadtiktmd[tikpos + 0x1dc].ToString() +
+                    wadtiktmd[tikpos + 0x1dd].ToString() +
+                    wadtiktmd[tikpos + 0x1de].ToString() +
+                    wadtiktmd[tikpos + 0x1df].ToString() +
+                    wadtiktmd[tikpos + 0x1e0].ToString() +
+                    wadtiktmd[tikpos + 0x1e1].ToString() +
+                    wadtiktmd[tikpos + 0x1e2].ToString() +
+                    wadtiktmd[tikpos + 0x1e3].ToString();
+                return tikid;
             }
         }
 
@@ -439,7 +616,7 @@ namespace Wii
             {
                 string channeltype = GetChannelType(wadfile, 0);
 
-                if (channeltype.Contains("Channel") || channeltype.Contains("Ware") || channeltype.Contains("Console"))
+                if (!channeltype.Contains("System:"))
                 {
                     if (!channeltype.Contains("Hidden"))
                     {
@@ -566,7 +743,7 @@ namespace Wii
             int imetpos = 0;
             int length = 400;
 
-            if (app.Length < 400) length = app.Length;
+            if (app.Length < 400) length = app.Length - 4;
 
             for (int z = 0; z < length; z++)
             {
@@ -630,12 +807,7 @@ namespace Wii
 
             if (thistype == "00010001")
             {
-                int wwvctype = CheckWiiWareVC(wadtiktmd);
-
-                if (wwvctype == 3) channeltype = "System Channel";
-                else if (wwvctype == 1) channeltype = "Virtual Console";
-                else if (wwvctype == 2) channeltype = "WiiWare";
-                else channeltype = "Channel Title";
+                channeltype = CheckWiiWareVC(wadtiktmd, type);
             }
             else if (thistype == "00010002") channeltype = "System Channel";
             else if (thistype == "00010004" || thistype == "00010000") channeltype = "Game Channel";
@@ -728,14 +900,14 @@ namespace Wii
             {
                 if (size.Contains("-"))
                 {
-                    string teil1 = size.Remove(size.IndexOf(' '));
-                    string teil2 = size.Remove(0, size.IndexOf('-') + 2);
+                    string min = size.Remove(size.IndexOf(' '));
+                    string max = size.Remove(0, size.IndexOf('-') + 2);
 
-                    teil1 = Convert.ToString(Math.Round(Convert.ToDouble(teil1) * 0.0009765625 * 0.0009765625, 2));
-                    teil2 = Convert.ToString(Math.Round(Convert.ToDouble(teil2) * 0.0009765625 * 0.0009765625, 2));
-                    if (teil1.Length > 4) { teil1 = teil1.Remove(4); } //Round besser?!
-                    if (teil2.Length > 4) { teil2 = teil2.Remove(4); }
-                    size = teil1 + " - " + teil2 + " MB";
+                    min = Convert.ToString(Math.Round(Convert.ToDouble(min) * 0.0009765625 * 0.0009765625, 2));
+                    max = Convert.ToString(Math.Round(Convert.ToDouble(max) * 0.0009765625 * 0.0009765625, 2));
+                    if (min.Length > 4) { min = min.Remove(4); }
+                    if (max.Length > 4) { max = max.Remove(4); }
+                    size = min + " - " + max + " MB";
                 }
                 else
                 {
@@ -745,7 +917,7 @@ namespace Wii
                 }
             }
 
-            return size;
+            return size.Replace(",", ".");
         }
 
         /// <summary>
@@ -773,6 +945,17 @@ namespace Wii
 
                 return Math.Ceiling(blocks).ToString();
             }
+        }
+
+        /// <summary>
+        /// Returns the title version of the wad file
+        /// </summary>
+        /// <param name="wadfile"></param>
+        /// <returns></returns>
+        public static int GetTitleVersion(string wadtmd)
+        {
+            byte[] temp = Tools.LoadFileToByteArray(wadtmd, 0, 10000);
+            return GetTitleVersion(temp);
         }
 
         /// <summary>
@@ -818,7 +1001,7 @@ namespace Wii
 
             if (IsThisWad(wadtmd) == true) { tmdpos = GetTmdPos(wadtmd); }
 
-            if (channeltype.Contains("Channel") || channeltype.Contains("WiiWare") || channeltype.Contains("Console"))
+            if (!channeltype.Contains("System:"))
             {
                 int region = Tools.HexStringToInt(wadtmd[tmdpos + 0x19d].ToString("x2"));
                 return RegionCode[region];
@@ -885,29 +1068,51 @@ namespace Wii
 
         /// <summary>
         /// Returns true, if the wad file is a WiiWare / VC title.
-        /// 0 = None, 1 = VC, 2 = WiiWare, 3 = System Channel
         /// </summary>
-        /// <param name="wadfile"></param>
+        /// <param name="wadtiktmd"></param>
+        /// <param name="type">0 = Tik, 1 = Tmd</param>
         /// <returns></returns>
-        public static int CheckWiiWareVC(byte[] wadtik)
+        public static string CheckWiiWareVC(byte[] wadtiktmd, int type)
         {
-            int tikpos = 0;
+            int tiktmdpos = 0;
+            int offset = 0x221;
+            int idoffset = 0x1e0;
 
-            if (IsThisWad(wadtik) == true) { tikpos = GetTikPos(wadtik); }
-
-            if (wadtik[tikpos + 0x221] == 0x01)
+            if (type == 1) { offset = 0x197; idoffset = 0x190; }
+            if (IsThisWad(wadtiktmd) == true)
             {
-                char idchar = Convert.ToChar(wadtik[tikpos + 0x1e0]);
-
-                if (idchar == 'H') return 3;
-                else if (idchar == 'W') return 2;
-                else return 1;
+                if (type == 1) tiktmdpos = GetTmdPos(wadtiktmd);
+                else tiktmdpos = GetTikPos(wadtiktmd);
             }
-            else return 0;
+
+            if (wadtiktmd[tiktmdpos + offset] == 0x01)
+            {
+                char idchar = Convert.ToChar(wadtiktmd[tiktmdpos + idoffset]);
+                char idchar2 = Convert.ToChar(wadtiktmd[tiktmdpos + idoffset + 1]);
+
+                if (idchar == 'H') return "System Channel";
+                else if (idchar == 'W') return "WiiWare";
+                else
+                {
+                    if (idchar == 'C') return "C64";
+                    else if (idchar == 'E' && idchar2 == 'A') return "NeoGeo";
+                    else if (idchar == 'E') return "VC - Arcade";
+                    else if (idchar == 'F') return "NES";
+                    else if (idchar == 'J') return "SNES";
+                    else if (idchar == 'L') return "Sega Master System";
+                    else if (idchar == 'M') return "Sega Genesis";
+                    else if (idchar == 'N') return "Nintendo 64";
+                    else if (idchar == 'P') return "Turbografx";
+                    else if (idchar == 'Q') return "Turbografx CD";
+                    else return "Channel Title";
+                }
+            }
+            else return "Channel Title";
         }
 
         /// <summary>
-        /// Returns all information stored in the tmd for all contents in the wad file
+        /// Returns all information stored in the tmd for all contents in the wad file.
+        /// [x, 0] = Content ID, [x, 1] = Index, [x, 2] = Type, [x, 3] = Size, [x, 4] = Sha1
         /// </summary>
         /// <param name="wadfile"></param>
         /// <returns></returns>
@@ -1176,7 +1381,7 @@ namespace Wii
             SHA1Managed sha1 = new SHA1Managed();
 
             Tools.ChangeProgress(10);
-            
+
             for (int i = 0; i < conts.GetLength(0); i++)
             {
                 if (conts[i, 1] == "00000000")
@@ -1187,9 +1392,9 @@ namespace Wii
                 else
                     contentpos += Tools.AddPadding(Convert.ToInt32(conts[i, 3]));
             }
-            
+
             byte[] contenthandle = DecryptContent(wadfile, nullapp, titlekey);
-            
+
             Tools.ChangeProgress(25);
 
             int imetpos = 0;
@@ -1306,6 +1511,41 @@ namespace Wii
         }
 
         /// <summary>
+        /// Changes the Title ID in the Tik or Tmd file
+        /// </summary>
+        /// <param name="tiktmd"></param>
+        /// <param name="type">0 = Tik, 1 = Tmd</param>
+        /// <returns></returns>
+        public static void ChangeTitleID(string tiktmdfile, int type, string titleid)
+        {
+            byte[] temp = Tools.LoadFileToByteArray(tiktmdfile);
+            temp = ChangeTitleID(temp, type, titleid);
+            Tools.SaveFileFromByteArray(temp, tiktmdfile);
+        }
+
+        /// <summary>
+        /// Changes the Title ID in the Tik or Tmd file
+        /// </summary>
+        /// <param name="tiktmd"></param>
+        /// <param name="type">0 = Tik, 1 = Tmd</param>
+        /// <returns></returns>
+        public static byte[] ChangeTitleID(byte[] tiktmd, int type, string titleid)
+        {
+            int offset = 0x1e0;
+            if (type == 1) offset = 0x190;
+            char[] id = titleid.ToCharArray();
+
+            tiktmd[offset] = (byte)id[0];
+            tiktmd[offset + 1] = (byte)id[1];
+            tiktmd[offset + 2] = (byte)id[2];
+            tiktmd[offset + 3] = (byte)id[3];
+
+            tiktmd = TruchaSign(tiktmd, type);
+
+            return tiktmd;
+        }
+
+        /// <summary>
         /// Changes the title ID of the wad file
         /// </summary>
         /// <param name="wadfile"></param>
@@ -1338,11 +1578,11 @@ namespace Wii
             Tools.ChangeProgress(40);
 
             //Trucha-Sign both
-            TruchaSign(wadfile, 0);
+            wadfile = TruchaSign(wadfile, 0);
 
             Tools.ChangeProgress(50);
 
-            TruchaSign(wadfile, 1);
+            wadfile = TruchaSign(wadfile, 1);
 
             Tools.ChangeProgress(60);
 
@@ -1407,6 +1647,19 @@ namespace Wii
             }
 
             return wadtiktmd;
+        }
+
+        /// <summary>
+        /// Trucha-Signs the Tik or Tmd
+        /// </summary>
+        /// <param name="file">Wad or Tik or Tmd</param>
+        /// <param name="type">0 = Tik, 1 = Tmd</param>
+        /// <returns></returns>
+        public static void TruchaSign(string file, int type)
+        {
+            byte[] temp = Tools.LoadFileToByteArray(file);
+            temp = TruchaSign(temp, type);
+            Tools.SaveFileFromByteArray(temp, file);
         }
 
         /// <summary>
@@ -1651,7 +1904,8 @@ namespace Wii
             {
                 byte[] tmd = WadInfo.ReturnTmd(wadfile);
                 byte[] decryptedcontent = DecryptContent(wadfile, i, oldtitlekey);
-                byte[] encryptedcontent = EncryptContent(decryptedcontent, tmd, i, newtitlekey, true);
+                byte[] encryptedcontent = EncryptContent(decryptedcontent, tmd, i, newtitlekey, false);
+
                 for (int j = 0; j < encryptedcontent.Length; j++)
                 {
                     wadfile[contentpos + j] = encryptedcontent[j];
@@ -1709,10 +1963,203 @@ namespace Wii
             }
         }
 
+        /// <summary>
+        /// Fixes the MD5 Sum in the IMET Header.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public static byte[] FixMD5InImet(byte[] file)
         {
             byte[] tmp = new byte[16];
             return FixMD5InImet(file, out tmp);
+        }
+
+        /// <summary>
+        /// Updates the Content Info in the Tmd.
+        /// Tmd and Contents must be in the same Directory
+        /// </summary>
+        /// <param name="tmdfile"></param>
+        public static void UpdateTmdContents(string tmdfile)
+        {
+            FileStream tmd = new FileStream(tmdfile, FileMode.Open, FileAccess.ReadWrite);
+
+            tmd.Seek(0x1de, SeekOrigin.Begin);
+            int contentcount = Tools.HexStringToInt(tmd.ReadByte().ToString("x2") + tmd.ReadByte().ToString("x2"));
+
+            for (int i = 0; i < contentcount; i++)
+            {
+                int oldsize = 0;
+                int contentpos = 0x1e4 + (36 * i);
+
+                tmd.Seek(contentpos + 4, SeekOrigin.Begin);
+                string index = "0000" + tmd.ReadByte().ToString("x2") + tmd.ReadByte().ToString("x2");
+
+                tmd.Seek(contentpos + 8, SeekOrigin.Begin);
+                try
+                {
+                    oldsize = Tools.HexStringToInt(tmd.ReadByte().ToString("x2") +
+                        tmd.ReadByte().ToString("x2") +
+                        tmd.ReadByte().ToString("x2") +
+                        tmd.ReadByte().ToString("x2") +
+                        tmd.ReadByte().ToString("x2") +
+                        tmd.ReadByte().ToString("x2") +
+                        tmd.ReadByte().ToString("x2") +
+                        tmd.ReadByte().ToString("x2"));
+                }
+                catch { }
+
+                byte[] oldsha1 = new byte[20];
+                tmd.Read(oldsha1, 0, oldsha1.Length);
+
+                if (File.Exists(tmdfile.Remove(tmdfile.LastIndexOf('\\') + 1) + index + ".app"))
+                {
+                    byte[] content = Wii.Tools.LoadFileToByteArray(tmdfile.Remove(tmdfile.LastIndexOf('\\') + 1) + index + ".app");
+                    int newsize = content.Length;
+                    
+                    if (newsize != oldsize)
+                    {
+                        byte[] changedsize = Tools.FileLengthToByteArray(newsize);
+
+                        tmd.Seek(contentpos + 8, SeekOrigin.Begin);
+                        for (int x = 8; x > changedsize.Length; x--) tmd.WriteByte(0x00);
+                        tmd.Write(changedsize, 0, changedsize.Length);
+                    }
+
+                    SHA1Managed sha1 = new SHA1Managed();
+                    byte[] newsha1 = sha1.ComputeHash(content);
+                    sha1.Clear();
+
+                    if (Tools.CompareByteArrays(newsha1, oldsha1) == false)
+                    {
+                        tmd.Seek(contentpos + 16, SeekOrigin.Begin);
+                        tmd.Write(newsha1, 0, newsha1.Length);
+                    }
+                }
+                else
+                {
+                    throw new Exception("At least one content file wasn't found!");
+                }
+            }
+
+            tmd.Close();
+        }
+
+        /// <summary>
+        /// Changes the Boot Index in the Tmd to the given value
+        /// </summary>
+        /// <param name="wadtmd"></param>
+        /// <returns></returns>
+        public static byte[] ChangeTmdBootIndex(byte[] wadtmd, int newindex)
+        {
+            int tmdpos = 0;
+
+            if (WadInfo.IsThisWad(wadtmd) == true)
+                tmdpos = WadInfo.GetTmdPos(wadtmd);
+
+            byte[] index = BitConverter.GetBytes((UInt16)newindex);
+            wadtmd[tmdpos + 0x1e0] = index[1];
+            wadtmd[tmdpos + 0x1e1] = index[0];
+
+            return wadtmd;
+        }
+
+        /// <summary>
+        /// Changes the Content Count in the Tmd
+        /// </summary>
+        /// <param name="wadtmd"></param>
+        /// <param name="newcount"></param>
+        /// <returns></returns>
+        public static byte[] ChangeTmdContentCount(byte[] wadtmd, int newcount)
+        {
+            int tmdpos = 0;
+
+            if (WadInfo.IsThisWad(wadtmd) == true)
+                tmdpos = WadInfo.GetTmdPos(wadtmd);
+
+            byte[] count = BitConverter.GetBytes((UInt16)newcount);
+            wadtmd[tmdpos + 0x1de] = count[1];
+            wadtmd[tmdpos + 0x1df] = count[0];
+
+            return wadtmd;
+        }
+
+        /// <summary>
+        /// Changes the Slot where the IOS Wad will be installed to
+        /// </summary>
+        /// <param name="wad"></param>
+        /// <param name="newslot"></param>
+        /// <returns></returns>
+        public static byte[] ChangeIosSlot(byte[] wadfile, int newslot)
+        {
+            Tools.ChangeProgress(0);
+
+            int tikpos = WadInfo.GetTikPos(wadfile);
+            int tmdpos = WadInfo.GetTmdPos(wadfile);
+            byte[] slot = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(newslot));
+
+            byte[] oldtitlekey = WadInfo.GetTitleKey(wadfile);
+
+            Tools.ChangeProgress(20);
+
+            //Change the ID in the ticket
+            wadfile[tikpos + 0x1e0] = slot[0];
+            wadfile[tikpos + 0x1e1] = slot[1];
+            wadfile[tikpos + 0x1e2] = slot[2];
+            wadfile[tikpos + 0x1e3] = slot[3];
+
+            //Change the ID in the tmd
+            wadfile[tmdpos + 0x190] = slot[0];
+            wadfile[tmdpos + 0x191] = slot[1];
+            wadfile[tmdpos + 0x192] = slot[2];
+            wadfile[tmdpos + 0x193] = slot[3];
+
+            Tools.ChangeProgress(40);
+
+            //Trucha-Sign both
+            wadfile = TruchaSign(wadfile, 0);
+
+            Tools.ChangeProgress(50);
+
+            wadfile = TruchaSign(wadfile, 1);
+
+            Tools.ChangeProgress(60);
+
+            byte[] newtitlekey = WadInfo.GetTitleKey(wadfile);
+            byte[] tmd = WadInfo.ReturnTmd(wadfile);
+
+            int contentcount = WadInfo.GetContentNum(wadfile);
+
+            wadfile = ReEncryptAllContents(wadfile, oldtitlekey, newtitlekey);
+
+            Tools.ChangeProgress(100);
+            return wadfile;
+        }
+
+        /// <summary>
+        /// Changes the Title Version of a Wad or Tmd
+        /// </summary>
+        /// <param name="wadtmd"></param>
+        /// <param name="newversion"></param>
+        /// <returns></returns>
+        public static byte[] ChangeTitleVersion(byte[] wadtmd, int newversion)
+        {
+            if (newversion > 65535) throw new Exception("Version can be max. 65535");
+
+            int offset = 0x1dc;
+            int tmdpos = 0;
+
+            if (WadInfo.IsThisWad(wadtmd))
+                tmdpos = WadInfo.GetTmdPos(wadtmd);
+
+            byte[] version = BitConverter.GetBytes((UInt16)newversion);
+            Array.Reverse(version);
+
+            wadtmd[tmdpos + offset] = version[0];
+            wadtmd[tmdpos + offset + 1] = version[1];
+
+            wadtmd = TruchaSign(wadtmd, 1);
+
+            return wadtmd;
         }
     }
 
@@ -1775,13 +2222,9 @@ namespace Wii
 
             if (!Directory.Exists(destinationpath))
             { Directory.CreateDirectory(destinationpath); }
-            if (Directory.GetFiles(destinationpath, "*.app").Length > 1 ||
-                Directory.GetFiles(destinationpath, "*.cert").Length > 1 ||
-                Directory.GetFiles(destinationpath, "*.tik").Length > 1 ||
-                Directory.GetFiles(destinationpath, "*.tmd").Length > 1 ||
-                Directory.GetFiles(destinationpath, "*.trailer").Length > 1)
+            if (Directory.GetFiles(destinationpath, "*.app").Length > 0)
             {
-                throw new Exception("One of the files to unpack already exists!");
+                throw new Exception("At least one of the files to unpack already exists!");
             }
 
             int certpos = 0x40;
@@ -1820,14 +2263,18 @@ namespace Wii
             }
 
             //unpack trailer
-            if (footersize > 0)
+            try
             {
-                using (FileStream trailer = new FileStream(destinationpath + wadpath + ".trailer", FileMode.Create))
+                if (footersize > 0)
                 {
-                    trailer.Seek(0, SeekOrigin.Begin);
-                    trailer.Write(wadfile, footerpos, footersize);
+                    using (FileStream trailer = new FileStream(destinationpath + wadpath + ".trailer", FileMode.Create))
+                    {
+                        trailer.Seek(0, SeekOrigin.Begin);
+                        trailer.Write(wadfile, footerpos, footersize);
+                    }
                 }
             }
+            catch { } //who cares if the trailer doesn't extract properly?
 
             Tools.ChangeProgress(0);
 
@@ -1842,12 +2289,20 @@ namespace Wii
                 content.Close();
 
                 contentpos += Tools.AddPadding(thiscontent.Length);
+
+                //sha1 comparison
+                SHA1Managed sha1 = new SHA1Managed();
+                byte[] thishash = sha1.ComputeHash(thiscontent);
+                byte[] tmdhash = Tools.HexStringToByteArray(contents[i, 4]);
+
+                if (Tools.CompareByteArrays(thishash, tmdhash) == false)
+                    throw new Exception("At least one content's hash doesn't match the hash in the Tmd!");
             }
         }
 
         /// <summary>
-        /// Unpacks the wad file to the given directory
-        /// Shared contents will not be unpacked
+        /// Unpacks the wad file to the given directory.
+        /// Shared contents will be unpacked to /shared1
         /// </summary>
         /// <param name="wadfile"></param>
         /// <param name="nandpath"></param>
@@ -1858,8 +2313,8 @@ namespace Wii
         }
 
         /// <summary>
-        /// Unpacks the wad file to the given directory
-        /// Shared contents will not be unpacked
+        /// Unpacks the wad file to the given directory.
+        /// Shared contents will be unpacked to /shared1
         /// </summary>
         /// <param name="wadfile"></param>
         /// <param name="nandpath"></param>
@@ -1946,6 +2401,29 @@ namespace Wii
 
                 contentpos += Tools.AddPadding(thiscontent.Length);
             }
+
+            //add titleid to uid.sys, if it doesn't exist
+            string titleid = WadInfo.GetFullTitleID(wadfile, 1);
+
+            if (File.Exists(nandpath + "\\sys\\uid.sys"))
+            {
+                FileStream fs = new FileStream(nandpath + "\\sys\\uid.sys", FileMode.Open);
+                byte[] uidsys = new byte[fs.Length];
+                fs.Read(uidsys, 0, uidsys.Length);
+                fs.Close();
+
+                if (UID.CheckUID(uidsys, titleid) == false)
+                {
+                    uidsys = UID.AddUID(uidsys, titleid);
+                    Tools.SaveFileFromByteArray(uidsys, nandpath + "\\sys\\uid.sys");
+                }
+            }
+            else
+            {
+                if (!Directory.Exists(nandpath + "\\sys")) Directory.CreateDirectory(nandpath + "\\sys");
+                byte[] uidsys = UID.AddUID(new byte[0], titleid);
+                Tools.SaveFileFromByteArray(uidsys, nandpath + "\\sys\\uid.sys");
+            }
         }
     }
 
@@ -2009,8 +2487,11 @@ namespace Wii
             {
                 Tools.ChangeProgress((i + 1) * 100 / contents.GetLength(0));
                 byte[] thiscont = Tools.LoadFileToByteArray(contentdirectory + contents[i, 1] + ".app");
-                if (i == contents.GetLength(0) - 1) { thiscont = WadEdit.EncryptContent(thiscont, tmd, i, titlekey, false); }
-                else { thiscont = WadEdit.EncryptContent(thiscont, tmd, i, titlekey, true); }
+
+                //if (i == contents.GetLength(0) - 1) { thiscont = WadEdit.EncryptContent(thiscont, tmd, i, titlekey, false); }
+                //else { thiscont = WadEdit.EncryptContent(thiscont, tmd, i, titlekey, true); }
+                thiscont = WadEdit.EncryptContent(thiscont, tmd, i, titlekey, true);
+
                 wadstream.Seek(contpos, SeekOrigin.Begin);
                 wadstream.Write(thiscont, 0, thiscont.Length);
                 contpos += thiscont.Length;
@@ -2024,7 +2505,7 @@ namespace Wii
                 byte[] trailer = Tools.LoadFileToByteArray(trailerfile[0]);
                 trailerlength = trailer.Length;
                 Array.Resize(ref trailer, Tools.AddPadding(trailer.Length));
-                wadstream.Seek(contpos, SeekOrigin.Begin);
+                wadstream.Seek(Tools.AddPadding(contpos), SeekOrigin.Begin);
                 wadstream.Write(trailer, 0, trailer.Length);
             }
 
@@ -2127,8 +2608,10 @@ namespace Wii
                 }
                 else thiscont = Tools.LoadFileToByteArray(contentdir + contents[i, 0] + ".app");
 
-                if (i == contents.GetLength(0) - 1) { thiscont = WadEdit.EncryptContent(thiscont, tmd, i, titlekey, false); }
-                else { thiscont = WadEdit.EncryptContent(thiscont, tmd, i, titlekey, true); }
+                //if (i == contents.GetLength(0) - 1) { thiscont = WadEdit.EncryptContent(thiscont, tmd, i, titlekey, false); }
+                //else { thiscont = WadEdit.EncryptContent(thiscont, tmd, i, titlekey, true); }
+                thiscont = WadEdit.EncryptContent(thiscont, tmd, i, titlekey, true);
+
                 wadstream.Seek(contpos, SeekOrigin.Begin);
                 wadstream.Write(thiscont, 0, thiscont.Length);
                 contpos += thiscont.Length;
@@ -2156,6 +2639,79 @@ namespace Wii
             wadstream.Write(trailersize, 0, trailersize.Length);
 
             wadstream.Close();
+        }
+    }
+
+    public class UID
+    {
+        /// <summary>
+        /// Checks if the given Title ID exists in the uid.sys
+        /// </summary>
+        /// <param name="uidsys"></param>
+        /// <param name="fulltitleid"></param>
+        /// <returns></returns>
+        public static bool CheckUID(byte[] uidsys, string fulltitleid)
+        {
+            for (int i = 0; i < uidsys.Length; i += 12)
+            {
+                string temp = "";
+
+                for (int y = i; y < i + 8; y++)
+                    temp += uidsys[y].ToString("x2");
+
+                if (temp == fulltitleid) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets a new UID
+        /// </summary>
+        /// <param name="uidsys"></param>
+        /// <returns></returns>
+        public static string GetNewUID(byte[] uidsys)
+        {
+            string lastuid = uidsys[uidsys.Length - 4].ToString("x2") +
+                uidsys[uidsys.Length - 3].ToString("x2") +
+                uidsys[uidsys.Length - 2].ToString("x2") +
+                uidsys[uidsys.Length - 1].ToString("x2");
+
+            string newuid = (int.Parse(lastuid, System.Globalization.NumberStyles.HexNumber) + 1).ToString("x8");
+            return newuid;
+        }
+
+        /// <summary>
+        /// Adds a Title ID to uid.sys
+        /// </summary>
+        /// <param name="uidsys"></param>
+        /// <param name="fulltitleid"></param>
+        /// <returns></returns>
+        public static byte[] AddUID(byte[] uidsys, string fulltitleid)
+        {
+            if (uidsys.Length > 11)
+            {
+                MemoryStream uid = new MemoryStream();
+                byte[] titleid = Tools.HexStringToByteArray(fulltitleid);
+                byte[] newuid = Tools.HexStringToByteArray(GetNewUID(uidsys));
+
+                uid.Write(uidsys, 0, uidsys.Length);
+                uid.Write(titleid, 0, titleid.Length);
+                uid.Write(newuid, 0, newuid.Length);
+
+                return uid.ToArray();
+            }
+            else
+            {
+                MemoryStream uid = new MemoryStream();
+                byte[] titleid = Tools.HexStringToByteArray(fulltitleid);
+                byte[] newuid = new byte[] { 0x00, 0x00, 0x10, 0x00 };
+
+                uid.Write(titleid, 0, titleid.Length);
+                uid.Write(newuid, 0, newuid.Length);
+
+                return uid.ToArray();
+            }
         }
     }
 
@@ -2237,15 +2793,9 @@ namespace Wii
             name += Convert.ToChar(contentmap[contentmap.Length - 22]);
             name += Convert.ToChar(contentmap[contentmap.Length - 21]);
 
-            string newname = (Convert.ToInt32(name) + 1).ToString();
-            string result = "";
+            string newname = (int.Parse(name, System.Globalization.NumberStyles.HexNumber) + 1).ToString("x8");
 
-            for (int i = 0; i < 8 - newname.Length; i++)
-            {
-                result += "0";
-            }
-
-            return result + newname;
+            return newname;
         }
 
         public static void AddSharedContent(string contentmap, string contentname, string sha1ofcontent)
@@ -2272,7 +2822,7 @@ namespace Wii
         }
     }
 
-    public class U8Unpack
+    public class U8
     {
         /// <summary>
         /// Checks if the given file is a U8 Archive
@@ -2281,7 +2831,10 @@ namespace Wii
         /// <returns></returns>
         public static bool CheckU8(byte[] file)
         {
-            for (int i = 0; i < 2500; i++)
+            int length = 2500;
+            if (file.Length < length) length = file.Length - 4;
+
+            for (int i = 0; i < length; i++)
             {
                 if (file[i] == 0x55 && file[i + 1] == 0xAA && file[i + 2] == 0x38 && file[i + 3] == 0x2D)
                     return true;
@@ -2297,12 +2850,513 @@ namespace Wii
         /// <returns></returns>
         public static bool CheckU8(string file)
         {
-            using (FileStream load = new FileStream(file, FileMode.Open))
+            byte[] buff = Tools.LoadFileToByteArray(file, 0, 2500);
+            return CheckU8(buff);
+        }
+
+        /// <summary>
+        /// Gets all contents of a folder (including (sub-)files and (sub-)folders)
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public static string[] GetDirContent(string dir, bool root)
+        {
+            string[] files = Directory.GetFiles(dir);
+            string[] dirs = Directory.GetDirectories(dir);
+            string all = "";
+
+            if (root == false)
+                all += dir + "\n";
+
+            for (int i = 0; i < files.Length; i++)
+                all += files[i] + "\n";
+
+            foreach (string thisDir in dirs)
             {
-                byte[] buff = new byte[load.Length];
-                load.Read(buff, 0, buff.Length);
-                return CheckU8(buff);
+                string[] temp = GetDirContent(thisDir, false);
+
+                foreach (string thisTemp in temp)
+                    all += thisTemp + "\n";
             }
+
+            return all.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        /// <summary>
+        /// Detecs if the U8 file has an IMD5 or IMET Header.
+        /// Return: 0 = No Header, 1 = IMD5, 2 = IMET
+        /// </summary>
+        /// <param name="file"></param>
+        public static int DetectHeader(string file)
+        {
+            byte[] temp = Tools.LoadFileToByteArray(file, 0, 400);
+            return DetectHeader(temp);
+        }
+
+        /// <summary>
+        /// Detecs if the U8 file has an IMD5 or IMET Header.
+        /// Return: 0 = No Header, 1 = IMD5, 2 = IMET
+        /// </summary>
+        /// <param name="file"></param>
+        public static int DetectHeader(byte[] file)
+        {
+            for (int i = 0; i < 16; i++) //Just to be safe
+            {
+                if (Convert.ToChar(file[i]) == 'I')
+                    if (Convert.ToChar(file[i + 1]) == 'M')
+                        if (Convert.ToChar(file[i + 2]) == 'D')
+                            if (Convert.ToChar(file[i + 3]) == '5')
+                                return 1;
+            }
+
+            int length = 400;
+            if (file.Length < 400) length = file.Length - 4;
+
+            for (int z = 0; z < length; z++)
+            {
+                if (Convert.ToChar(file[z]) == 'I')
+                    if (Convert.ToChar(file[z + 1]) == 'M')
+                        if (Convert.ToChar(file[z + 2]) == 'E')
+                            if (Convert.ToChar(file[z + 3]) == 'T')
+                                return 2;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Adds an IMD5 Header to the given U8 Archive
+        /// </summary>
+        /// <param name="u8archive"></param>
+        /// <returns></returns>
+        public static byte[] AddHeaderIMD5(byte[] u8archive)
+        {
+            MemoryStream ms = new MemoryStream();
+            MD5 md5 = MD5.Create();
+            
+            byte[] imd5 = new byte[4];
+            imd5[0] = (byte)'I';
+            imd5[1] = (byte)'M';
+            imd5[2] = (byte)'D';
+            imd5[3] = (byte)'5';
+
+            byte[] size = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(u8archive.Length));
+            byte[] hash = md5.ComputeHash(u8archive, 0, u8archive.Length);
+
+            ms.Seek(0, SeekOrigin.Begin);
+            ms.Write(imd5, 0, imd5.Length);
+            ms.Write(size, 0, size.Length);
+
+            ms.Seek(0x10, SeekOrigin.Begin);
+            ms.Write(hash, 0, hash.Length);
+
+            ms.Write(u8archive, 0, u8archive.Length);
+
+            md5.Clear();
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Adds an IMET Header to the given 00.app
+        /// </summary>
+        /// <param name="u8archive"></param>
+        /// <param name="channeltitles">Order: Jap, Eng, Ger, Fra, Spa, Ita, Dut</param>
+        /// <param name="sizes">Order: Banner.bin, Icon.bin, Sound.bin</param>
+        /// <returns></returns>
+        public static byte[] AddHeaderIMET(byte[] nullapp, string[] channeltitles, int[] sizes)
+        {
+            if (channeltitles.Length < 7) return nullapp;
+            for (int i = 0; i < channeltitles.Length; i++)
+                if (channeltitles[i].Length > 20) return nullapp;
+
+            MemoryStream ms = new MemoryStream();
+            MD5 md5 = MD5.Create();
+
+            byte[] imet = new byte[4];
+            imet[0] = (byte)'I';
+            imet[1] = (byte)'M';
+            imet[2] = (byte)'E';
+            imet[3] = (byte)'T';
+
+            byte[] unknown = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(0x0000060000000003));
+
+            byte[] iconsize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(sizes[1]));
+            byte[] bannersize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(sizes[0]));
+            byte[] soundsize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(sizes[2]));
+
+            byte[] japtitle = new byte[84];
+            byte[] engtitle = new byte[84];
+            byte[] gertitle = new byte[84];
+            byte[] fratitle = new byte[84];
+            byte[] spatitle = new byte[84];
+            byte[] itatitle = new byte[84];
+            byte[] duttitle = new byte[84];
+
+            for (int i = 0; i < 20; i++)
+            {
+                if (channeltitles[0].Length > i)
+                {
+                    japtitle[i * 2 + 1] = (byte)channeltitles[0][i];
+                }
+                if (channeltitles[1].Length > i)
+                {
+                    engtitle[i * 2 + 1] = (byte)channeltitles[1][i];
+                }
+                if (channeltitles[2].Length > i)
+                {
+                    gertitle[i * 2 + 1] = (byte)channeltitles[2][i];
+                }
+                if (channeltitles[3].Length > i)
+                {
+                    fratitle[i * 2 + 1] = (byte)channeltitles[3][i];
+                }
+                if (channeltitles[4].Length > i)
+                {
+                    spatitle[i * 2 + 1] = (byte)channeltitles[4][i];
+                }
+                if (channeltitles[5].Length > i)
+                {
+                    itatitle[i * 2 + 1] = (byte)channeltitles[5][i];
+                }
+                if (channeltitles[6].Length > i)
+                {
+                    duttitle[i * 2 + 1] = (byte)channeltitles[6][i];
+                }
+            }
+
+            byte[] crypto = new byte[16];
+
+            ms.Seek(128, SeekOrigin.Begin);
+            ms.Write(imet, 0, imet.Length);
+            ms.Write(unknown, 0, unknown.Length);
+            ms.Write(iconsize, 0, iconsize.Length);
+            ms.Write(bannersize, 0, bannersize.Length);
+            ms.Write(soundsize, 0, soundsize.Length);
+
+            ms.Seek(4, SeekOrigin.Current);
+            ms.Write(japtitle, 0, japtitle.Length);
+            ms.Write(engtitle, 0, engtitle.Length);
+            ms.Write(gertitle, 0, gertitle.Length);
+            ms.Write(fratitle, 0, fratitle.Length);
+            ms.Write(spatitle, 0, spatitle.Length);
+            ms.Write(itatitle, 0, itatitle.Length);
+            ms.Write(duttitle, 0, duttitle.Length);
+
+            ms.Seek(0x348, SeekOrigin.Current);
+            ms.Write(crypto, 0, crypto.Length);
+
+            byte[] tohash = ms.ToArray();
+            crypto = md5.ComputeHash(tohash, 0x40, 0x600);
+
+            ms.Seek(-16, SeekOrigin.Current);
+            ms.Write(crypto, 0, crypto.Length);
+            ms.Write(nullapp, 0, nullapp.Length);
+
+            md5.Clear();
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Packs a U8 Archive
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="outfile"></param>
+        public static void PackU8(string folder, string outfile)
+        {
+            byte[] u8 = PackU8(folder);
+
+            using (FileStream fs = new FileStream(outfile, FileMode.Create))
+                fs.Write(u8, 0, u8.Length);
+        }
+
+        /// <summary>
+        /// Packs a U8 Archive
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="outfile"></param>
+        public static void PackU8(string folder, string outfile, bool addimd5header)
+        {
+            byte[] u8 = PackU8(folder);
+
+            if (addimd5header == true)
+                u8 = AddHeaderIMD5(u8);
+
+            using (FileStream fs = new FileStream(outfile, FileMode.Create))
+                fs.Write(u8, 0, u8.Length);
+        }
+
+        /// <summary>
+        /// Packs a U8 Archive
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="outfile"></param>
+        public static byte[] PackU8(string folder)
+        {
+            int a = 0, b = 0, c = 0;
+            return PackU8(folder, out a, out b, out c);
+        }
+
+        /// <summary>
+        /// Packs a U8 Archive
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="outfile"></param>
+        public static byte[] PackU8(string folder, bool addimd5header)
+        {
+            byte[] u8 = PackU8(folder);
+
+            if (addimd5header == true)
+                u8 = AddHeaderIMD5(u8);
+            
+            return u8;
+        }
+
+        /// <summary>
+        /// Packs a U8 Archive
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="outfile"></param>
+        public static byte[] PackU8(string folder, out int bannersize, out int iconsize, out int soundsize)
+        {
+            int datapad = 32, stringtablepad = 32; //Biggie seems to use these paddings, so let's do it, too ;)
+            string rootpath = folder;
+            if (rootpath[rootpath.Length - 1] != '\\') rootpath = rootpath + "\\";
+
+            bannersize = 0; iconsize = 0; soundsize = 0;
+
+            string[] files = GetDirContent(folder, true);
+            int nodecount = files.Length + 1; //All files and dirs + rootnode
+            int recursion = 0;
+            int currentnodes = 0;
+            string name = string.Empty;
+            string stringtable = "\0";
+            byte[] tempnode = new byte[12];
+
+            MemoryStream nodes = new MemoryStream();
+            MemoryStream data = new MemoryStream();
+            BinaryWriter writedata = new BinaryWriter(data);
+
+            tempnode[0] = 0x01;
+            tempnode[1] = 0x00;
+            tempnode[2] = 0x00;
+            tempnode[3] = 0x00;
+            tempnode[4] = 0x00;
+            tempnode[5] = 0x00;
+            tempnode[6] = 0x00;
+            tempnode[7] = 0x00;
+
+            byte[] temp = BitConverter.GetBytes((UInt32)files.Length + 1); Array.Reverse(temp);
+            tempnode[8] = temp[0];
+            tempnode[9] = temp[1];
+            tempnode[10] = temp[2];
+            tempnode[11] = temp[3];
+
+            nodes.Write(tempnode, 0, tempnode.Length);
+
+            for (int i = 0; i < files.Length; i++)
+            {
+                files[i] = files[i].Remove(0, rootpath.Length - 1);
+
+                recursion = Tools.CountCharsInString(files[i], '\\') - 1;
+                name = files[i].Remove(0, files[i].LastIndexOf('\\') + 1);
+
+                byte[] temp1 = BitConverter.GetBytes((UInt16)stringtable.Length); Array.Reverse(temp1);
+                tempnode[2] = temp1[0];
+                tempnode[3] = temp1[1];
+
+                stringtable += name + "\0";
+
+                if (Directory.Exists(rootpath + files[i])) //It's a dir
+                {
+                    tempnode[0] = 0x01;
+                    tempnode[1] = 0x00;
+
+                    byte[] temp2 = BitConverter.GetBytes((UInt32)recursion); Array.Reverse(temp2);
+                    tempnode[4] = temp2[0];
+                    tempnode[5] = temp2[1];
+                    tempnode[6] = temp2[2];
+                    tempnode[7] = temp2[3];
+
+                    int size = currentnodes + 1;
+
+                    for (int j = i; j < files.Length; j++)
+                        if (files[j].Contains(files[i])) size++;
+
+                    byte[] temp3 = BitConverter.GetBytes((UInt32)size); Array.Reverse(temp3);
+                    tempnode[8] = temp3[0];
+                    tempnode[9] = temp3[1];
+                    tempnode[10] = temp3[2];
+                    tempnode[11] = temp3[3];
+                }
+                else //It's a file
+                {
+                    byte[] tempfile = new byte[0x40];
+                    int lzoffset = -1;
+
+                    if (files[i].EndsWith("banner.bin"))
+                    {
+                        tempfile = Wii.Tools.LoadFileToByteArray(rootpath + files[i], 0, tempfile.Length);
+
+                        for (int x = 0; x < tempfile.Length; x++)
+                        {
+                           if (tempfile[x] == 'L')
+                               if (tempfile[x + 1] == 'Z')
+                                   if (tempfile[x + 2] == '7')
+                                       if (tempfile[x + 3] == '7')
+                                       {
+                                           lzoffset = x;
+                                           break;
+                                       }
+                        }
+
+                        if (lzoffset != -1)
+                        {
+                            bannersize = BitConverter.ToInt32(new byte[] { tempfile[lzoffset + 5], tempfile[lzoffset + 6], tempfile[lzoffset + 7], tempfile[lzoffset + 8] }, 0);
+                        }
+                        else
+                        {
+                            FileInfo fibanner = new FileInfo(rootpath + files[i]);
+                            bannersize = (int)fibanner.Length;
+                        }
+                    }
+                    else if (files[i].EndsWith("icon.bin"))
+                    {tempfile = Wii.Tools.LoadFileToByteArray(rootpath + files[i], 0, tempfile.Length);
+
+                        for (int x = 0; x < tempfile.Length; x++)
+                        {
+                           if (tempfile[x] == 'L')
+                               if (tempfile[x + 1] == 'Z')
+                                   if (tempfile[x + 2] == '7')
+                                       if (tempfile[x + 3] == '7')
+                                       {
+                                           lzoffset = x;
+                                       }
+                        }
+
+                        if (lzoffset != -1)
+                        {
+                            iconsize = BitConverter.ToInt32(new byte[] { tempfile[lzoffset + 5], tempfile[lzoffset + 6], tempfile[lzoffset + 7], tempfile[lzoffset + 8] }, 0);
+                        }
+                        else
+                        {
+                            FileInfo fiicon = new FileInfo(rootpath + files[i]);
+                            iconsize = (int)fiicon.Length;
+                        }
+                    }
+                    else if (files[i].EndsWith("sound.bin"))
+                    {tempfile = Wii.Tools.LoadFileToByteArray(rootpath + files[i], 0, tempfile.Length);
+
+                        for (int x = 0; x < tempfile.Length; x++)
+                        {
+                            if (tempfile[x] == 'L')
+                                if (tempfile[x + 1] == 'Z')                                
+                                    if (tempfile[x + 2] == '7')
+                                        if (tempfile[x + 3] == '7')
+                                        {
+                                            lzoffset = x;
+                                            break;
+                                        }
+                        }
+
+                        if (lzoffset != -1)
+                        {
+                            soundsize = BitConverter.ToInt32(new byte[] { tempfile[lzoffset + 5], tempfile[lzoffset + 6], tempfile[lzoffset + 7], tempfile[lzoffset + 8] }, 0);
+                        }
+                        else
+                        {
+                            FileInfo fisound = new FileInfo(rootpath + files[i]);
+                            soundsize = (int)fisound.Length;
+                        }
+                    }
+
+                    tempnode[0] = 0x00;
+                    tempnode[1] = 0x00;
+
+                    byte[] temp2 = BitConverter.GetBytes((UInt32)data.Position); Array.Reverse(temp2);
+                    tempnode[4] = temp2[0];
+                    tempnode[5] = temp2[1];
+                    tempnode[6] = temp2[2];
+                    tempnode[7] = temp2[3];
+
+                    FileInfo fi = new FileInfo(rootpath + files[i]);
+                    byte[] temp3 = BitConverter.GetBytes((UInt32)fi.Length); Array.Reverse(temp3);
+                    tempnode[8] = temp3[0];
+                    tempnode[9] = temp3[1];
+                    tempnode[10] = temp3[2];
+                    tempnode[11] = temp3[3];
+
+                    using (FileStream fs = new FileStream(rootpath + files[i], FileMode.Open))
+                    using (BinaryReader br = new BinaryReader(fs))
+                        writedata.Write(br.ReadBytes((int)br.BaseStream.Length));
+
+                    writedata.Seek(Tools.AddPadding((int)data.Position, datapad), SeekOrigin.Begin);
+                }
+
+                nodes.Write(tempnode, 0, tempnode.Length);
+                currentnodes++;
+            }
+
+            byte[] type = new byte[2];
+            byte[] curpos = new byte[4];
+
+            for (int x = 0; x < nodecount * 12; x += 12)
+            {
+                nodes.Seek(x, SeekOrigin.Begin);
+                nodes.Read(type, 0, 2);
+
+                if (type[0] == 0x00 && type[1] == 0x00)
+                {
+                    nodes.Seek(x + 4, SeekOrigin.Begin);
+                    nodes.Read(curpos, 0, 4);
+                    Array.Reverse(curpos);
+
+                    UInt32 newpos = BitConverter.ToUInt32(curpos, 0) + (UInt32)(Tools.AddPadding(0x20 + ((12 * nodecount) + stringtable.Length), stringtablepad));
+
+                    nodes.Seek(x + 4, SeekOrigin.Begin);
+                    byte[] temp2 = BitConverter.GetBytes(newpos); Array.Reverse(temp2);
+                    nodes.Write(temp2, 0, 4);
+                }
+            }
+
+            writedata.Close();
+            MemoryStream output = new MemoryStream();
+            BinaryWriter writeout = new BinaryWriter(output);
+
+            writeout.Write((UInt32)0x2d38aa55);
+            writeout.Write(IPAddress.HostToNetworkOrder((ushort)0x20));
+            writeout.Write(IPAddress.HostToNetworkOrder((ushort)((12 * nodecount) + stringtable.Length)));
+            writeout.Write(IPAddress.HostToNetworkOrder((ushort)(Tools.AddPadding(0x20 + ((12 * nodecount) + stringtable.Length), stringtablepad))));
+
+            writeout.Seek(0x10, SeekOrigin.Current);
+
+            writeout.Write(nodes.ToArray());
+            writeout.Write(ASCIIEncoding.ASCII.GetBytes(stringtable));
+
+            writeout.Seek(Tools.AddPadding(0x20 + ((12 * nodecount) + stringtable.Length), stringtablepad), SeekOrigin.Begin);
+
+            writeout.Write(data.ToArray());
+
+            output.Seek(0, SeekOrigin.End);
+            for (int i = (int)output.Position; i < Tools.AddPadding((int)output.Position, datapad); i++)
+                output.WriteByte(0);
+
+            writeout.Close();
+            output.Close();
+
+            return output.ToArray();
+        }
+
+        /// <summary>
+        /// Unpacks the given U8 archive
+        /// If the archive is Lz77 compressed, it will be decompressed first!
+        /// </summary>
+        /// <param name="u8archive"></param>
+        /// <param name="unpackpath"></param>
+        public static void UnpackU8(string u8archive, string unpackpath)
+        {
+            byte[] u8 = Wii.Tools.LoadFileToByteArray(u8archive);
+            UnpackU8(u8, unpackpath);
         }
 
         /// <summary>
@@ -2320,7 +3374,10 @@ namespace Wii
             if (!Directory.Exists(unpackpath)) Directory.CreateDirectory(unpackpath);
 
             int u8offset = -1;
-            for (int i = 0; i < 2500; i++)
+            int length = 2500;
+            if (u8archive.Length < length) length = u8archive.Length - 4;
+
+            for (int i = 0; i < length; i++)
             {
                 if (u8archive[i] == 0x55 && u8archive[i + 1] == 0xAA && u8archive[i + 2] == 0x38 && u8archive[i + 3] == 0x2D)
                 {
@@ -2328,7 +3385,7 @@ namespace Wii
                     break;
                 }
             }
-
+            
             if (u8offset == -1) throw new Exception("File is not a valid U8 Archive!");
 
             int nodecount = Tools.HexStringToInt(u8archive[u8offset + 0x28].ToString("x2") + u8archive[u8offset + 0x29].ToString("x2") + u8archive[u8offset + 0x2a].ToString("x2") + u8archive[u8offset + 0x2b].ToString("x2"));
@@ -2354,7 +3411,7 @@ namespace Wii
                 int nameoffset = Tools.HexStringToInt(nodes[x, 1]);
                 string thisname = "";
 
-                while (end == false)
+                do
                 {
                     if (u8archive[stringtablepos + nameoffset] != 0x00)
                     {
@@ -2363,49 +3420,47 @@ namespace Wii
                         nameoffset++;
                     }
                     else end = true;
-                }
+                } while (end == false);
 
                 nodes[x, 4] = thisname;
             }
 
             string[] dirs = new string[nodecount];
             dirs[0] = unpackpath;
-            int dircount = 0;
+            int[] dircount = new int[nodecount];
             int dirindex = 0;
-            int count = -1;
-            bool recursive = false;
 
-            for (int y = 1; y < nodecount; y++)
+            try
             {
-                switch (nodes[y, 0])
+                for (int y = 1; y < nodecount; y++)
                 {
-                    case "0100":
-                        if (count == dircount || recursive == true) { dirindex--; }
+                    switch (nodes[y, 0])
+                    {
+                        case "0100":
+                            if (dirs[dirindex][dirs[dirindex].Length - 1] != '\\') { dirs[dirindex] = dirs[dirindex] + "\\"; }
+                            Directory.CreateDirectory(dirs[dirindex] + nodes[y, 4]);
+                            dirs[dirindex + 1] = dirs[dirindex] + nodes[y, 4];
+                            dirindex++;
+                            dircount[dirindex] = Tools.HexStringToInt(nodes[y, 3]);
+                            break;
+                        default:
+                            int filepos = u8offset + Tools.HexStringToInt(nodes[y, 2]);
+                            int filesize = Tools.HexStringToInt(nodes[y, 3]);
 
-                        dircount = Tools.HexStringToInt(nodes[y, 3]);
-                        count = 0;
+                            using (FileStream fs = new FileStream(dirs[dirindex] + "\\" + nodes[y, 4], FileMode.Create))
+                            {
+                                fs.Write(u8archive, filepos, filesize);
+                            }
+                            break;
+                    }
 
-                        if (dirs[dirindex][dirs[dirindex].Length - 1] != '\\') { dirs[dirindex] = dirs[dirindex] + "\\"; }
-                        Directory.CreateDirectory(dirs[dirindex] + nodes[y, 4]);
-                        dirs[dirindex + 1] = dirs[dirindex] + nodes[y, 4];
-                        dirindex++;
-
-                        if (nodes[y, 2] == "00000001") recursive = true;
-                        else recursive = false;
-                        break;
-                    default:
-                        int filepos = u8offset + Tools.HexStringToInt(nodes[y, 2]);
-                        int filesize = Tools.HexStringToInt(nodes[y, 3]);
-
-                        using (FileStream fs = new FileStream(dirs[dirindex] + "\\" + nodes[y, 4], FileMode.Create))
-                        {
-                            fs.Write(u8archive, filepos, filesize);
-                        }
-                        break;
+                    while (dirindex > 0 && dircount[dirindex] == (y + 1))
+                    {
+                        dirindex--;
+                    }
                 }
-
-                count++;
             }
+            catch { }
         }
 
         /// <summary>
@@ -2652,9 +3707,16 @@ namespace Wii
 
     public class Lz77
     {
-        public const int N = 4096;
-        public const int F = 18;
-        public const int threshold = 2;
+        private const int N = 4096;
+        private const int F = 18;
+        private const int threshold = 2;
+        private static int[] lson = new int[N + 1];
+        private static int[] rson = new int[N + 257];
+        private static int[] dad = new int[N + 1];
+        private static ushort[] text_buf = new ushort[N + 17];
+        private static int match_position = 0, match_length = 0;
+        private static int textsize = 0;
+        private static int codesize = 0;
 
         /// <summary>
         /// Returns the Offset to the Lz77 Header
@@ -2682,6 +3744,19 @@ namespace Wii
         }
 
         /// <summary>
+        /// Decompresses the given file
+        /// </summary>
+        /// <param name="infile"></param>
+        /// <param name="outfile"></param>
+        public static void Decompress(string infile, string outfile)
+        {
+            byte[] input = Tools.LoadFileToByteArray(infile);
+            int offset = GetLz77Offset(input);
+            if (offset == -1) throw new Exception("File is not Lz77 compressed!");
+            Tools.SaveFileFromByteArray(Decompress(input, offset), outfile);
+        }
+
+        /// <summary>
         /// Decompresses the given data
         /// </summary>
         /// <param name="compressed"></param>
@@ -2706,7 +3781,7 @@ namespace Wii
             decomp_size = gbaheader >> 8;
             byte[] text_buf = new byte[N + 17];
 
-            for (i = 0; i < N - F; i++) text_buf[i] = 0xff;
+            for (i = 0; i < N - F; i++) text_buf[i] = 0xdf;
             r = N - F; flags = 7; z = 7;
 
             while (true)
@@ -2743,11 +3818,211 @@ namespace Wii
 
             return outfile.ToArray();
         }
+
+        public static void InitTree()
+        {
+            int i;
+            for (i = N + 1; i <= N + 256; i++) rson[i] = N;
+            for (i = 0; i < N; i++) dad[i] = N;
+        }
+
+        public static void InsertNode(int r)
+        {
+            int i, p, cmp;
+            cmp = 1;
+            p = N + 1 + (text_buf[r] == 0xffff ? 0 : text_buf[r]); //text_buf[r];
+            rson[r] = lson[r] = N; match_length = 0;
+            for (; ; )
+            {
+                if (cmp >= 0)
+                {
+                    if (rson[p] != N) p = rson[p];
+                    else { rson[p] = r; dad[r] = p; return; }
+                }
+                else
+                {
+                    if (lson[p] != N) p = lson[p];
+                    else { lson[p] = r; dad[r] = p; return; }
+                }
+                for (i = 1; i < F; i++)
+                    if ((cmp = text_buf[r + i] - text_buf[p + i]) != 0) break;
+                if (i > match_length)
+                {
+                    match_position = p;
+                    if ((match_length = i) >= F) break;
+                }
+            }
+            dad[r] = dad[p]; lson[r] = lson[p]; rson[r] = rson[p];
+            dad[lson[p]] = r; dad[rson[p]] = r;
+            if (rson[dad[p]] == p) rson[dad[p]] = r;
+            else lson[dad[p]] = r;
+            dad[p] = N;
+        }
+
+        public static void DeleteNode(int p)
+        {
+            int q;
+
+            if (dad[p] == N) return;  /* not in tree */
+            if (rson[p] == N) q = lson[p];
+            else if (lson[p] == N) q = rson[p];
+            else
+            {
+                q = lson[p];
+                if (rson[q] != N)
+                {
+                    do { q = rson[q]; } while (rson[q] != N);
+                    rson[dad[q]] = lson[q]; dad[lson[q]] = dad[q];
+                    lson[q] = lson[p]; dad[lson[p]] = q;
+                }
+                rson[q] = rson[p]; dad[rson[p]] = q;
+            }
+            dad[q] = dad[p];
+            if (rson[dad[p]] == p) rson[dad[p]] = q; else lson[dad[p]] = q;
+            dad[p] = N;
+        }
+
+        /// <summary>
+        /// Lz77 compresses the given File
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public static void Compress(string infile, string outfile)
+        {
+            byte[] thisfile = Tools.LoadFileToByteArray(infile);
+            thisfile = Compress(thisfile);
+            Tools.SaveFileFromByteArray(thisfile, outfile);
+        }
+
+        /// <summary>
+        /// Lz77 compresses the given and saves it to the given Path
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public static void Compress(byte[] file, string outfile)
+        {
+            byte[] temp = Compress(file);
+            Tools.SaveFileFromByteArray(temp, outfile);
+        }
+
+        /// <summary>
+        /// Lz77 compresses the given Byte Array
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public static byte[] Compress(byte[] file)
+        {
+            int i, c, len, r, s, last_match_length, code_buf_ptr;
+            int[] code_buf = new int[17];
+            int mask;
+            UInt32 filesize = ((Convert.ToUInt32(file.Length)) << 8) + 0x10;
+            byte[] filesizebytes = BitConverter.GetBytes(filesize);
+
+            MemoryStream output = new MemoryStream();
+            output.WriteByte((byte)'L'); output.WriteByte((byte)'Z'); output.WriteByte((byte)'7'); output.WriteByte((byte)'7');
+            MemoryStream infile = new MemoryStream(file);
+
+            output.Write(filesizebytes, 0, filesizebytes.Length);
+
+            InitTree();
+            code_buf[0] = 0;
+            code_buf_ptr = 1;
+            mask = 0x80;
+            s = 0;
+            r = N - F;
+
+            for (i = s; i < r; i++) text_buf[i] = 0xffff;
+            for (len = 0; len < F && (c = (int)infile.ReadByte()) != -1; len++)
+                text_buf[r + len] = (ushort)c;
+
+            if ((textsize = len) == 0) return file;
+
+            for (i = 1; i <= F; i++) InsertNode(r - i);
+
+            InsertNode(r);
+
+            do
+            {
+                if (match_length > len) match_length = len;
+
+                if (match_length <= threshold)
+                {
+                    match_length = 1;
+                    code_buf[code_buf_ptr++] = text_buf[r];
+                }
+                else
+                {
+                    code_buf[0] |= mask;
+
+                    code_buf[code_buf_ptr++] = (char)
+                        (((r - match_position - 1) >> 8) & 0x0f) |
+                        ((match_length - (threshold + 1)) << 4);
+
+                    code_buf[code_buf_ptr++] = (char)((r - match_position - 1) & 0xff);
+                }
+                if ((mask >>= 1) == 0)
+                {
+                    for (i = 0; i < code_buf_ptr; i++)
+                        output.WriteByte((byte)code_buf[i]);
+                    codesize += code_buf_ptr;
+                    code_buf[0] = 0; code_buf_ptr = 1;
+                    mask = 0x80;
+                }
+
+                last_match_length = match_length;
+                for (i = 0; i < last_match_length &&
+                        (c = (int)infile.ReadByte()) != -1; i++)
+                {
+                    DeleteNode(s);
+                    text_buf[s] = (ushort)c;
+                    if (s < F - 1) text_buf[s + N] = (ushort)c;
+                    s = (s + 1) & (N - 1); r = (r + 1) & (N - 1);
+                    InsertNode(r);
+                }
+
+                while (i++ < last_match_length)
+                {
+                    DeleteNode(s);
+                    s = (s + 1) & (N - 1); r = (r + 1) & (N - 1);
+                    if (--len != 0) InsertNode(r);
+                }
+            } while (len > 0);
+
+
+            if (code_buf_ptr > 1)
+            {
+                for (i = 0; i < code_buf_ptr; i++) output.WriteByte((byte)code_buf[i]);
+                codesize += code_buf_ptr;
+            }
+
+            if (codesize % 4 != 0)
+                for (i = 0; i < 4 - (codesize % 4); i++)
+                    output.WriteByte(0x00);
+
+            infile.Close();
+            return output.ToArray();
+        }
     }
 
     public class TPL
     {
-        public static System.Drawing.Bitmap ConvertTPL(byte[] tpl)
+        /// <summary>
+        /// Converts a Tpl to a Bitmap
+        /// </summary>
+        /// <param name="tpl"></param>
+        /// <returns></returns>
+        public static Bitmap ConvertFromTPL(string tpl)
+        {
+            byte[] tplarray = Wii.Tools.LoadFileToByteArray(tpl);
+            return ConvertFromTPL(tplarray);
+        }
+
+        /// <summary>
+        /// Converts a Tpl to a Bitmap
+        /// </summary>
+        /// <param name="tpl"></param>
+        /// <returns></returns>
+        public static Bitmap ConvertFromTPL(byte[] tpl)
         {
             if (GetTextureCount(tpl) > 1) throw new Exception("Tpl's containing more than one Texture are not supported!");
 
@@ -2820,6 +4095,17 @@ namespace Wii
             tmp[0] = tpl[7];
             UInt32 count = BitConverter.ToUInt32(tmp, 0);
             return (int)count;
+        }
+
+        /// <summary>
+        /// Gets the Format of the Texture in the Tpl
+        /// </summary>
+        /// <param name="tpl"></param>
+        /// <returns></returns>
+        public static int GetTextureFormat(string tpl)
+        {
+            byte[] temp = Tools.LoadFileToByteArray(tpl, 0, 50);
+            return GetTextureFormat(temp);
         }
 
         /// <summary>
@@ -3274,6 +4560,11 @@ namespace Wii
             return Tools.UInt32ArrayToByteArray(output);
         }
 
+        /// <summary>
+        /// Converts CMP Tpl Array to RGBA Byte Array
+        /// </summary>
+        /// <param name="tpl"></param>
+        /// <returns></returns>
         public static byte[] FromCMP(byte[] tpl)
         {
             int width = GetTextureWidth(tpl);
@@ -3340,6 +4631,545 @@ namespace Wii
             }
 
             return Tools.UInt32ArrayToByteArray(output);
+        }
+
+        /// <summary>
+        /// Gets the pixel data of a Bitmap as an Byte Array
+        /// </summary>
+        /// <param name="img"></param>
+        /// <returns></returns>
+        public static uint[] BitmapToRGBA(Bitmap img)
+        {
+            int x = img.Width;
+            int y = img.Height;
+            UInt32[] rgba = new UInt32[x * y];
+
+            for (int i = 0; i < y; i += 4)
+            {
+                for (int j = 0; j < x; j += 4)
+                {
+                    for (int y1 = i; y1 < i + 4; y1++)
+                    {
+                        for (int x1 = j; x1 < j + 4; x1++)
+                        {
+                            if (y1 >= y || x1 >= x)
+                                continue;
+
+                            Color color = img.GetPixel(x1, y1);
+                            rgba[x1 + (y1 * x)] = (UInt32)color.ToArgb();
+                        }
+                    }
+                }
+            }
+
+            return rgba;
+        }
+
+        /// <summary>
+        /// Converts an Image to a Tpl
+        /// </summary>
+        /// <param name="img"></param>
+        /// <param name="format">4 = RGB565, 5 = RGB5A3, 6 = RGBA8</param>
+        /// <returns></returns>
+        public static void ConvertToTPL(Bitmap img, string destination, int format)
+        {
+            byte[] tpl = ConvertToTPL(img, format);
+
+            using (FileStream fs = new FileStream(destination, FileMode.Create))
+            {
+                fs.Write(tpl, 0, tpl.Length);
+            }
+        }
+
+        /// <summary>
+        /// Converts an Image to a Tpl
+        /// </summary>
+        /// <param name="img"></param>
+        /// <param name="format">4 = RGB565, 5 = RGB5A3, 6 = RGBA8</param>
+        /// <returns></returns>
+        public static void ConvertToTPL(Image img, string destination, int format)
+        {
+            byte[] tpl = ConvertToTPL((Bitmap)img, format);
+
+            using (FileStream fs = new FileStream(destination, FileMode.Create))
+            {
+                fs.Write(tpl, 0, tpl.Length);
+            }
+        }
+
+        /// <summary>
+        /// Converts an Image to a Tpl
+        /// </summary>
+        /// <param name="img"></param>
+        /// <param name="format">4 = RGB565, 5 = RGB5A3, 6 = RGBA8</param>
+        /// <returns></returns>
+        public static byte[] ConvertToTPL(Image img, int format)
+        {
+            return ConvertToTPL((Bitmap)img, format);
+        }
+
+        /// <summary>
+        /// Converts an Image to a Tpl
+        /// </summary>
+        /// <param name="img"></param>
+        /// <param name="format">4 = RGB565, 5 = RGB5A3, 6 = RGBA8</param>
+        /// <returns></returns>
+        public static byte[] ConvertToTPL(Bitmap img, int format)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                byte[] rgbaData;
+
+                UInt32 tplmagic = 0x20af30;
+                UInt32 ntextures = 0x1;
+                UInt32 headersize = 0xc;
+                UInt32 texheaderoff = 0x14;
+                UInt32 texpaletteoff = 0x0;
+
+                UInt16 texheight = (UInt16)img.Height;
+                UInt16 texwidth = (UInt16)img.Width;
+                UInt32 texformat;
+                UInt32 texdataoffset = 0x40;
+                byte[] rest = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 01, 00, 00, 00, 01, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00 };
+                //This should do it for our needs.. rest includes padding
+
+                switch (format)
+                {
+                    case 4: //RGB565
+                        texformat = 0x4;
+                        rgbaData = ToRGB565(img);
+                        break;
+                    case 5: //RGB5A3
+                        texformat = 0x5;
+                        rgbaData = ToRGB5A3(img);
+                        break;
+                    default: //RGBA8 = 6
+                        texformat = 0x6;
+                        rgbaData = ToRGBA8(img);
+                        break;
+                }
+
+                byte[] buffer = BitConverter.GetBytes(tplmagic); Array.Reverse(buffer);
+                ms.Seek(0, SeekOrigin.Begin);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = BitConverter.GetBytes(ntextures); Array.Reverse(buffer);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = BitConverter.GetBytes(headersize); Array.Reverse(buffer);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = BitConverter.GetBytes(texheaderoff); Array.Reverse(buffer);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = BitConverter.GetBytes(texpaletteoff); Array.Reverse(buffer);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = BitConverter.GetBytes(texheight); Array.Reverse(buffer);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = BitConverter.GetBytes(texwidth); Array.Reverse(buffer);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = BitConverter.GetBytes(texformat); Array.Reverse(buffer);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = BitConverter.GetBytes(texdataoffset); Array.Reverse(buffer);
+                ms.Write(buffer, 0, buffer.Length);
+
+                ms.Write(rest, 0, rest.Length);
+
+                ms.Write(rgbaData, 0, rgbaData.Length);
+
+                return ms.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Converts an Image to RGBA8 Tpl data
+        /// </summary>
+        /// <param name="img"></param>
+        /// <returns></returns>
+        public static byte[] ToRGBA8(Bitmap img)
+        {
+            uint[] pixeldata = BitmapToRGBA(img);
+            int w = img.Width;
+            int h = img.Height;
+            int z = 0, iv = 0;
+            byte[] output = new byte[Tools.AddPadding(w, 4) * Tools.AddPadding(h, 4) * 4];
+            uint[] lr = new uint[32], lg = new uint[32], lb = new uint[32], la = new uint[32];
+
+            for (int y1 = 0; y1 < h; y1 += 4)
+            {
+                for (int x1 = 0; x1 < w; x1 += 4)
+                {
+                    for (int y = y1; y < (y1 + 4); y++)
+                    {
+                        for (int x = x1; x < (x1 + 4); x++)
+                        {
+                            UInt32 rgba;
+
+                            if (y >= h || x >= w)
+                            {
+                                rgba = 0;
+                            }
+                            else
+                            {
+                                rgba = pixeldata[x + (y * w)];
+                            }
+
+                            lr[z] = (uint)(rgba >> 16) & 0xff;
+                            lg[z] = (uint)(rgba >> 8) & 0xff;
+                            lb[z] = (uint)(rgba >> 0) & 0xff;
+                            la[z] = (uint)(rgba >> 24) & 0xff;
+
+                            z++;
+                        }
+                    }
+
+                    if (z == 16)
+                    {
+                        for (int i = 0; i < 16; i++)
+                        {
+                            output[iv++] = (byte)(la[i]);
+                            output[iv++] = (byte)(lr[i]);
+                        }
+                        for (int i = 0; i < 16; i++)
+                        {
+                            output[iv++] = (byte)(lg[i]);
+                            output[iv++] = (byte)(lb[i]);
+                        }
+
+                        z = 0;
+                    }
+                }
+            }
+
+
+            return output;
+        }
+
+        /// <summary>
+        /// Converts an Image to RGBA565 Tpl data
+        /// </summary>
+        /// <param name="img"></param>
+        /// <returns></returns>
+        public static byte[] ToRGB565(Bitmap img)
+        {
+            uint[] pixeldata = BitmapToRGBA(img);
+            int w = img.Width;
+            int h = img.Height;
+            int z = -1;
+            byte[] output = new byte[Tools.AddPadding(w, 4) * Tools.AddPadding(h, 4) * 2];
+
+            for (int y1 = 0; y1 < h; y1 += 4)
+            {
+                for (int x1 = 0; x1 < w; x1 += 4)
+                {
+                    for (int y = y1; y < y1 + 4; y++)
+                    {
+                        for (int x = x1; x < x1 + 4; x++)
+                        {
+                            UInt16 newpixel;
+
+                            if (y >= h || x >= w)
+                            {
+                                newpixel = 0;
+                            }
+                            else
+                            {
+                                uint rgba = pixeldata[x + (y * w)];
+
+                                uint b = (rgba >> 16) & 0xff;
+                                uint g = (rgba >> 8) & 0xff;
+                                uint r = (rgba >> 0) & 0xff;
+
+                                newpixel = (UInt16)(((b >> 3) << 11) | ((g >> 2) << 5) | ((r >> 3) << 0));
+                            }
+
+                            byte[] temp = BitConverter.GetBytes(newpixel);
+                            Array.Reverse(temp);
+
+                            output[++z] = temp[0];
+                            output[++z] = temp[1];
+                        }
+                    }
+                }
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Converts an Image to RGBA5A3 Tpl data
+        /// </summary>
+        /// <param name="img"></param>
+        /// <returns></returns>
+        public static byte[] ToRGB5A3(Bitmap img)
+        {
+            uint[] pixeldata = BitmapToRGBA(img);
+            int w = img.Width;
+            int h = img.Height;
+            int z = -1;
+            byte[] output = new byte[Tools.AddPadding(w, 4) * Tools.AddPadding(h, 4) * 2];
+
+            for (int y1 = 0; y1 < h; y1 += 4)
+            {
+                for (int x1 = 0; x1 < w; x1 += 4)
+                {
+                    for (int y = y1; y < y1 + 4; y++)
+                    {
+                        for (int x = x1; x < x1 + 4; x++)
+                        {
+                            int newpixel;
+
+                            if (y >= h || x >= w)
+                            {
+                                newpixel = 0;
+                            }
+                            else
+                            {
+                                int rgba = (int)pixeldata[x + (y * w)];
+                                newpixel = 0;
+
+                                int r = (rgba >> 16) & 0xff;
+                                int g = (rgba >> 8) & 0xff;
+                                int b = (rgba >> 0) & 0xff;
+                                int a = (rgba >> 24) & 0xff;
+
+                                if (a <= 0xda)
+                                {
+                                    //RGB4A3
+
+                                    newpixel &= ~(1 << 15);
+
+                                    r = ((r * 15) / 255) & 0xf;
+                                    g = ((g * 15) / 255) & 0xf;
+                                    b = ((b * 15) / 255) & 0xf;
+                                    a = ((a * 7) / 255) & 0x7;
+
+                                    newpixel |= a << 12;
+                                    newpixel |= b << 0;
+                                    newpixel |= g << 4;
+                                    newpixel |= r << 8;
+                                }
+                                else
+                                {
+                                    //RGB5
+
+                                    newpixel |= (1 << 15);
+
+                                    r = ((r * 31) / 255) & 0x1f;
+                                    g = ((g * 31) / 255) & 0x1f;
+                                    b = ((b * 31) / 255) & 0x1f;
+
+                                    newpixel |= b << 0;
+                                    newpixel |= g << 5;
+                                    newpixel |= r << 10;
+                                }
+                            }
+
+                            byte[] temp = BitConverter.GetBytes((UInt16)newpixel);
+                            Array.Reverse(temp);
+
+                            output[++z] = temp[0];
+                            output[++z] = temp[1];
+                        }
+                    }
+                }
+            }
+
+            return output;
+        }
+    }
+
+    public class NAND
+    {
+        /// <summary>
+        /// Backups all Saves from a NAND Backup
+        /// </summary>
+        /// <param name="nandpath"></param>
+        /// <param name="destinationpath"></param>
+        public static void BackupSaves(string nandpath, string destinationpath)
+        {
+            string titlefolder = nandpath + "\\title";
+            string[] lowerdirs = Directory.GetDirectories(titlefolder);
+            Tools.ChangeProgress(0);
+
+            for (int i = 0; i < lowerdirs.Length; i++)
+            {
+                Tools.ChangeProgress((i + 1) * 100 / lowerdirs.Length);
+                string[] upperdirs = Directory.GetDirectories(lowerdirs[i]);
+
+                for (int j = 0; j < upperdirs.Length; j++)
+                {
+                    if (Directory.Exists(upperdirs[j] + "\\data"))
+                    {
+                        string[] datafiles = Directory.GetFiles(upperdirs[j] + "\\data");
+
+                        if (datafiles.Length > 0)
+                        {
+                            string destdatadir = (upperdirs[j] + "\\data").Replace(nandpath, destinationpath).Replace("\\title", "");
+                            if (!Directory.Exists(destdatadir)) Directory.CreateDirectory(destdatadir);
+
+                            foreach (string thisFile in datafiles)
+                            {
+                                string destfile = thisFile.Replace(nandpath, destinationpath).Replace("\\title", "");
+                                if (File.Exists(destfile)) File.Delete(destfile);
+                                File.Copy(thisFile, destfile);
+                            }
+                        }
+                    }
+                }
+            }
+
+            Tools.ChangeProgress(100);
+        }
+
+        /// <summary>
+        /// Restores all Saves for existing titles to a NAND Backup
+        /// </summary>
+        /// <param name="backupdir"></param>
+        /// <param name="nandpath"></param>
+        public static void RestoreSaves(string backuppath, string nandpath)
+        {
+            string titlefolder = nandpath + "\\title";
+            string[] lowerdirs = Directory.GetDirectories(backuppath);
+            Tools.ChangeProgress(0);
+
+            for (int i = 0; i < lowerdirs.Length; i++)
+            {
+                Tools.ChangeProgress((i + 1) * 100 / lowerdirs.Length);
+                string[] upperdirs = Directory.GetDirectories(lowerdirs[i]);
+
+                for (int j = 0; j < upperdirs.Length; j++)
+                {
+                    string[] datafiles = Directory.GetFiles(upperdirs[j] + "\\data");
+                    string upperdirnand = upperdirs[j].Replace(backuppath, titlefolder);
+
+                    if (Directory.Exists(upperdirnand) && datafiles.Length > 0)
+                    {
+                        if (!Directory.Exists(upperdirnand + "\\data")) Directory.CreateDirectory(upperdirnand + "\\data");
+
+                        foreach (string thisFile in datafiles)
+                        {
+                            string destfile = thisFile.Replace(backuppath, titlefolder);
+                            if (File.Exists(destfile)) File.Delete(destfile);
+                            File.Copy(thisFile, destfile);
+                        }
+                    }
+                }
+            }
+
+            Tools.ChangeProgress(100);
+        }
+
+        /// <summary>
+        /// Backups a single Save
+        /// </summary>
+        /// <param name="nandpath"></param>
+        /// <param name="titlepath">Format: XXXXXXXX\XXXXXXXX</param>
+        /// <param name="destinationpath"></param>
+        public static void BackupSingleSave(string nandpath, string titlepath, string destinationpath)
+        {
+            string datafolder = nandpath + "\\title\\" + titlepath + "\\data";
+            string[] datafiles = Directory.GetFiles(datafolder);
+            Tools.ChangeProgress(0);
+
+            if (datafiles.Length > 0)
+            {
+                string savefolder = datafolder.Replace(nandpath, destinationpath).Replace("\\title", "");
+                if (!Directory.Exists(savefolder)) Directory.CreateDirectory(savefolder);
+                int counter = 0;
+
+                foreach (string thisFile in datafiles)
+                {
+                    Tools.ChangeProgress(++counter * 100 / datafiles.Length);
+                    string savefile = thisFile.Replace(nandpath, destinationpath).Replace("\\title", "");
+                    if (File.Exists(savefile)) File.Delete(savefile);
+                    File.Copy(thisFile, savefile);
+                }
+            }
+            else
+            {
+                Tools.ChangeProgress(100);
+                throw new Exception("No save data was found!");
+            }
+
+            Tools.ChangeProgress(100);
+        }
+
+        /// <summary>
+        /// Restores a singe Save, if the title exists on NAND Backup
+        /// </summary>
+        /// <param name="backuppath"></param>
+        /// <param name="titlepath">Format: XXXXXXXX\XXXXXXXX</param>
+        /// <param name="nandpath"></param>
+        public static void RestoreSingleSave(string backuppath, string titlepath, string nandpath)
+        {
+            string titlefoldernand = nandpath + "\\title\\" + titlepath;
+            string titlefolder = titlefoldernand.Replace(nandpath, backuppath).Replace("\\title", "");
+            Tools.ChangeProgress(0);
+
+            if (Directory.Exists(titlefoldernand))
+            {
+                if (!Directory.Exists(titlefoldernand + "\\data")) Directory.CreateDirectory(titlefoldernand + "\\data");
+                string[] datafiles = Directory.GetFiles(titlefolder + "\\data");
+                int counter = 0;
+
+                foreach (string thisFile in datafiles)
+                {
+                    Tools.ChangeProgress(++counter * 100 / datafiles.Length);
+                    string nandfile = thisFile.Replace(titlefolder, titlefoldernand);
+                    if (File.Exists(nandfile)) File.Delete(nandfile);
+                    File.Copy(thisFile, nandfile);
+                }
+            }
+            else
+            {
+                Tools.ChangeProgress(100);
+                throw new Exception("Title not found in NAND Backup!");
+            }
+
+            Tools.ChangeProgress(100);
+        }
+
+        /// <summary>
+        /// Checks, if save data exists in the given title folder
+        /// </summary>
+        /// <param name="nandpath"></param>
+        /// <param name="titlepath">Format: XXXXXXXX\XXXXXXXX</param>
+        public static bool CheckForSaveData(string nandpath, string titlepath)
+        {
+            string datafolder = nandpath + "\\title\\" + titlepath + "\\data";
+
+            if (!Directory.Exists(datafolder)) return false;
+            else
+            {
+                string[] datafiles = Directory.GetFiles(datafolder);
+
+                if (datafiles.Length > 0) return true;
+                else return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks, if save data exists in the given title folder
+        /// </summary>
+        /// <param name="nandpath"></param>
+        /// <param name="titlepath">Format: XXXXXXXX\XXXXXXXX</param>
+        public static bool CheckForBackupData(string backuppath, string titlepath)
+        {
+            string datafolder = backuppath + "\\" + titlepath + "\\data";
+
+            if (!Directory.Exists(datafolder)) return false;
+            else
+            {
+                string[] datafiles = Directory.GetFiles(datafolder);
+
+                if (datafiles.Length > 0) return true;
+                else return false;
+            }
         }
     }
 

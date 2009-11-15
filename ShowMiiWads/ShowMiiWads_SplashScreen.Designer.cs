@@ -18,7 +18,7 @@
 
 namespace ShowMiiWads
 {
-    partial class SplashScreen
+    partial class ShowMiiWads_SplashScreen
     {
         /// <summary>
         /// Erforderliche Designervariable.

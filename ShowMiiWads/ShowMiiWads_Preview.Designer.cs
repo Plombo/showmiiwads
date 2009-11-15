@@ -18,7 +18,7 @@
 
 namespace ShowMiiWads
 {
-    partial class Preview
+    partial class ShowMiiWads_Preview
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -48,6 +48,7 @@ namespace ShowMiiWads
         {
             this.components = new System.ComponentModel.Container();
             this.Panel = new System.Windows.Forms.Panel();
+            this.cbLz77 = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.cbIcon = new System.Windows.Forms.ComboBox();
@@ -60,6 +61,11 @@ namespace ShowMiiWads
             this.cmBannerImages = new System.Windows.Forms.ToolStripMenuItem();
             this.cmIconImages = new System.Windows.Forms.ToolStripMenuItem();
             this.cmBothImages = new System.Windows.Forms.ToolStripMenuItem();
+            this.sepReplace = new System.Windows.Forms.ToolStripSeparator();
+            this.tsReplace = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmRGBA8 = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmRGB565 = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmRGB5A3 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lbFormat = new System.Windows.Forms.Label();
             this.lbFormatText = new System.Windows.Forms.Label();
@@ -74,6 +80,7 @@ namespace ShowMiiWads
             // 
             // Panel
             // 
+            this.Panel.Controls.Add(this.cbLz77);
             this.Panel.Controls.Add(this.btnSave);
             this.Panel.Controls.Add(this.btnClose);
             this.Panel.Controls.Add(this.cbIcon);
@@ -81,19 +88,31 @@ namespace ShowMiiWads
             this.Panel.Controls.Add(this.lbBanner);
             this.Panel.Controls.Add(this.cbBanner);
             this.Panel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.Panel.Location = new System.Drawing.Point(0, 436);
+            this.Panel.Location = new System.Drawing.Point(0, 473);
             this.Panel.Name = "Panel";
-            this.Panel.Size = new System.Drawing.Size(634, 28);
+            this.Panel.Size = new System.Drawing.Size(852, 28);
             this.Panel.TabIndex = 0;
+            // 
+            // cbLz77
+            // 
+            this.cbLz77.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.cbLz77.AutoSize = true;
+            this.cbLz77.Location = new System.Drawing.Point(397, 7);
+            this.cbLz77.Name = "cbLz77";
+            this.cbLz77.Size = new System.Drawing.Size(98, 17);
+            this.cbLz77.TabIndex = 4;
+            this.cbLz77.Text = "Lz77 Compress";
+            this.cbLz77.UseVisualStyleBackColor = true;
+            this.cbLz77.Visible = false;
             // 
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(405, 4);
+            this.btnSave.Location = new System.Drawing.Point(516, 4);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(105, 21);
+            this.btnSave.Size = new System.Drawing.Size(160, 21);
             this.btnSave.TabIndex = 2;
-            this.btnSave.Text = "Save";
+            this.btnSave.Text = "Close && Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -101,11 +120,11 @@ namespace ShowMiiWads
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.Location = new System.Drawing.Point(520, 4);
+            this.btnClose.Location = new System.Drawing.Point(682, 4);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(105, 21);
+            this.btnClose.Size = new System.Drawing.Size(160, 21);
             this.btnClose.TabIndex = 3;
-            this.btnClose.Text = "Close";
+            this.btnClose.Text = "Close && Discard";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
@@ -114,7 +133,7 @@ namespace ShowMiiWads
             this.cbIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbIcon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbIcon.FormattingEnabled = true;
-            this.cbIcon.Location = new System.Drawing.Point(246, 4);
+            this.cbIcon.Location = new System.Drawing.Point(239, 4);
             this.cbIcon.MaxDropDownItems = 20;
             this.cbIcon.Name = "cbIcon";
             this.cbIcon.Size = new System.Drawing.Size(121, 21);
@@ -125,7 +144,7 @@ namespace ShowMiiWads
             // 
             this.lbIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbIcon.AutoSize = true;
-            this.lbIcon.Location = new System.Drawing.Point(210, 7);
+            this.lbIcon.Location = new System.Drawing.Point(203, 7);
             this.lbIcon.Name = "lbIcon";
             this.lbIcon.Size = new System.Drawing.Size(31, 13);
             this.lbIcon.TabIndex = 2;
@@ -157,9 +176,11 @@ namespace ShowMiiWads
             // 
             this.cmPic.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmSave,
-            this.cmSaveAll});
+            this.cmSaveAll,
+            this.sepReplace,
+            this.tsReplace});
             this.cmPic.Name = "cmPic";
-            this.cmPic.Size = new System.Drawing.Size(116, 48);
+            this.cmPic.Size = new System.Drawing.Size(116, 76);
             // 
             // cmSave
             // 
@@ -199,6 +220,44 @@ namespace ShowMiiWads
             this.cmBothImages.Text = "Both";
             this.cmBothImages.Click += new System.EventHandler(this.btnBothImages_Click);
             // 
+            // sepReplace
+            // 
+            this.sepReplace.Name = "sepReplace";
+            this.sepReplace.Size = new System.Drawing.Size(112, 6);
+            this.sepReplace.Visible = false;
+            // 
+            // tsReplace
+            // 
+            this.tsReplace.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmRGBA8,
+            this.cmRGB565,
+            this.cmRGB5A3});
+            this.tsReplace.Name = "tsReplace";
+            this.tsReplace.Size = new System.Drawing.Size(115, 22);
+            this.tsReplace.Text = "Replace";
+            this.tsReplace.Visible = false;
+            // 
+            // cmRGBA8
+            // 
+            this.cmRGBA8.Name = "cmRGBA8";
+            this.cmRGBA8.Size = new System.Drawing.Size(234, 22);
+            this.cmRGBA8.Text = "As RGBA8 (High Quality )";
+            this.cmRGBA8.Click += new System.EventHandler(this.btnRGBA8_Click);
+            // 
+            // cmRGB565
+            // 
+            this.cmRGB565.Name = "cmRGB565";
+            this.cmRGB565.Size = new System.Drawing.Size(234, 22);
+            this.cmRGB565.Text = "AS RGB565 (Moderate Quality)";
+            this.cmRGB565.Click += new System.EventHandler(this.btnRGB565_Click);
+            // 
+            // cmRGB5A3
+            // 
+            this.cmRGB5A3.Name = "cmRGB5A3";
+            this.cmRGB5A3.Size = new System.Drawing.Size(234, 22);
+            this.cmRGB5A3.Text = "As RGB5A3 (Low Quality)";
+            this.cmRGB5A3.Click += new System.EventHandler(this.btnRGB5A3_Click);
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.lbFormat);
@@ -208,14 +267,14 @@ namespace ShowMiiWads
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(634, 22);
+            this.panel1.Size = new System.Drawing.Size(852, 22);
             this.panel1.TabIndex = 2;
             // 
             // lbFormat
             // 
             this.lbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lbFormat.AutoSize = true;
-            this.lbFormat.Location = new System.Drawing.Point(573, 5);
+            this.lbFormat.Location = new System.Drawing.Point(791, 5);
             this.lbFormat.Name = "lbFormat";
             this.lbFormat.Size = new System.Drawing.Size(43, 13);
             this.lbFormat.TabIndex = 3;
@@ -224,7 +283,7 @@ namespace ShowMiiWads
             // lbFormatText
             // 
             this.lbFormatText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbFormatText.Location = new System.Drawing.Point(367, 5);
+            this.lbFormatText.Location = new System.Drawing.Point(585, 5);
             this.lbFormatText.Name = "lbFormatText";
             this.lbFormatText.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.lbFormatText.Size = new System.Drawing.Size(205, 13);
@@ -256,24 +315,24 @@ namespace ShowMiiWads
             this.pbPic.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbPic.Location = new System.Drawing.Point(0, 22);
             this.pbPic.Name = "pbPic";
-            this.pbPic.Size = new System.Drawing.Size(634, 414);
+            this.pbPic.Size = new System.Drawing.Size(852, 451);
             this.pbPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbPic.TabIndex = 3;
             this.pbPic.TabStop = false;
             // 
-            // Preview
+            // ShowMiiWads_Preview
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(634, 464);
+            this.ClientSize = new System.Drawing.Size(852, 501);
             this.Controls.Add(this.pbPic);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.Panel);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(650, 500);
-            this.Name = "Preview";
+            this.MinimumSize = new System.Drawing.Size(833, 500);
+            this.Name = "ShowMiiWads_Preview";
             this.Text = "Preview";
             this.Load += new System.EventHandler(this.Preview_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Preview_FormClosing);
@@ -308,5 +367,11 @@ namespace ShowMiiWads
         public System.Windows.Forms.ToolStripMenuItem cmBannerImages;
         public System.Windows.Forms.ToolStripMenuItem cmIconImages;
         public System.Windows.Forms.ToolStripMenuItem cmBothImages;
+        private System.Windows.Forms.ToolStripSeparator sepReplace;
+        public System.Windows.Forms.ToolStripMenuItem tsReplace;
+        public System.Windows.Forms.ToolStripMenuItem cmRGBA8;
+        public System.Windows.Forms.ToolStripMenuItem cmRGB565;
+        public System.Windows.Forms.ToolStripMenuItem cmRGB5A3;
+        public System.Windows.Forms.CheckBox cbLz77;
     }
 }

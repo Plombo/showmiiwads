@@ -58,46 +58,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="About.cs">
+    <Compile Include="ShowMiiWads_About.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="About.Designer.cs">
-      <DependentUpon>About.cs</DependentUpon>
+    <Compile Include="ShowMiiWads_About.Designer.cs">
+      <DependentUpon>ShowMiiWads_About.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChannelNameBox.cs">
+    <Compile Include="ShowMiiWads_ChannelNameBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChannelNameBox.Designer.cs">
-      <DependentUpon>ChannelNameBox.cs</DependentUpon>
+    <Compile Include="ShowMiiWads_ChannelNameBox.Designer.cs">
+      <DependentUpon>ShowMiiWads_ChannelNameBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Disclaimer.cs">
+    <Compile Include="ShowMiiWads_Disclaimer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Disclaimer.Designer.cs">
-      <DependentUpon>Disclaimer.cs</DependentUpon>
+    <Compile Include="ShowMiiWads_Disclaimer.Designer.cs">
+      <DependentUpon>ShowMiiWads_Disclaimer.cs</DependentUpon>
     </Compile>
-    <Compile Include="InputBox.cs">
+    <Compile Include="ShowMiiWads_InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ShowMiiWads.cs">
+    <Compile Include="ShowMiiWads_Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ShowMiiWads.Designer.cs">
-      <DependentUpon>ShowMiiWads.cs</DependentUpon>
+    <Compile Include="ShowMiiWads_Main.Designer.cs">
+      <DependentUpon>ShowMiiWads_Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Preview.cs">
+    <Compile Include="ShowMiiWads_Preview.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Preview.Designer.cs">
-      <DependentUpon>Preview.cs</DependentUpon>
+    <Compile Include="ShowMiiWads_Preview.Designer.cs">
+      <DependentUpon>ShowMiiWads_Preview.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="About.resx">
-      <DependentUpon>About.cs</DependentUpon>
+    <EmbeddedResource Include="ShowMiiWads_About.resx">
+      <DependentUpon>ShowMiiWads_About.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ShowMiiWads.resx">
-      <DependentUpon>ShowMiiWads.cs</DependentUpon>
+    <EmbeddedResource Include="ShowMiiWads_Main.resx">
+      <DependentUpon>ShowMiiWads_Main.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -119,11 +119,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Sorter.cs" />
-    <Compile Include="SplashScreen.cs">
+    <Compile Include="ShowMiiWads_SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SplashScreen.Designer.cs">
-      <DependentUpon>SplashScreen.cs</DependentUpon>
+    <Compile Include="ShowMiiWads_SplashScreen.Designer.cs">
+      <DependentUpon>ShowMiiWads_SplashScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="Wii.cs" />
   </ItemGroup>
@@ -132,20 +132,20 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\German.txt" />
-    <EmbeddedResource Include="InputBox.resx">
-      <DependentUpon>InputBox.cs</DependentUpon>
+    <EmbeddedResource Include="ShowMiiWads_InputBox.resx">
+      <DependentUpon>ShowMiiWads_InputBox.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ChannelNameBox.resx">
-      <DependentUpon>ChannelNameBox.cs</DependentUpon>
+    <EmbeddedResource Include="ShowMiiWads_ChannelNameBox.resx">
+      <DependentUpon>ShowMiiWads_ChannelNameBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Disclaimer.resx">
-      <DependentUpon>Disclaimer.cs</DependentUpon>
+    <EmbeddedResource Include="ShowMiiWads_Disclaimer.resx">
+      <DependentUpon>ShowMiiWads_Disclaimer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\French.txt" />
-    <EmbeddedResource Include="Preview.resx">
-      <DependentUpon>Preview.cs</DependentUpon>
+    <EmbeddedResource Include="ShowMiiWads_Preview.resx">
+      <DependentUpon>ShowMiiWads_Preview.cs</DependentUpon>
     </EmbeddedResource>
     <Content Include="FAQ.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -161,9 +161,11 @@
     <None Include="Resources\ShowMiiWads_Loading.png" />
     <None Include="Resources\ShowMiiWads_Logo.png" />
     <None Include="Resources\ShowMiiWads_Icon.ico" />
+    <EmbeddedResource Include="Resources\Tmd_Contents" />
+    <EmbeddedResource Include="Resources\Nandloader.app" />
     <EmbeddedResource Include="Languages\Spanish.txt" />
-    <EmbeddedResource Include="SplashScreen.resx">
-      <DependentUpon>SplashScreen.cs</DependentUpon>
+    <EmbeddedResource Include="ShowMiiWads_SplashScreen.resx">
+      <DependentUpon>ShowMiiWads_SplashScreen.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

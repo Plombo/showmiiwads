@@ -18,7 +18,7 @@
  
  namespace ShowMiiWads
 {
-    partial class Disclaimer
+    partial class ShowMiiWads_Disclaimer
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -46,7 +46,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Disclaimer));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowMiiWads_Disclaimer));
             this.rtbDisclaimer = new System.Windows.Forms.RichTextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.rbAccept = new System.Windows.Forms.RadioButton();

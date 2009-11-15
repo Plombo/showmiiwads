@@ -41,11 +41,11 @@ namespace ShowMiiWads
             {
                 LoadSettings();
 
-                if (foldercount == 0 && string.IsNullOrEmpty(nandpath)) { Application.Run(new ShowMiiWads()); }
-                else if (splash != "false") { Application.Run(new SplashScreen()); }
-                else { Application.Run(new ShowMiiWads()); }
+                if (foldercount == 0 && string.IsNullOrEmpty(nandpath)) { Application.Run(new ShowMiiWads_Main()); }
+                else if (splash != "false") { Application.Run(new ShowMiiWads_SplashScreen()); }
+                else { Application.Run(new ShowMiiWads_Main()); }
             }
-            else { Application.Run(new ShowMiiWads()); }
+            else { Application.Run(new ShowMiiWads_Main()); }
         }
 
         private static void LoadSettings()
