@@ -11,6 +11,13 @@ want to have your translation included into the application, contact me..
 -----------------------------------------------------------------------------------------
 Changelog:
 
+Version 1.3
+	- Note: License upgraded to GNU GPL v3!
+	- Added extracing of BootMii NAND Dumps (Code from Ben Wilson, thanks!)
+	- Batch extracting of VCPic's (VC Titles only, Png's will be resized to 192 x 112)
+	- Fixed reading and writing of japanese characters
+	- Fixed displaying of titles of DLC WADs
+
 Version 1.2
 	- Fixed a bug that caused ShowMiiNand not to load the List with the saved entries
 	- You can replace Banner and Icon images (the resultant U8's can be Lz77 compressed!)
@@ -140,6 +147,7 @@ carbonyle and Cyan for French translation
 Tetsuo Shima for Italian translation
 putifruti for Spanish translation
 pesaroso for Norwegian translation
+Ben Wilson for NAND extractor
 Everyone for using this application
 -----------------------------------------------------------------------------------------
 

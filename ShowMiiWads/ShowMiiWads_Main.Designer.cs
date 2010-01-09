@@ -1,19 +1,18 @@
 ﻿/* This file is part of ShowMiiWads
  * Copyright (C) 2009 Leathl
  * 
- * ShowMiiWads is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * ShowMiiWads is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * ShowMiiWads is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ShowMiiWads is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace ShowMiiWads
@@ -79,6 +78,8 @@ namespace ShowMiiWads
             this.cmExtract = new System.Windows.Forms.ToolStripMenuItem();
             this.cmToFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.cmToNand = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmExtractVcPics = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.cmPreview = new System.Windows.Forms.ToolStripMenuItem();
             this.cmRestore = new System.Windows.Forms.ToolStripMenuItem();
@@ -136,6 +137,8 @@ namespace ShowMiiWads
             this.btnItalian = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSpanish = new System.Windows.Forms.ToolStripMenuItem();
             this.btnNorwegian = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnPortuguese = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnJapanese = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.btnFromFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsTools = new System.Windows.Forms.ToolStripMenuItem();
@@ -153,6 +156,7 @@ namespace ShowMiiWads
             this.btnLz77Compress = new System.Windows.Forms.ToolStripMenuItem();
             this.btnLz77Decompress = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnExtractBootmiiDump = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCreateKey = new System.Windows.Forms.ToolStripMenuItem();
             this.tsView = new System.Windows.Forms.ToolStripMenuItem();
             this.btnShowMiiWads = new System.Windows.Forms.ToolStripMenuItem();
@@ -454,7 +458,9 @@ namespace ShowMiiWads
             // 
             this.cmExtract.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmToFolder,
-            this.cmToNand});
+            this.cmToNand,
+            this.toolStripSeparator8,
+            this.cmExtractVcPics});
             this.cmExtract.Enabled = false;
             this.cmExtract.Name = "cmExtract";
             this.cmExtract.Size = new System.Drawing.Size(188, 22);
@@ -473,6 +479,18 @@ namespace ShowMiiWads
             this.cmToNand.Size = new System.Drawing.Size(125, 22);
             this.cmToNand.Text = "To NAND";
             this.cmToNand.Click += new System.EventHandler(this.cmToNAND_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(122, 6);
+            // 
+            // cmExtractVcPics
+            // 
+            this.cmExtractVcPics.Name = "cmExtractVcPics";
+            this.cmExtractVcPics.Size = new System.Drawing.Size(125, 22);
+            this.cmExtractVcPics.Text = "VC Pics";
+            this.cmExtractVcPics.Click += new System.EventHandler(this.cmExtractVcPics_Click);
             // 
             // toolStripSeparator11
             // 
@@ -892,6 +910,8 @@ namespace ShowMiiWads
             this.btnItalian,
             this.btnSpanish,
             this.btnNorwegian,
+            this.btnPortuguese,
+            this.btnJapanese,
             this.toolStripSeparator7,
             this.btnFromFile});
             this.tsLanguage.Name = "tsLanguage";
@@ -904,7 +924,7 @@ namespace ShowMiiWads
             this.btnEnglish.CheckOnClick = true;
             this.btnEnglish.CheckState = System.Windows.Forms.CheckState.Checked;
             this.btnEnglish.Name = "btnEnglish";
-            this.btnEnglish.Size = new System.Drawing.Size(123, 22);
+            this.btnEnglish.Size = new System.Drawing.Size(152, 22);
             this.btnEnglish.Text = "English";
             this.btnEnglish.Click += new System.EventHandler(this.btnEnglish_Click);
             // 
@@ -912,7 +932,7 @@ namespace ShowMiiWads
             // 
             this.btnGerman.CheckOnClick = true;
             this.btnGerman.Name = "btnGerman";
-            this.btnGerman.Size = new System.Drawing.Size(123, 22);
+            this.btnGerman.Size = new System.Drawing.Size(152, 22);
             this.btnGerman.Text = "Deutsch";
             this.btnGerman.Click += new System.EventHandler(this.btnGerman_Click);
             // 
@@ -920,7 +940,7 @@ namespace ShowMiiWads
             // 
             this.btnFrench.CheckOnClick = true;
             this.btnFrench.Name = "btnFrench";
-            this.btnFrench.Size = new System.Drawing.Size(123, 22);
+            this.btnFrench.Size = new System.Drawing.Size(152, 22);
             this.btnFrench.Text = "Français";
             this.btnFrench.Click += new System.EventHandler(this.btnFrench_Click);
             // 
@@ -928,7 +948,7 @@ namespace ShowMiiWads
             // 
             this.btnItalian.CheckOnClick = true;
             this.btnItalian.Name = "btnItalian";
-            this.btnItalian.Size = new System.Drawing.Size(123, 22);
+            this.btnItalian.Size = new System.Drawing.Size(152, 22);
             this.btnItalian.Text = "Italiano";
             this.btnItalian.Click += new System.EventHandler(this.btnItalian_Click);
             // 
@@ -936,7 +956,7 @@ namespace ShowMiiWads
             // 
             this.btnSpanish.CheckOnClick = true;
             this.btnSpanish.Name = "btnSpanish";
-            this.btnSpanish.Size = new System.Drawing.Size(123, 22);
+            this.btnSpanish.Size = new System.Drawing.Size(152, 22);
             this.btnSpanish.Text = "Español";
             this.btnSpanish.Click += new System.EventHandler(this.btnSpanish_Click);
             // 
@@ -944,20 +964,36 @@ namespace ShowMiiWads
             // 
             this.btnNorwegian.CheckOnClick = true;
             this.btnNorwegian.Name = "btnNorwegian";
-            this.btnNorwegian.Size = new System.Drawing.Size(123, 22);
+            this.btnNorwegian.Size = new System.Drawing.Size(152, 22);
             this.btnNorwegian.Text = "Norsk";
             this.btnNorwegian.Click += new System.EventHandler(this.btnNorwegian_Click);
+            // 
+            // btnPortuguese
+            // 
+            this.btnPortuguese.CheckOnClick = true;
+            this.btnPortuguese.Name = "btnPortuguese";
+            this.btnPortuguese.Size = new System.Drawing.Size(152, 22);
+            this.btnPortuguese.Text = "Português";
+            this.btnPortuguese.Click += new System.EventHandler(this.btnPortuguese_Click);
+            // 
+            // btnJapanese
+            // 
+            this.btnJapanese.CheckOnClick = true;
+            this.btnJapanese.Name = "btnJapanese";
+            this.btnJapanese.Size = new System.Drawing.Size(152, 22);
+            this.btnJapanese.Text = "Japanese";
+            this.btnJapanese.Click += new System.EventHandler(this.btnJapanese_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(120, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
             // 
             // btnFromFile
             // 
             this.btnFromFile.CheckOnClick = true;
             this.btnFromFile.Name = "btnFromFile";
-            this.btnFromFile.Size = new System.Drawing.Size(123, 22);
+            this.btnFromFile.Size = new System.Drawing.Size(152, 22);
             this.btnFromFile.Text = "From File";
             this.btnFromFile.Click += new System.EventHandler(this.btnFromFile_Click);
             // 
@@ -972,6 +1008,7 @@ namespace ShowMiiWads
             this.btnLz77Compress,
             this.btnLz77Decompress,
             this.toolStripSeparator14,
+            this.btnExtractBootmiiDump,
             this.btnCreateKey});
             this.tsTools.Name = "tsTools";
             this.tsTools.Size = new System.Drawing.Size(48, 20);
@@ -1078,6 +1115,13 @@ namespace ShowMiiWads
             // 
             this.toolStripSeparator14.Name = "toolStripSeparator14";
             this.toolStripSeparator14.Size = new System.Drawing.Size(203, 6);
+            // 
+            // btnExtractBootmiiDump
+            // 
+            this.btnExtractBootmiiDump.Name = "btnExtractBootmiiDump";
+            this.btnExtractBootmiiDump.Size = new System.Drawing.Size(206, 22);
+            this.btnExtractBootmiiDump.Text = "Extract BootMii Dump";
+            this.btnExtractBootmiiDump.Click += new System.EventHandler(this.btnExtractBootmiiDump_Click);
             // 
             // btnCreateKey
             // 
@@ -1639,6 +1683,11 @@ namespace ShowMiiWads
         private System.Windows.Forms.ToolStripMenuItem cmNandRestoreSaveAll;
         private System.Windows.Forms.ToolStripMenuItem btnChangeIosSlot;
         private System.Windows.Forms.ToolStripMenuItem btnChangeTitleVersion;
+        private System.Windows.Forms.ToolStripMenuItem btnExtractBootmiiDump;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem cmExtractVcPics;
+        private System.Windows.Forms.ToolStripMenuItem btnPortuguese;
+        private System.Windows.Forms.ToolStripMenuItem btnJapanese;
     }
 }
 

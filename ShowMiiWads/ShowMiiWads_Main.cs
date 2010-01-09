@@ -1,19 +1,18 @@
 ﻿/* This file is part of ShowMiiWads
  * Copyright (C) 2009 Leathl
  * 
- * ShowMiiWads is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * ShowMiiWads is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * ShowMiiWads is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ShowMiiWads is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #define Debug //Skips the updatecheck on startup
@@ -24,21 +23,20 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using InputBoxes;
 using ChannelNameBox;
-using System.Net;
-using System.Text;
-using System.Xml;
+using InputBoxes;
 
 namespace ShowMiiWads
 {
     public partial class ShowMiiWads_Main : Form
     {
         //Define global variables
-        public const string version = "1.2";
+        public const string version = "1.3";
         private string language = "English";
         private string langfile = "";
         private string oldlang = "";
@@ -66,7 +64,7 @@ namespace ShowMiiWads
         private string splash = "true";
         private string ckey = Application.StartupPath + "\\common-key.bin";
         private string key = Application.StartupPath + "\\key.bin";
-        private string[] mru = new string[5] {"", "", "", "", ""};
+        private string[] mru = new string[5] { "", "", "", "", "" };
         public static string TempPath = Path.GetTempPath() + "\\ShowMiiWads_WadTemp";
         public string ListPath = Path.GetTempPath() + "\\ShowMiiWads.list";
         public string ListPathNand = Path.GetTempPath() + "\\ShowMiiNand.list";
@@ -104,7 +102,8 @@ namespace ShowMiiWads
             Wii.Tools.ProgressChanged += new EventHandler<Wii.ProgressChangedEventArgs>(WadProgressChanged);
 #if !Debug
             //Check for Updates
-            UpdateCheck(true);
+            MethodInvoker Update = new MethodInvoker(UpdateCheck);
+            Update.BeginInvoke(null, null);
 #endif
             //Cursor back to default
             Cursor.Current = Cursors.Default;
@@ -119,7 +118,7 @@ namespace ShowMiiWads
         void WadProgressChanged(object sender, Wii.ProgressChangedEventArgs e)
         {
             if ((string)pbProgress.Tag != "NoProgress")
-            pbProgress.Value = e.PercentProgress;
+                pbProgress.Value = e.PercentProgress;
         }
 
         /// <summary>
@@ -146,18 +145,18 @@ namespace ShowMiiWads
         private void AddNand()
         {
             lvNand.Items.Clear();
-            
+
             if (Directory.Exists(NandPath) &&
                 Directory.Exists(NandPath + "\\ticket") &&
                 Directory.Exists(NandPath + "\\title"))
             {
                 string[] tickets = Directory.GetFiles(NandPath + "\\ticket", "*.tik", SearchOption.AllDirectories);
-                
+
                 if (tickets.Length > 0)
                 {
                     string[,] Infos = new string[tickets.Length, 11];
                     Cursor.Current = Cursors.WaitCursor;
-                    
+
                     for (int i = 0; i < tickets.Length; i++)
                     {
                         try
@@ -884,7 +883,7 @@ namespace ShowMiiWads
                                 dcl.ShowDialog();
                                 if (accepted == "true")
                                 {
-                                   EditFeatures(true);
+                                    EditFeatures(true);
                                 }
                                 else
                                 {
@@ -1068,6 +1067,32 @@ namespace ShowMiiWads
                     btnNorwegian.Checked = true;
                     norwegianstream.Close();
                     break;
+                case "Portuguese":
+                    StreamReader portuguesestream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.Languages.Portuguese.txt"));
+
+                    while ((thisline = portuguesestream.ReadLine()) != null)
+                    {
+                        if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
+                            Messages[++counter] = thisline;
+                    }
+
+                    UncheckLangButtons();
+                    btnPortuguese.Checked = true;
+                    portuguesestream.Close();
+                    break;
+                case "Japanese":
+                    StreamReader japanesestream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.Languages.Japanese.txt"));
+
+                    while ((thisline = japanesestream.ReadLine()) != null)
+                    {
+                        if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
+                            Messages[++counter] = thisline;
+                    }
+
+                    UncheckLangButtons();
+                    btnJapanese.Checked = true;
+                    japanesestream.Close();
+                    break;
                 case "File":
                     if (File.Exists(langfile))
                     {
@@ -1157,6 +1182,8 @@ namespace ShowMiiWads
             btnItalian.Checked = false;
             btnSpanish.Checked = false;
             btnNorwegian.Checked = false;
+            btnPortuguese.Checked = false;
+            btnJapanese.Checked = false;
             btnFromFile.Checked = false;
         }
 
@@ -1511,7 +1538,7 @@ namespace ShowMiiWads
                         if (newname.Contains("System: MIOS")) newname = newname.Replace("System: MIOS", "MIOS");
                         if (newname.Contains("System: BC")) newname = newname.Replace("System: BC", "BC");
                         if (newname.Contains("System: Menu")) newname = newname.Replace("System: Menu", "SystemMenu");
-                        
+
                         if (newname != wadname + ".wad")
                         {
                             try
@@ -1524,7 +1551,7 @@ namespace ShowMiiWads
                                     int count = 1;
                                     bool stop = false;
                                     thisfile = thisfile.Insert(thisfile.Length - 4, " (" + count.ToString() + ")");
-                                    
+
                                     if (thisfile.Remove(0, thisfile.LastIndexOf('\\') + 1) != wadname + ".wad")
                                     {
                                         while (File.Exists(thisfile))
@@ -1925,6 +1952,38 @@ namespace ShowMiiWads
             }
         }
 
+        private void btnPortuguese_Click(object sender, EventArgs e)
+        {
+            if (btnPortuguese.Checked == true)
+            {
+                language = "Portuguese";
+                langfile = "";
+                LoadLanguage();
+                SaveSettings();
+                ReloadChannelTitles();
+            }
+            else
+            {
+                btnPortuguese.Checked = true;
+            }
+        }
+
+        private void btnJapanese_Click(object sender, EventArgs e)
+        {
+            if (btnJapanese.Checked == true)
+            {
+                language = "Japanese";
+                langfile = "";
+                LoadLanguage();
+                SaveSettings();
+                ReloadChannelTitles();
+            }
+            else
+            {
+                btnJapanese.Checked = true;
+            }
+        }
+
         private void btnFromFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog opendlg = new OpenFileDialog();
@@ -2190,7 +2249,7 @@ namespace ShowMiiWads
             else
             {
                 e.Effect = DragDropEffects.None;
-            } 
+            }
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -2357,7 +2416,7 @@ namespace ShowMiiWads
             pbProgress.Value = 100;
             pbProgress.Tag = "";
         }
-    
+
 
         private void cmPal_Click(object sender, EventArgs e)
         {
@@ -2516,7 +2575,7 @@ namespace ShowMiiWads
             {
                 savefolders = "false";
             }
-            
+
             SaveSettings();
         }
 
@@ -2563,7 +2622,7 @@ namespace ShowMiiWads
                     if (!string.IsNullOrEmpty(copyfile[i]))
                     {
                         string filename = copyfile[i].Remove(0, copyfile[i].LastIndexOf('\\') + 1);
-                        
+
                         if (File.Exists(copyfile[i]))
                         {
                             bool over = false;
@@ -2917,7 +2976,7 @@ namespace ShowMiiWads
                     {
                         string wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text;
                         string[] oldtitles = Wii.WadInfo.GetChannelTitles(lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text);
-                        
+
                         if (oldtitles[1].Length != 0)
                         {
                             string[] oldvalues = new string[7] { oldtitles[0], oldtitles[1], oldtitles[2], oldtitles[3], oldtitles[4], oldtitles[5], oldtitles[6] };
@@ -3112,7 +3171,7 @@ namespace ShowMiiWads
                     lbFolders.Text = "";
                     lbFolderCount.Text = "";
                     lbFileCount.Text = "0";
-                    
+
                     this.Text = "ShowMiiNand " + version + " by Leathl";
 
                     lvWads.Visible = false;
@@ -3201,7 +3260,7 @@ namespace ShowMiiWads
             {
                 string packpath = fbd.SelectedPath;
 
-                if (Directory.Exists(packpath) && 
+                if (Directory.Exists(packpath) &&
                     Directory.GetFiles(packpath, "*.app").Length > 1 &&
                     Directory.GetFiles(packpath, "*.cert").Length >= 1 &&
                     Directory.GetFiles(packpath, "*.tik").Length >= 1 &&
@@ -3248,7 +3307,9 @@ namespace ShowMiiWads
                         {
                             Cursor.Current = Cursors.WaitCursor;
 
-                            Wii.WadPack.PackWad(packpath, sfd.FileName, true);
+                            string[] tmdfile = Directory.GetFiles(packpath, "*.tmd");
+                            Wii.WadEdit.UpdateTmdContents(tmdfile[0]);
+                            Wii.WadPack.PackWad(packpath, sfd.FileName);
 
                             Cursor.Current = Cursors.Default;
                         }
@@ -3356,7 +3417,7 @@ namespace ShowMiiWads
             else
             {
                 e.Effect = DragDropEffects.None;
-            } 
+            }
         }
 
         private void lbQueueDiscard_Click(object sender, EventArgs e)
@@ -3524,15 +3585,15 @@ namespace ShowMiiWads
                                 Wii.WadUnpack.UnpackWad(lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text, TempPath);
 
                                 pbProgress.Value = 20;
-                                
+
                                 Wii.U8.UnpackU8(TempPath + "\\00000000.app", TempPath + "\\00000000_app_OUT");
 
                                 pbProgress.Value = 40;
-                                
+
                                 Wii.U8.UnpackU8(TempPath + "\\00000000_app_OUT\\meta\\banner.bin", TempPath + "\\00000000_app_OUT\\meta\\banner_bin_OUT");
 
                                 pbProgress.Value = 60;
-                                
+
                                 Wii.U8.UnpackU8(TempPath + "\\00000000_app_OUT\\meta\\icon.bin", TempPath + "\\00000000_app_OUT\\meta\\icon_bin_OUT");
 
                                 pbProgress.Value = 80;
@@ -3583,7 +3644,7 @@ namespace ShowMiiWads
                                     LoadNew();
                                 }
                             }
-                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                            catch (Exception ex) { ErrorBox(ex.Message); }
                         }
                         else
                         {
@@ -3671,7 +3732,7 @@ namespace ShowMiiWads
                             pvw.cbLz77.Text = Messages[135];
                             pvw.ShowDialog();
                         }
-                        catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        catch (Exception ex) { ErrorBox(ex.Message); }
                     }
                     else
                     {
@@ -3820,19 +3881,24 @@ namespace ShowMiiWads
             MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void UpdateCheck()
+        {
+            UpdateCheck(true);
+        }
+
         private void UpdateCheck(bool silentifno)
         {
             if (!version.Contains("Beta"))
             {
                 try
-                {                 
+                {
                     WebClient GetVersion = new WebClient();
                     string newversion = GetVersion.DownloadString("http://showmiiwads.googlecode.com/svn/newversion.txt");
                     string address = newversion.Remove(newversion.LastIndexOf("\r")).Remove(0, newversion.IndexOf("\n") + 1);
                     string address64 = newversion.Remove(0, newversion.LastIndexOf("\n") + 1);
                     newversion = newversion.Remove(newversion.IndexOf("\r"));
                     newversion.Replace(" ", "");
-                    
+
                     if (newversion == version)
                     {
                         if (silentifno == false)
@@ -3860,7 +3926,7 @@ namespace ShowMiiWads
                             if (sfd.ShowDialog() == DialogResult.OK)
                             {
                                 GetVersion.DownloadFileCompleted += new AsyncCompletedEventHandler(GetVersion_DownloadFileCompleted);
-                                
+
 #if x64
                                 GetVersion.DownloadFileAsync(new Uri(address64), sfd.FileName);
 #else
@@ -4123,7 +4189,7 @@ namespace ShowMiiWads
                     tsChangeRegion.Enabled = false;
                     btnPreview.Enabled = false;
                 }
-                else if (lvWads.SelectedItems[0].Text.Contains("Hidden"))
+                else if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("Hidden"))
                 {
                     cmChangeTitle.Enabled = false;
                     cmPreview.Enabled = false;
@@ -4132,6 +4198,18 @@ namespace ShowMiiWads
                     btnChangeIosSlot.Enabled = false;
                     btnChangeTitle.Enabled = false;
                     btnPreview.Enabled = false;
+                }
+                else if (lvWads.SelectedItems[0].SubItems[8].Text.Contains("Downloaded"))
+                {
+                    cmChangeIosSlot.Enabled = false;
+                    cmPreview.Enabled = false;
+                    cmChangeTitle.Enabled = false;
+                    cmInsertDol.Enabled = false;
+
+                    btnChangeIosSlot.Enabled = false;
+                    btnPreview.Enabled = false;
+                    btnChangeTitle.Enabled = false;
+                    btnInsertDol.Enabled = false;
                 }
                 else { cmChangeIosSlot.Enabled = false; btnChangeIosSlot.Enabled = false; }
             }
@@ -4406,16 +4484,16 @@ namespace ShowMiiWads
                         }
 
                         File.Copy(ofd.FileName, TempPath + "\\00000001.app");
-                        
+
                         string[] tmdfile = Directory.GetFiles(TempPath, "*.tmd");
                         byte[] tmd = Wii.Tools.LoadFileToByteArray(tmdfile[0]);
                         tmd = Wii.WadEdit.ChangeTmdBootIndex(tmd, 2);
                         tmd = Wii.WadEdit.ChangeTmdContentCount(tmd, 3);
-                        
+
                         File.Delete(tmdfile[0]);
                         using (FileStream fs = new FileStream(tmdfile[0], FileMode.Create))
                         {
-                            using (BinaryReader tmdcontents = new BinaryReader (Assembly.GetExecutingAssembly().GetManifestResourceStream("ShowMiiWads.Resources.Tmd_Contents")))
+                            using (BinaryReader tmdcontents = new BinaryReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("ShowMiiWads.Resources.Tmd_Contents")))
                             {
                                 {
                                     byte[] tmdconts = tmdcontents.ReadBytes((int)tmdcontents.BaseStream.Length);
@@ -4424,13 +4502,13 @@ namespace ShowMiiWads
                                 }
                             }
                         }
-                        
+
                         Wii.WadEdit.UpdateTmdContents(tmdfile[0]);
                         Wii.WadEdit.TruchaSign(tmdfile[0], 1);
 
                         CreateBackup(wadfile);
                         File.Delete(wadfile);
-                        Wii.WadPack.PackWad(TempPath, wadfile, true);
+                        Wii.WadPack.PackWad(TempPath, wadfile);
                         Directory.Delete(TempPath, true);
 
                         InfoBox(Messages[128]);
@@ -4610,6 +4688,83 @@ namespace ShowMiiWads
                     ErrorBox(string.Format(Messages[155], errorcount));
                 }
             }
+        }
+
+        private void btnExtractBootmiiDump_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            //ofd.Filter = "BootMii NAND Dumps|nand.bin";
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    NandExtract.extractNAND(ofd.FileName, ofd.FileName.Replace(".bin", "-extracted") + "a");
+                }
+                catch (Exception ex) { ErrorBox(ex.Message); }
+            }
+        }
+
+        private void cmExtractVcPics_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+
+            if (fbd.ShowDialog() == DialogResult.OK)
+            {
+                pbProgress.Value = 0;
+                int counter = -1;
+
+                foreach (ListViewItem thisWad in lvWads.SelectedItems)
+                {
+                    pbProgress.Value = ++counter * 100 / lvWads.SelectedItems.Count;
+                    if (!thisWad.SubItems[8].Text.StartsWith("System") && !thisWad.SubItems[8].Text.Contains("Hidden"))
+                    {
+                        string thisId = thisWad.SubItems[1].Text;
+
+                        if (thisId.Length == 4)
+                        {
+                            try
+                            {
+                                if (Directory.Exists(TempPath)) Directory.Delete(TempPath, true);
+                                Directory.CreateDirectory(TempPath);
+
+                                string wadfile = thisWad.Group.Tag.ToString() + "\\" + thisWad.Text;
+
+                                Wii.WadUnpack.UnpackNullApp(wadfile, TempPath);
+                                Wii.U8.UnpackU8(TempPath + "\\00000000.app", TempPath + "\\00000000.app_OUT");
+                                Wii.U8.UnpackU8(TempPath + "\\00000000.app_OUT\\meta\\banner.bin", TempPath + "\\00000000.app_OUT\\meta\\banner.bin_OUT");
+
+                                string[] tpls = Directory.GetFiles(TempPath + "\\00000000.app_OUT\\meta\\banner.bin_OUT\\arc\\timg");
+
+                                foreach (string thisTpl in tpls)
+                                {
+                                    if (thisTpl.EndsWith("VCPic.tpl"))
+                                    {
+                                        Image vcpic = Wii.TPL.ConvertFromTPL(thisTpl);
+                                        vcpic = ResizeImage(vcpic, 192, 112);
+                                        vcpic.Save(fbd.SelectedPath + "\\" + thisId + ".png", System.Drawing.Imaging.ImageFormat.Png);
+                                    }
+                                }
+
+                                Directory.Delete(TempPath, true);
+                            }
+                            catch { } //(Exception ex) { ErrorBox(ex.Message); }
+                        }
+                    }
+                }
+            }
+
+            pbProgress.Value = 100;
+        }
+
+        private Image ResizeImage(Image img, int x, int y)
+        {
+            Image newimage = new Bitmap(x, y);
+            using (Graphics gfx = Graphics.FromImage(newimage))
+            {
+                gfx.DrawImage(img, 0, 0, x, y);
+            }
+            return newimage;
         }
     }
 }
