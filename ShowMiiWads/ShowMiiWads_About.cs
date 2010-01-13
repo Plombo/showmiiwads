@@ -22,11 +22,23 @@ namespace ShowMiiWads
     public partial class ShowMiiWads_About : Form
     {
         public bool x64 = false;
+        private Timer t1 = new Timer();
 
         public ShowMiiWads_About()
         {
             InitializeComponent();
             this.Icon = global::ShowMiiWads.Properties.Resources.ShowMiiWads_Icon;
+            t1.Interval = 50;
+            t1.Tick += new System.EventHandler(t1_Tick);
+            t1.Start();
+        }
+
+        void t1_Tick(object sender, System.EventArgs e)
+        {
+            lbCredits.Location = new System.Drawing.Point(lbCredits.Location.X, lbCredits.Location.Y - 1);
+
+            if (lbCredits.Location.Y == -235)
+                lbCredits.Location = new System.Drawing.Point(lbCredits.Location.X, 215);
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

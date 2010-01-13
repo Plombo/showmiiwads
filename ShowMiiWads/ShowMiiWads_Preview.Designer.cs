@@ -96,6 +96,8 @@ namespace ShowMiiWads
             // 
             this.cbLz77.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.cbLz77.AutoSize = true;
+            this.cbLz77.Checked = true;
+            this.cbLz77.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbLz77.Location = new System.Drawing.Point(397, 7);
             this.cbLz77.Name = "cbLz77";
             this.cbLz77.Size = new System.Drawing.Size(98, 17);

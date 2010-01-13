@@ -11,6 +11,10 @@ want to have your translation included into the application, contact me..
 -----------------------------------------------------------------------------------------
 Changelog:
 
+Version 1.3b
+	- Fixed reading and writing of japanese characters (this time really!)
+	- Added Portable Mode (for varying driveletters)
+
 Version 1.3
 	- Note: License upgraded to GNU GPL v3!
 	- Added extracing of BootMii NAND Dumps (Code from Ben Wilson, thanks!)
@@ -147,6 +151,8 @@ carbonyle and Cyan for French translation
 Tetsuo Shima for Italian translation
 putifruti for Spanish translation
 pesaroso for Norwegian translation
+hosigumayuugi for Japanese translation
+sky8000 for Portuguese translation
 Ben Wilson for NAND extractor
 Everyone for using this application
 -----------------------------------------------------------------------------------------

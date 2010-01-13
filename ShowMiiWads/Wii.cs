@@ -1534,45 +1534,45 @@ namespace Wii
                 if (japchars.Length > count)
                 {
                     contenthandle[x + 29] = BitConverter.GetBytes(japchars[count])[0];
-                    contenthandle[x + 30] = BitConverter.GetBytes(japchars[count])[1];
+                    contenthandle[x + 28] = BitConverter.GetBytes(japchars[count])[1];
                 }
-                else { contenthandle[x + 29] = 0x00; }
+                else { contenthandle[x + 29] = 0x00; contenthandle[x + 28] = 0x00; }
                 if (engchars.Length > count)
                 {
                     contenthandle[x + 29 + 84] = BitConverter.GetBytes(engchars[count])[0];
                     contenthandle[x + 29 + 84 - 1] = BitConverter.GetBytes(engchars[count])[1];
                 }
-                else { contenthandle[x + 29 + 84] = 0x00; }
+                else { contenthandle[x + 29 + 84] = 0x00; contenthandle[x + 29 + 84 - 1] = 0x00; }
                 if (gerchars.Length > count)
                 {
                     contenthandle[x + 29 + 84 * 2] = BitConverter.GetBytes(gerchars[count])[0];
                     contenthandle[x + 29 + 84 * 2 - 1] = BitConverter.GetBytes(gerchars[count])[1];
                 }
-                else { contenthandle[x + 29 + 84 * 2] = 0x00; }
+                else { contenthandle[x + 29 + 84 * 2] = 0x00; contenthandle[x + 29 + 84 * 2 - 1] = 0x00; }
                 if (frachars.Length > count)
                 {
                     contenthandle[x + 29 + 84 * 3] = BitConverter.GetBytes(frachars[count])[0];
                     contenthandle[x + 29 + 84 * 3 - 1] = BitConverter.GetBytes(frachars[count])[1];
                 }
-                else { contenthandle[x + 29 + 84 * 3] = 0x00; }
+                else { contenthandle[x + 29 + 84 * 3] = 0x00; contenthandle[x + 29 + 84 * 3 - 1] = 0x00; }
                 if (spachars.Length > count)
                 {
                     contenthandle[x + 29 + 84 * 4] = BitConverter.GetBytes(spachars[count])[0];
                     contenthandle[x + 29 + 84 * 4 - 1] = BitConverter.GetBytes(spachars[count])[1];
                 }
-                else { contenthandle[x + 29 + 84 * 4] = 0x00; }
+                else { contenthandle[x + 29 + 84 * 4] = 0x00; contenthandle[x + 29 + 84 * 4 - 1] = 0x00; }
                 if (itachars.Length > count)
                 {
                     contenthandle[x + 29 + 84 * 5] = BitConverter.GetBytes(itachars[count])[0];
                     contenthandle[x + 29 + 84 * 5 - 1] = BitConverter.GetBytes(itachars[count])[1];
                 }
-                else { contenthandle[x + 29 + 84 * 5] = 0x00; }
+                else { contenthandle[x + 29 + 84 * 5] = 0x00; contenthandle[x + 29 + 84 * 5 - 1] = 0x00; }
                 if (dutchars.Length > count)
                 {
                     contenthandle[x + 29 + 84 * 6] = BitConverter.GetBytes(dutchars[count])[0];
                     contenthandle[x + 29 + 84 * 6 - 1] = BitConverter.GetBytes(dutchars[count])[1];
                 }
-                else { contenthandle[x + 29 + 84 * 6] = 0x00; }
+                else { contenthandle[x + 29 + 84 * 6] = 0x00; contenthandle[x + 29 + 84 * 6 - 1] = 0x00; }
 
                 count++;
             }
@@ -2618,6 +2618,40 @@ namespace Wii
     public class WadPack
     {
         public static byte[] wadheader = new byte[8] { 0x00, 0x00, 0x00, 0x20, 0x49, 0x73, 0x00, 0x00 };
+
+        /// <summary>
+        /// Gets the estimated size
+        /// </summary>
+        /// <param name="contentFolder"></param>
+        public static int GetEstimatedSize(string contentdirectory)
+        {
+            if (contentdirectory[contentdirectory.Length - 1] != '\\') { contentdirectory = contentdirectory + "\\"; }
+
+            if (!Directory.Exists(contentdirectory)) throw new DirectoryNotFoundException("The directory doesn't exists:\r\n" + contentdirectory);
+            if (Directory.GetFiles(contentdirectory, "*.app").Length < 1) throw new Exception("No *.app file was found");
+            if (Directory.GetFiles(contentdirectory, "*.cert").Length < 1) throw new Exception("No *.cert file was found");
+            if (Directory.GetFiles(contentdirectory, "*.tik").Length < 1) throw new Exception("No *.tik file was found");
+            if (Directory.GetFiles(contentdirectory, "*.tmd").Length < 1) throw new Exception("No *.tmd file was found");
+
+            int size = 64; //Wad Header
+
+            string[] certfile = Directory.GetFiles(contentdirectory, "*.cert");
+            string[] tikfile = Directory.GetFiles(contentdirectory, "*.tik");
+            string[] tmdfile = Directory.GetFiles(contentdirectory, "*.tmd");
+            string[,] contents = WadInfo.GetContentInfo(File.ReadAllBytes(tmdfile[0]));
+
+            FileInfo fi = new FileInfo(certfile[0]);
+            size += Tools.AddPadding((int)fi.Length);
+            fi = new FileInfo(tikfile[0]);
+            size += Tools.AddPadding((int)fi.Length);
+            fi = new FileInfo(tmdfile[0]);
+            size += Tools.AddPadding((int)fi.Length);
+
+            for (int i = 0; i < contents.GetLength(0); i++)
+                size += Tools.AddPadding(int.Parse(contents[i, 3]));
+
+            return size + 16; //Footer Timestamp
+        }
 
         /// <summary>
         /// Packs the contents in the given directory and creates the destination wad file 
@@ -4209,6 +4243,30 @@ namespace Wii
 
     public class TPL
     {
+	    /// <summary>
+        /// Fixes rough edges (artifacts), if necessary
+        /// </summary>
+        /// <param name="tplFile"></param>
+        public static void FixFilter(string tplFile)
+        {
+            using (FileStream fs = new FileStream(tplFile, FileMode.Open))
+            {
+                fs.Seek(41, SeekOrigin.Begin);
+                if (fs.ReadByte() == 0x01)
+                {
+                    fs.Seek(-1, SeekOrigin.Current);
+                    fs.Write(new byte[] { 0x00, 0x00, 0x01 }, 0, 3);
+                }
+
+                fs.Seek(45, SeekOrigin.Begin);
+                if (fs.ReadByte() == 0x01)
+                {
+                    fs.Seek(-1, SeekOrigin.Current);
+                    fs.Write(new byte[] { 0x00, 0x00, 0x01 }, 0, 3);
+                }
+            }
+        }
+	
         /// <summary>
         /// Converts a Tpl to a Bitmap
         /// </summary>

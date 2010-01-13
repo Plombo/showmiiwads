@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
+  <data name="lbCredits.Text" xml:space="preserve">
     <value>Xuzz, SquidMan, megazig,
 Matt_P, Omega and
 The Lemon Man for Wii.py
@@ -127,11 +127,14 @@ NeoRame for the Logo
 Blitzur, kedest, nutta_nic,
 Dteyn and acesniper
 for Betatesting
-carbonyle and Cyan
-for French translation
-Tetsuo Shima for Italian translation
-putifruti for Spanish translation
-pesaroso for Norwegian translation
-Ben Wilson for NAND extractor</value>
+Ben Wilson for NAND extractor
+
+Translations:
+carbonyle and Cyan - French
+Tetsuo Shima - Italian
+putifruti - Spanish
+pesaroso - Norwegian
+hosigumayuugi - Japanese
+sky8000 - Portuguese</value>
   </data>
 </root>

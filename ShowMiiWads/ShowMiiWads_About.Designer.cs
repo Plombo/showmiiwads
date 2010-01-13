@@ -49,15 +49,17 @@ namespace ShowMiiWads
             this.lbSMW = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.gbCredits = new System.Windows.Forms.GroupBox();
+            this.panCredits = new System.Windows.Forms.Panel();
+            this.lbCredits = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lbDonate = new System.Windows.Forms.LinkLabel();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lbPlatform = new System.Windows.Forms.Label();
-            this.groupBox1.SuspendLayout();
+            this.gbCredits.SuspendLayout();
+            this.panCredits.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -91,25 +93,33 @@ namespace ShowMiiWads
             this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
-            // groupBox1
+            // gbCredits
             // 
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(210, 2);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(178, 216);
-            this.groupBox1.TabIndex = 8;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Thanks:";
+            this.gbCredits.Controls.Add(this.panCredits);
+            this.gbCredits.Location = new System.Drawing.Point(210, 2);
+            this.gbCredits.Name = "gbCredits";
+            this.gbCredits.Size = new System.Drawing.Size(178, 216);
+            this.gbCredits.TabIndex = 8;
+            this.gbCredits.TabStop = false;
+            this.gbCredits.Text = "Thanks:";
             // 
-            // label1
+            // panCredits
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(5, 15);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(170, 195);
-            this.label1.TabIndex = 0;
-            this.label1.Text = resources.GetString("label1.Text");
-            this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.panCredits.Controls.Add(this.lbCredits);
+            this.panCredits.Location = new System.Drawing.Point(6, 15);
+            this.panCredits.Name = "panCredits";
+            this.panCredits.Size = new System.Drawing.Size(166, 195);
+            this.panCredits.TabIndex = 1;
+            // 
+            // lbCredits
+            // 
+            this.lbCredits.AutoSize = true;
+            this.lbCredits.Location = new System.Drawing.Point(6, 191);
+            this.lbCredits.Name = "lbCredits";
+            this.lbCredits.Size = new System.Drawing.Size(154, 234);
+            this.lbCredits.TabIndex = 0;
+            this.lbCredits.Text = resources.GetString("lbCredits.Text");
+            this.lbCredits.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label2
             // 
@@ -182,7 +192,7 @@ namespace ShowMiiWads
             this.Controls.Add(this.label4);
             this.Controls.Add(this.lbDonate);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.gbCredits);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label3);
@@ -195,8 +205,9 @@ namespace ShowMiiWads
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "About";
             this.Load += new System.EventHandler(this.About_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.gbCredits.ResumeLayout(false);
+            this.panCredits.ResumeLayout(false);
+            this.panCredits.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -209,12 +220,13 @@ namespace ShowMiiWads
         private System.Windows.Forms.LinkLabel linkLabel1;
         public System.Windows.Forms.Label lbSMW;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox gbCredits;
+        private System.Windows.Forms.Label lbCredits;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.LinkLabel lbDonate;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label lbPlatform;
+        private System.Windows.Forms.Panel panCredits;
     }
 }

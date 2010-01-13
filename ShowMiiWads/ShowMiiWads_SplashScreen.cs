@@ -27,6 +27,7 @@ namespace ShowMiiWads
         int foldercount = 0;
         string language = "English";
         string nandpath = "";
+        bool portable = false;
         ShowMiiWads_Main smw = new ShowMiiWads_Main();
         Timer t1 = new Timer();
         Timer t2 = new Timer();
@@ -88,14 +89,22 @@ namespace ShowMiiWads
 
             try
             {
+                try { portable = Convert.ToBoolean(ds.Tables["Settings"].Rows[0]["Portable"].ToString()); }
+                catch { portable = false; }
                 nandpath = ds.Tables["Settings"].Rows[0]["NandPath"].ToString();
                 language = ds.Tables["Settings"].Rows[0]["Language"].ToString();
                 foldercount = Convert.ToInt32(ds.Tables["Folders"].Rows[0]["Foldercount"]);
-                string[] folders = new string[foldercount];
 
+                if (portable)
+                    nandpath = nandpath.Remove(0, 1).Insert(0, Application.StartupPath.Substring(0, 1));
+
+                string[] folders = new string[foldercount];
                 for (int i = 0; i < foldercount; i++)
                 {
-                    folders[i] = ds.Tables["Folders"].Rows[0]["Folder" + i.ToString()].ToString();
+                    if (!portable)
+                        folders[i] = ds.Tables["Folders"].Rows[0]["Folder" + i.ToString()].ToString();
+                    else
+                        folders[i] = ds.Tables["Folders"].Rows[0]["Folder" + i.ToString()].ToString().Remove(0, 1).Insert(0, Application.StartupPath.Substring(0, 1));
                 }
 
                 return folders;

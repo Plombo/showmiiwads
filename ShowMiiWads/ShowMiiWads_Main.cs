@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define Debug //Skips the updatecheck on startup
+//#define Debug //Skips the updatecheck on startup
 //#define x64 //Turn on while compiling for x64
 
 using System;
@@ -36,7 +36,7 @@ namespace ShowMiiWads
     public partial class ShowMiiWads_Main : Form
     {
         //Define global variables
-        public const string version = "1.3";
+        public const string version = "1.3b";
         private string language = "English";
         private string langfile = "";
         private string oldlang = "";
@@ -70,6 +70,8 @@ namespace ShowMiiWads
         public string ListPathNand = Path.GetTempPath() + "\\ShowMiiNand.list";
         private string CfgPath = Application.StartupPath + "\\ShowMiiWads.cfg";
         private string SaveBackupPath = Application.StartupPath + "\\SaveDataBackups";
+        private bool portable = false;
+        private string lastPath = "";
 
         public ShowMiiWads_Main()
         {
@@ -699,6 +701,7 @@ namespace ShowMiiWads
             settings.Columns.Add("NandPath");
             settings.Columns.Add("ShowPath");
             settings.Columns.Add("AddSub");
+            settings.Columns.Add("Portable");
             window.Columns.Add("WindowWidth");
             window.Columns.Add("WindowHeight");
             window.Columns.Add("LocationX");
@@ -735,6 +738,7 @@ namespace ShowMiiWads
             settingsrow["LangFile"] = langfile;
             settingsrow["AutoSize"] = autosize;
             settingsrow["ShowPath"] = showpath;
+            settingsrow["Portable"] = portable.ToString();
             settingsrow["CreateBackups"] = backup;
             settingsrow["SplashScreen"] = splash;
             windowrow["WindowWidth"] = wwidth;
@@ -813,7 +817,13 @@ namespace ShowMiiWads
                         backup = ds.Tables["Settings"].Rows[0]["CreateBackups"].ToString();
                         splash = ds.Tables["Settings"].Rows[0]["SplashScreen"].ToString();
 
+                        try { portable = Convert.ToBoolean(ds.Tables["Settings"].Rows[0]["Portable"].ToString()); }
+                        catch { portable = false; }
+
                         int foldercount = Convert.ToInt32(ds.Tables["Folders"].Rows[0]["Foldercount"]);
+
+                        if (portable) NandPath = NandPath.Remove(0, 1).Insert(0, Application.StartupPath.Substring(0, 1));
+                        btnPortableMode.Checked = portable;
 
                         LoadLanguage();
                         SetWindowProperties(wwidth, wheight, locx, locy, wstate);
@@ -910,7 +920,10 @@ namespace ShowMiiWads
                                 {
                                     if (Directory.Exists(ds.Tables["Folders"].Rows[0]["Folder" + x.ToString()].ToString()))
                                     {
-                                        AddWads(ds.Tables["Folders"].Rows[0]["Folder" + x.ToString()].ToString());
+                                        if (!portable)
+                                            AddWads(ds.Tables["Folders"].Rows[0]["Folder" + x.ToString()].ToString());
+                                        else
+                                            AddWads(ds.Tables["Folders"].Rows[0]["Folder" + x.ToString()].ToString().Remove(0, 1).Insert(0, Application.StartupPath.Substring(0, 1)));
                                     }
                                 }
                             }
@@ -2265,9 +2278,9 @@ namespace ShowMiiWads
         {
             FolderBrowserDialog path = new FolderBrowserDialog();
             path.Description = Messages[20];
-            DialogResult thisresult = path.ShowDialog();
+            path.SelectedPath = lastPath;
 
-            if (thisresult == DialogResult.OK)
+            if (path.ShowDialog() == DialogResult.OK)
             {
                 bool thisexists = false;
 
@@ -2281,6 +2294,8 @@ namespace ShowMiiWads
 
                 if (thisexists == false)
                 {
+                    lastPath = path.SelectedPath;
+
                     if (Directory.GetFiles(path.SelectedPath, "*.wad").Length > 0)
                     {
                         NewMRU(path.SelectedPath);
@@ -4765,6 +4780,11 @@ namespace ShowMiiWads
                 gfx.DrawImage(img, 0, 0, x, y);
             }
             return newimage;
+        }
+
+        private void btnPortableMode_Click(object sender, EventArgs e)
+        {
+            portable = btnPortableMode.Checked;
         }
     }
 }
