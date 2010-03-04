@@ -22,7 +22,7 @@ namespace ChannelNameBox
 {
     public partial class ChannelNameDialog : Form
     {
-        string[] titles = new string[7];
+        string[] titles = new string[8];
         string formcaption = string.Empty;
         string btncancel = "Cancel";
         bool cbchecked = true;
@@ -67,6 +67,7 @@ namespace ChannelNameBox
                 txtIt.Text = thistxt.Text;
                 txtJap.Text = thistxt.Text;
                 txtNe.Text = thistxt.Text;
+                txtKor.Text = thistxt.Text;
             }
         }
 
@@ -93,6 +94,7 @@ namespace ChannelNameBox
             titles[4] = txtEs.Text;
             titles[5] = txtIt.Text;
             titles[6] = txtNe.Text;
+            titles[7] = txtKor.Text;
 
             this.Close();
         }
@@ -114,7 +116,8 @@ namespace ChannelNameBox
                 titles[0] == titles[3] &&
                 titles[0] == titles[4] &&
                 titles[0] == titles[5] &&
-                titles[0] == titles[6]) { cbChecked = true; }
+                titles[0] == titles[6] &&
+                titles[0] == titles[7]) { cbChecked = true; }
             else { cbChecked = false; }
             cbLink.Checked = cbChecked;
 
@@ -125,6 +128,7 @@ namespace ChannelNameBox
             txtEs.Text = titles[4];
             txtIt.Text = titles[5];
             txtNe.Text = titles[6];
+            txtKor.Text = titles[7];
 
             txtEng.Focus();
         }

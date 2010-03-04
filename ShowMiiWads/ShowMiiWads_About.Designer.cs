@@ -116,7 +116,7 @@ namespace ShowMiiWads
             this.lbCredits.AutoSize = true;
             this.lbCredits.Location = new System.Drawing.Point(6, 191);
             this.lbCredits.Name = "lbCredits";
-            this.lbCredits.Size = new System.Drawing.Size(154, 234);
+            this.lbCredits.Size = new System.Drawing.Size(154, 247);
             this.lbCredits.TabIndex = 0;
             this.lbCredits.Text = resources.GetString("lbCredits.Text");
             this.lbCredits.TextAlign = System.Drawing.ContentAlignment.TopCenter;

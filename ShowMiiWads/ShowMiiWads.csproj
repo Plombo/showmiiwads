@@ -187,6 +187,7 @@
     <EmbeddedResource Include="Languages\Norwegian.txt" />
     <EmbeddedResource Include="Languages\Japanese.txt" />
     <EmbeddedResource Include="Languages\Portuguese.txt" />
+    <EmbeddedResource Include="Languages\sChinese.txt" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

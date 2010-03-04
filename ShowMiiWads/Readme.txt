@@ -11,6 +11,14 @@ want to have your translation included into the application, contact me..
 -----------------------------------------------------------------------------------------
 Changelog:
 
+Version 1.4
+	- MIOS will now show up as MIOS instead of IOS257 (BC will show up as BC)
+	- If you delete the System Menu, you will now be asked to keep the settings (data folder)
+	- Fixed a bug when changing the channel title
+	- Added support for korean channle titles (reading and writing)
+	- Updated french translation (thanks Cyan)
+	- Added simplified Chinese translation (thanks kavidwf)
+
 Version 1.3b
 	- Fixed reading and writing of japanese characters (this time really!)
 	- Added Portable Mode (for varying driveletters)
@@ -153,6 +161,7 @@ putifruti for Spanish translation
 pesaroso for Norwegian translation
 hosigumayuugi for Japanese translation
 sky8000 for Portuguese translation
+kavidwf for Simplified Chinese translation
 Ben Wilson for NAND extractor
 Everyone for using this application
 -----------------------------------------------------------------------------------------
@@ -164,7 +173,7 @@ Copyright (C) 2009 Leathl
 
 ShowMiiWads is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
+as published by the Free Software Foundation; either version 3
 of the License, or (at your option) any later version.
  
 ShowMiiWads is distributed in the hope that it will be useful,

@@ -129,6 +129,7 @@ namespace ShowMiiWads
             this.btnCreateBackups = new System.Windows.Forms.ToolStripMenuItem();
             this.btnAddSub = new System.Windows.Forms.ToolStripMenuItem();
             this.btnShowSplash = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnPortableMode = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.tsLanguage = new System.Windows.Forms.ToolStripMenuItem();
             this.btnEnglish = new System.Windows.Forms.ToolStripMenuItem();
@@ -203,7 +204,7 @@ namespace ShowMiiWads
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.cmNandPreview = new System.Windows.Forms.ToolStripMenuItem();
             this.lvQueue = new System.Windows.Forms.ListBox();
-            this.btnPortableMode = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnChinese = new System.Windows.Forms.ToolStripMenuItem();
             this.cmWads.SuspendLayout();
             this.msMain.SuspendLayout();
             this.ssMain.SuspendLayout();
@@ -898,6 +899,14 @@ namespace ShowMiiWads
             this.btnShowSplash.Text = "Show SplashScreen";
             this.btnShowSplash.Click += new System.EventHandler(this.btnShowSplash_Click);
             // 
+            // btnPortableMode
+            // 
+            this.btnPortableMode.CheckOnClick = true;
+            this.btnPortableMode.Name = "btnPortableMode";
+            this.btnPortableMode.Size = new System.Drawing.Size(234, 22);
+            this.btnPortableMode.Text = "Portable Mode";
+            this.btnPortableMode.Click += new System.EventHandler(this.btnPortableMode_Click);
+            // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
@@ -914,6 +923,7 @@ namespace ShowMiiWads
             this.btnNorwegian,
             this.btnPortuguese,
             this.btnJapanese,
+            this.btnChinese,
             this.toolStripSeparator7,
             this.btnFromFile});
             this.tsLanguage.Name = "tsLanguage";
@@ -926,7 +936,7 @@ namespace ShowMiiWads
             this.btnEnglish.CheckOnClick = true;
             this.btnEnglish.CheckState = System.Windows.Forms.CheckState.Checked;
             this.btnEnglish.Name = "btnEnglish";
-            this.btnEnglish.Size = new System.Drawing.Size(128, 22);
+            this.btnEnglish.Size = new System.Drawing.Size(152, 22);
             this.btnEnglish.Text = "English";
             this.btnEnglish.Click += new System.EventHandler(this.btnEnglish_Click);
             // 
@@ -934,7 +944,7 @@ namespace ShowMiiWads
             // 
             this.btnGerman.CheckOnClick = true;
             this.btnGerman.Name = "btnGerman";
-            this.btnGerman.Size = new System.Drawing.Size(128, 22);
+            this.btnGerman.Size = new System.Drawing.Size(152, 22);
             this.btnGerman.Text = "Deutsch";
             this.btnGerman.Click += new System.EventHandler(this.btnGerman_Click);
             // 
@@ -942,7 +952,7 @@ namespace ShowMiiWads
             // 
             this.btnFrench.CheckOnClick = true;
             this.btnFrench.Name = "btnFrench";
-            this.btnFrench.Size = new System.Drawing.Size(128, 22);
+            this.btnFrench.Size = new System.Drawing.Size(152, 22);
             this.btnFrench.Text = "Français";
             this.btnFrench.Click += new System.EventHandler(this.btnFrench_Click);
             // 
@@ -950,7 +960,7 @@ namespace ShowMiiWads
             // 
             this.btnItalian.CheckOnClick = true;
             this.btnItalian.Name = "btnItalian";
-            this.btnItalian.Size = new System.Drawing.Size(128, 22);
+            this.btnItalian.Size = new System.Drawing.Size(152, 22);
             this.btnItalian.Text = "Italiano";
             this.btnItalian.Click += new System.EventHandler(this.btnItalian_Click);
             // 
@@ -958,7 +968,7 @@ namespace ShowMiiWads
             // 
             this.btnSpanish.CheckOnClick = true;
             this.btnSpanish.Name = "btnSpanish";
-            this.btnSpanish.Size = new System.Drawing.Size(128, 22);
+            this.btnSpanish.Size = new System.Drawing.Size(152, 22);
             this.btnSpanish.Text = "Español";
             this.btnSpanish.Click += new System.EventHandler(this.btnSpanish_Click);
             // 
@@ -966,7 +976,7 @@ namespace ShowMiiWads
             // 
             this.btnNorwegian.CheckOnClick = true;
             this.btnNorwegian.Name = "btnNorwegian";
-            this.btnNorwegian.Size = new System.Drawing.Size(128, 22);
+            this.btnNorwegian.Size = new System.Drawing.Size(152, 22);
             this.btnNorwegian.Text = "Norsk";
             this.btnNorwegian.Click += new System.EventHandler(this.btnNorwegian_Click);
             // 
@@ -974,7 +984,7 @@ namespace ShowMiiWads
             // 
             this.btnPortuguese.CheckOnClick = true;
             this.btnPortuguese.Name = "btnPortuguese";
-            this.btnPortuguese.Size = new System.Drawing.Size(128, 22);
+            this.btnPortuguese.Size = new System.Drawing.Size(152, 22);
             this.btnPortuguese.Text = "Português";
             this.btnPortuguese.Click += new System.EventHandler(this.btnPortuguese_Click);
             // 
@@ -982,20 +992,20 @@ namespace ShowMiiWads
             // 
             this.btnJapanese.CheckOnClick = true;
             this.btnJapanese.Name = "btnJapanese";
-            this.btnJapanese.Size = new System.Drawing.Size(128, 22);
+            this.btnJapanese.Size = new System.Drawing.Size(152, 22);
             this.btnJapanese.Text = "Japanese";
             this.btnJapanese.Click += new System.EventHandler(this.btnJapanese_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(125, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
             // 
             // btnFromFile
             // 
             this.btnFromFile.CheckOnClick = true;
             this.btnFromFile.Name = "btnFromFile";
-            this.btnFromFile.Size = new System.Drawing.Size(128, 22);
+            this.btnFromFile.Size = new System.Drawing.Size(152, 22);
             this.btnFromFile.Text = "From File";
             this.btnFromFile.Click += new System.EventHandler(this.btnFromFile_Click);
             // 
@@ -1499,13 +1509,13 @@ namespace ShowMiiWads
             this.lvQueue.TabIndex = 5;
             this.lvQueue.Visible = false;
             // 
-            // btnPortableMode
+            // btnChinese
             // 
-            this.btnPortableMode.CheckOnClick = true;
-            this.btnPortableMode.Name = "btnPortableMode";
-            this.btnPortableMode.Size = new System.Drawing.Size(234, 22);
-            this.btnPortableMode.Text = "Portable Mode";
-            this.btnPortableMode.Click += new System.EventHandler(this.btnPortableMode_Click);
+            this.btnChinese.CheckOnClick = true;
+            this.btnChinese.Name = "btnChinese";
+            this.btnChinese.Size = new System.Drawing.Size(152, 22);
+            this.btnChinese.Text = "Chinese";
+            this.btnChinese.Click += new System.EventHandler(this.btnChinese_Click);
             // 
             // ShowMiiWads_Main
             // 
@@ -1699,6 +1709,7 @@ namespace ShowMiiWads
         private System.Windows.Forms.ToolStripMenuItem btnPortuguese;
         private System.Windows.Forms.ToolStripMenuItem btnJapanese;
         private System.Windows.Forms.ToolStripMenuItem btnPortableMode;
+        private System.Windows.Forms.ToolStripMenuItem btnChinese;
     }
 }
 

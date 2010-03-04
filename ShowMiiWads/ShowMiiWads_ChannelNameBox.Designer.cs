@@ -62,6 +62,8 @@
             this.cbLink = new System.Windows.Forms.CheckBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.txtKor = new System.Windows.Forms.TextBox();
+            this.lbKor = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtEng
@@ -195,7 +197,7 @@
             this.cbLink.AutoSize = true;
             this.cbLink.Checked = true;
             this.cbLink.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbLink.Location = new System.Drawing.Point(276, 87);
+            this.cbLink.Location = new System.Drawing.Point(181, 118);
             this.cbLink.Name = "cbLink";
             this.cbLink.Size = new System.Drawing.Size(82, 17);
             this.cbLink.TabIndex = 7;
@@ -207,7 +209,7 @@
             // 
             this.btnOK.Location = new System.Drawing.Point(12, 114);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(197, 23);
+            this.btnOK.Size = new System.Drawing.Size(143, 23);
             this.btnOK.TabIndex = 8;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -216,13 +218,31 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(220, 114);
+            this.btnCancel.Location = new System.Drawing.Point(283, 114);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(206, 23);
+            this.btnCancel.Size = new System.Drawing.Size(143, 23);
             this.btnCancel.TabIndex = 9;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // txtKor
+            // 
+            this.txtKor.Location = new System.Drawing.Point(276, 84);
+            this.txtKor.MaxLength = 20;
+            this.txtKor.Name = "txtKor";
+            this.txtKor.Size = new System.Drawing.Size(150, 20);
+            this.txtKor.TabIndex = 5;
+            this.txtKor.TextChanged += new System.EventHandler(this.txtChanged);
+            // 
+            // lbKor
+            // 
+            this.lbKor.AutoSize = true;
+            this.lbKor.Location = new System.Drawing.Point(224, 87);
+            this.lbKor.Name = "lbKor";
+            this.lbKor.Size = new System.Drawing.Size(41, 13);
+            this.lbKor.TabIndex = 6;
+            this.lbKor.Text = "Korean";
             // 
             // ChannelNameDialog
             // 
@@ -235,6 +255,7 @@
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.cbLink);
             this.Controls.Add(this.lbNe);
+            this.Controls.Add(this.lbKor);
             this.Controls.Add(this.lbIt);
             this.Controls.Add(this.lbEs);
             this.Controls.Add(this.lbFr);
@@ -242,6 +263,7 @@
             this.Controls.Add(this.lbJap);
             this.Controls.Add(this.lbEng);
             this.Controls.Add(this.txtNe);
+            this.Controls.Add(this.txtKor);
             this.Controls.Add(this.txtIt);
             this.Controls.Add(this.txtEs);
             this.Controls.Add(this.txtFr);
@@ -277,5 +299,7 @@
         private System.Windows.Forms.CheckBox cbLink;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.TextBox txtKor;
+        private System.Windows.Forms.Label lbKor;
     }
 }

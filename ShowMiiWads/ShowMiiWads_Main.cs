@@ -36,7 +36,7 @@ namespace ShowMiiWads
     public partial class ShowMiiWads_Main : Form
     {
         //Define global variables
-        public const string version = "1.3b";
+        public const string version = "1.4";
         private string language = "English";
         private string langfile = "";
         private string oldlang = "";
@@ -212,11 +212,11 @@ namespace ShowMiiWads
                                     case "German":
                                         Infos[i, 10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[2];
                                         break;
-                                    default:
-                                        Infos[i, 10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[1];
-                                        break;
                                     case "Japanese":
                                         Infos[i, 10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[0];
+                                        break;
+                                    default:
+                                        Infos[i, 10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[1];
                                         break;
                                 }
 
@@ -364,11 +364,11 @@ namespace ShowMiiWads
                                 case "German":
                                     Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[2];
                                     break;
-                                default:
-                                    Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[1];
-                                    break;
                                 case "Japanese":
                                     Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[0];
+                                    break;
+                                default:
+                                    Infos[i, 10] = Wii.WadInfo.GetChannelTitles(wadfile)[1];
                                     break;
                             }
 
@@ -441,11 +441,11 @@ namespace ShowMiiWads
                             case "German":
                                 lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[2];
                                 break;
-                            default:
-                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[1];
-                                break;
                             case "Japanese":
                                 lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[0];
+                                break;
+                            default:
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[1];
                                 break;
                         }
                     }
@@ -487,11 +487,11 @@ namespace ShowMiiWads
                         case "German":
                             lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[2];
                             break;
-                        default:
-                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[1];
-                            break;
                         case "Japanese":
                             lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[0];
+                            break;
+                        default:
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[1];
                             break;
                     }
                 }
@@ -702,20 +702,21 @@ namespace ShowMiiWads
             settings.Columns.Add("ShowPath");
             settings.Columns.Add("AddSub");
             settings.Columns.Add("Portable");
+            settings.Columns.Add("Accepted");
+            settings.Columns.Add("SaveFolders");
+            settings.Columns.Add("CreateBackups");
+            settings.Columns.Add("SplashScreen");
+            settings.Columns.Add("View");
             window.Columns.Add("WindowWidth");
             window.Columns.Add("WindowHeight");
             window.Columns.Add("LocationX");
             window.Columns.Add("LocationY");
             window.Columns.Add("WindowState");
-            settings.Columns.Add("Accepted");
-            settings.Columns.Add("SaveFolders");
             folders.Columns.Add("MRU0");
             folders.Columns.Add("MRU1");
             folders.Columns.Add("MRU2");
             folders.Columns.Add("MRU3");
             folders.Columns.Add("MRU4");
-            settings.Columns.Add("CreateBackups");
-            settings.Columns.Add("SplashScreen");
 
             folders.Columns.Add("Foldercount");
 
@@ -741,13 +742,14 @@ namespace ShowMiiWads
             settingsrow["Portable"] = portable.ToString();
             settingsrow["CreateBackups"] = backup;
             settingsrow["SplashScreen"] = splash;
+            settingsrow["Accepted"] = accepted;
+            settingsrow["SaveFolders"] = savefolders;
+            settingsrow["View"] = (lvNand.Visible) ? "ShowMiiNand" : "ShowMiiWads"; 
             windowrow["WindowWidth"] = wwidth;
             windowrow["WindowHeight"] = wheight;
             windowrow["LocationX"] = locx;
             windowrow["LocationY"] = locy;
             windowrow["WindowState"] = wstate;
-            settingsrow["Accepted"] = accepted;
-            settingsrow["SaveFolders"] = savefolders;
             foldersrow["MRU0"] = mru[0];
             foldersrow["MRU1"] = mru[1];
             foldersrow["MRU2"] = mru[2];
@@ -802,20 +804,21 @@ namespace ShowMiiWads
                         language = ds.Tables["Settings"].Rows[0]["Language"].ToString();
                         autosize = ds.Tables["Settings"].Rows[0]["AutoSize"].ToString();
                         accepted = ds.Tables["Settings"].Rows[0]["Accepted"].ToString();
+                        backup = ds.Tables["Settings"].Rows[0]["CreateBackups"].ToString();
+                        splash = ds.Tables["Settings"].Rows[0]["SplashScreen"].ToString();
+                        NandPath = ds.Tables["Settings"].Rows[0]["NandPath"].ToString();
+                        showpath = ds.Tables["Settings"].Rows[0]["ShowPath"].ToString();
+                        bool showMiiNand = ds.Tables["Settings"].Rows[0]["View"].ToString() == "ShowMiiNand";
                         wwidth = ds.Tables["Window"].Rows[0]["WindowWidth"].ToString();
                         wheight = ds.Tables["Window"].Rows[0]["WindowHeight"].ToString();
                         locx = ds.Tables["Window"].Rows[0]["LocationX"].ToString();
                         locy = ds.Tables["Window"].Rows[0]["LocationY"].ToString();
                         wstate = ds.Tables["Window"].Rows[0]["WindowState"].ToString();
-                        NandPath = ds.Tables["Settings"].Rows[0]["NandPath"].ToString();
-                        showpath = ds.Tables["Settings"].Rows[0]["ShowPath"].ToString();
                         mru[0] = ds.Tables["Folders"].Rows[0]["MRU0"].ToString();
                         mru[1] = ds.Tables["Folders"].Rows[0]["MRU1"].ToString();
                         mru[2] = ds.Tables["Folders"].Rows[0]["MRU2"].ToString();
                         mru[3] = ds.Tables["Folders"].Rows[0]["MRU3"].ToString();
                         mru[4] = ds.Tables["Folders"].Rows[0]["MRU4"].ToString();
-                        backup = ds.Tables["Settings"].Rows[0]["CreateBackups"].ToString();
-                        splash = ds.Tables["Settings"].Rows[0]["SplashScreen"].ToString();
 
                         try { portable = Convert.ToBoolean(ds.Tables["Settings"].Rows[0]["Portable"].ToString()); }
                         catch { portable = false; }
@@ -827,6 +830,12 @@ namespace ShowMiiWads
 
                         LoadLanguage();
                         SetWindowProperties(wwidth, wheight, locx, locy, wstate);
+
+                        if (showMiiNand)
+                        {
+                            btnShowMiiNand.Checked = true;
+                            btnShowMiiNand_Click(null, null);
+                        }
 
                         switch (autosize)
                         {
@@ -1106,6 +1115,19 @@ namespace ShowMiiWads
                     btnJapanese.Checked = true;
                     japanesestream.Close();
                     break;
+                case "Chinese":
+                    StreamReader chinesestream = new StreamReader(_assembly.GetManifestResourceStream("ShowMiiWads.Languages.sChinese.txt"));
+
+                    while ((thisline = chinesestream.ReadLine()) != null)
+                    {
+                        if (!thisline.StartsWith("//") && !(thisline.StartsWith("*") && thisline.EndsWith("*")))
+                            Messages[++counter] = thisline;
+                    }
+
+                    UncheckLangButtons();
+                    btnChinese.Checked = true;
+                    chinesestream.Close();
+                    break;
                 case "File":
                     if (File.Exists(langfile))
                     {
@@ -1197,6 +1219,7 @@ namespace ShowMiiWads
             btnNorwegian.Checked = false;
             btnPortuguese.Checked = false;
             btnJapanese.Checked = false;
+            btnChinese.Checked = false;
             btnFromFile.Checked = false;
         }
 
@@ -1255,6 +1278,8 @@ namespace ShowMiiWads
             btnAsRGB565.Text = Messages[137];
             btnAsRGB5A3.Text = Messages[138];
             btnAsRGBA8.Text = Messages[139];
+            btnExtractBootmiiDump.Text = Messages[158];
+            btnPortableMode.Text = Messages[157];
 
             cmRestore.Text = Messages[118];
             cmPreview.Text = Messages[99];
@@ -1679,11 +1704,11 @@ namespace ShowMiiWads
                                 case "German":
                                     Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[2];
                                     break;
-                                default:
-                                    Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[1];
-                                    break;
                                 case "Japanese":
                                     Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[0];
+                                    break;
+                                default:
+                                    Infos[10] = Wii.WadInfo.GetChannelTitles(wadfile)[1];
                                     break;
                             }
 
@@ -1775,11 +1800,11 @@ namespace ShowMiiWads
                                     case "German":
                                         Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[2];
                                         break;
-                                    default:
-                                        Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[1];
-                                        break;
                                     case "Japanese":
                                         Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[0];
+                                        break;
+                                    default:
+                                        Infos[10] = Wii.WadInfo.GetChannelTitlesFromApp(nullapp)[1];
                                         break;
                                 }
 
@@ -1997,6 +2022,22 @@ namespace ShowMiiWads
             }
         }
 
+        private void btnChinese_Click(object sender, EventArgs e)
+        {
+            if (btnChinese.Checked == true)
+            {
+                language = "Chinese";
+                langfile = "";
+                LoadLanguage();
+                SaveSettings();
+                ReloadChannelTitles();
+            }
+            else
+            {
+                btnChinese.Checked = true;
+            }
+        }
+
         private void btnFromFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog opendlg = new OpenFileDialog();
@@ -2078,6 +2119,24 @@ namespace ShowMiiWads
 
                 foreach (ListViewItem item in lvNand.SelectedItems)
                 {
+                    if (item.SubItems[7].Text.Remove(8, 1) == "0000000100000002")
+                    {
+                        DialogResult dlg = MessageBox.Show("You're about to remove the System Menu.\nDo you want to keep the settings (data folder)?\n\nNote that these settings may not work with other System Menu versions.",
+                            "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+
+                        if (dlg == DialogResult.Cancel) continue;
+                        if (dlg == DialogResult.Yes)
+                        {
+                            if (File.Exists(NandPath + "\\ticket\\" + item.SubItems[7].Text.Remove(8) + "\\" + item.Text))
+                                File.Delete(NandPath + "\\ticket\\" + item.SubItems[7].Text.Remove(8) + "\\" + item.Text);
+
+                            if (Directory.Exists(NandPath + "\\title\\" + item.SubItems[7].Text + "\\content\\"))
+                                Directory.Delete(NandPath + "\\title\\" + item.SubItems[7].Text + "\\content\\", true);
+                            
+                            continue;
+                        }
+                    }
+
                     pbProgress.Value = (++counter) * 100 / selected;
 
                     if (File.Exists(NandPath + "\\ticket\\" + item.SubItems[7].Text.Remove(8) + "\\" + item.Text))
@@ -2275,7 +2334,7 @@ namespace ShowMiiWads
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
-        {
+        {           
             FolderBrowserDialog path = new FolderBrowserDialog();
             path.Description = Messages[20];
             path.SelectedPath = lastPath;
@@ -2994,7 +3053,7 @@ namespace ShowMiiWads
 
                         if (oldtitles[1].Length != 0)
                         {
-                            string[] oldvalues = new string[7] { oldtitles[0], oldtitles[1], oldtitles[2], oldtitles[3], oldtitles[4], oldtitles[5], oldtitles[6] };
+                            string[] oldvalues = new string[] { oldtitles[0], oldtitles[1], oldtitles[2], oldtitles[3], oldtitles[4], oldtitles[5], oldtitles[6], oldtitles[7] };
                             ChannelNameDialog cld = new ChannelNameDialog();
                             cld.FormCaption = Messages[73];
                             cld.btnCancelText = Messages[27];
@@ -3004,9 +3063,9 @@ namespace ShowMiiWads
                             if (cld.DialogResult == DialogResult.OK)
                             {
                                 string[] newtitles = cld.Titles;
-                                bool[] samesame = new bool[7] { true, true, true, true, true, true, true };
+                                bool[] samesame = new bool[] { true, true, true, true, true, true, true, true };
 
-                                for (int z = 0; z < 7; z++)
+                                for (int z = 0; z < 8; z++)
                                 {
                                     if (oldvalues[z] != newtitles[z])
                                     {
@@ -3014,12 +3073,12 @@ namespace ShowMiiWads
                                     }
                                 }
 
-                                if (samesame[0] != true || samesame[1] != true || samesame[2] != true || samesame[3] != true || samesame[4] != true || samesame[5] != true || samesame[6] != true)
+                                if (samesame[0] != true || samesame[1] != true || samesame[2] != true || samesame[3] != true || samesame[4] != true || samesame[5] != true || samesame[6] != true || samesame[7] != true)
                                 {
                                     Cursor.Current = Cursors.WaitCursor;
                                     CreateBackup(wadfile);
 
-                                    Wii.WadEdit.ChangeChannelTitle(wadfile, newtitles[0], newtitles[1], newtitles[2], newtitles[3], newtitles[4], newtitles[5], newtitles[6]);
+                                    Wii.WadEdit.ChangeChannelTitle(wadfile, newtitles);
                                     lvWads.SelectedItems[0].Remove();
                                     SaveList();
                                     LoadNew();
@@ -3304,11 +3363,11 @@ namespace ShowMiiWads
                             case "German":
                                 channelname = Wii.WadInfo.GetChannelTitlesFromApp(app)[2] + " - " + Wii.WadInfo.GetTitleID(tmd, 1);
                                 break;
-                            default:
-                                channelname = Wii.WadInfo.GetChannelTitlesFromApp(app)[1] + " - " + Wii.WadInfo.GetTitleID(tmd, 1);
-                                break;
                             case "Japanese":
                                 channelname = Wii.WadInfo.GetChannelTitlesFromApp(app)[0] + " - " + Wii.WadInfo.GetTitleID(tmd, 1);
+                                break;
+                            default:
+                                channelname = Wii.WadInfo.GetChannelTitlesFromApp(app)[1] + " - " + Wii.WadInfo.GetTitleID(tmd, 1);
                                 break;
                         }
 
