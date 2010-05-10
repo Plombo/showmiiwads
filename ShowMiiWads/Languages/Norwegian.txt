@@ -157,3 +157,5 @@ Skriv inn et nytt IOS-spor
 Du må skrive inn et korrekt spornummer
 {0} feil inntraff!
 Erstatter
+Portable Mode
+Extract BootMii Dump

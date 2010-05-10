@@ -2106,10 +2106,13 @@ namespace Wii
                 int oldsize = 0;
                 int contentpos = 0x1e4 + (36 * i);
 
-                tmd.Seek(contentpos + 4, SeekOrigin.Begin);
+                tmd.Seek(contentpos, SeekOrigin.Begin);
+                string id = tmd.ReadByte().ToString("x2") + tmd.ReadByte().ToString("x2") + tmd.ReadByte().ToString("x2") + tmd.ReadByte().ToString("x2");
                 string index = "0000" + tmd.ReadByte().ToString("x2") + tmd.ReadByte().ToString("x2");
+                string type = tmd.ReadByte().ToString("x2") + tmd.ReadByte().ToString("x2");
 
-                tmd.Seek(contentpos + 8, SeekOrigin.Begin);
+                if (type != "0001") continue;
+
                 try
                 {
                     oldsize = Tools.HexStringToInt(tmd.ReadByte().ToString("x2") +
@@ -2125,10 +2128,14 @@ namespace Wii
 
                 byte[] oldsha1 = new byte[20];
                 tmd.Read(oldsha1, 0, oldsha1.Length);
+                string fileName = id;
 
-                if (File.Exists(tmdfile.Remove(tmdfile.LastIndexOf('\\') + 1) + index + ".app"))
+                if (!File.Exists(tmdfile.Remove(tmdfile.LastIndexOf('\\') + 1) + fileName + ".app"))
+                    fileName = index;
+
+                if (File.Exists(tmdfile.Remove(tmdfile.LastIndexOf('\\') + 1) + fileName + ".app"))
                 {
-                    byte[] content = Wii.Tools.LoadFileToByteArray(tmdfile.Remove(tmdfile.LastIndexOf('\\') + 1) + index + ".app");
+                    byte[] content = Wii.Tools.LoadFileToByteArray(tmdfile.Remove(tmdfile.LastIndexOf('\\') + 1) + fileName + ".app");
                     int newsize = content.Length;
                     
                     if (newsize != oldsize)

@@ -157,3 +157,5 @@ IOSスロットを入力してください
 適当なスロット番号を入力してください
 {0} エラーが発生しました!
 置き換え
+Portable Mode
+Extract BootMii Dump

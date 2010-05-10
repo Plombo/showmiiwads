@@ -11,6 +11,13 @@ want to have your translation included into the application, contact me..
 -----------------------------------------------------------------------------------------
 Changelog:
 
+Version 1.5
+	- Probably last version
+	- Fixed packing WADs with invalid characters in channel name
+	- Added option to use lowercase chars in title ID
+	- Added ability to patch "Return to" for title on NAND backup (Thanks giantpune for the patch!)
+	- Bugfixes
+
 Version 1.4
 	- MIOS will now show up as MIOS instead of IOS257 (BC will show up as BC)
 	- If you delete the System Menu, you will now be asked to keep the settings (data folder)
@@ -153,6 +160,7 @@ Xuzz, SquidMan, megazig, Matt_P, Omega and The Lemon Man for Wii.py (which was t
 SquidMan for Zetsubou (which was a reference for TPL conversion)
 Andre Perrot for gbalzss (which was the base for LZ77 (de-)compression)
 Waninkoko for his Nandloader
+giantpune for the Return to patch
 NeoRame for the Logo + Icon
 Blitzur, kedest, nutta_nic, Dteyn and acesniper for Betatesting
 carbonyle and Cyan for French translation

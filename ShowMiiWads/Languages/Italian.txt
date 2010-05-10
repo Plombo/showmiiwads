@@ -157,3 +157,5 @@ Inserisci un nuovo Slot IOS
 Devi inserire un Numero Slot appropriato
 {0} errore(i) verificato(i)!
 Sostituire
+Portable Mode
+Extract BootMii Dump

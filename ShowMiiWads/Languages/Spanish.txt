@@ -157,3 +157,5 @@ Enter a new IOS Slot
 You must enter a proper Slot Number
 {0} error(s) occurred!
 Replace
+Portable Mode
+Extract BootMii Dump

@@ -156,3 +156,5 @@ Geben sie einen neuen IOS Slot ein
 Das ist kein gültiger IOS Slot
 {0} Fehler aufgetreten!
 Ersetzen
+Portable - Modus
+Extrahiere BootMii Dump

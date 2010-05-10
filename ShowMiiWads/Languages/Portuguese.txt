@@ -157,3 +157,5 @@ Digite um novo Slot IOS
 Deve digitar um valor válido para o Slot IOS
 ocorreram {0} erro(s)!
 Substituir
+Portable Mode
+Extract BootMii Dump

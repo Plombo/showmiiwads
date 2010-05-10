@@ -37,7 +37,7 @@ namespace ShowMiiWads
         {
             lbCredits.Location = new System.Drawing.Point(lbCredits.Location.X, lbCredits.Location.Y - 1);
 
-            if (lbCredits.Location.Y == -245)
+            if (lbCredits.Location.Y == -265)
                 lbCredits.Location = new System.Drawing.Point(lbCredits.Location.X, 215);
         }
 

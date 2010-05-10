@@ -47,17 +47,17 @@ namespace ShowMiiWads
         {
             this.components = new System.ComponentModel.Container();
             this.lvWads = new System.Windows.Forms.ListView();
-            this.lvName = new System.Windows.Forms.ColumnHeader();
-            this.lvID = new System.Windows.Forms.ColumnHeader();
-            this.lvBlocks = new System.Windows.Forms.ColumnHeader();
-            this.lvFilesize = new System.Windows.Forms.ColumnHeader();
-            this.lvIOS = new System.Windows.Forms.ColumnHeader();
-            this.lvRegion = new System.Windows.Forms.ColumnHeader();
-            this.lvData = new System.Windows.Forms.ColumnHeader();
-            this.lvPath = new System.Windows.Forms.ColumnHeader();
-            this.lvType = new System.Windows.Forms.ColumnHeader();
-            this.lvVersion = new System.Windows.Forms.ColumnHeader();
-            this.lvTitle = new System.Windows.Forms.ColumnHeader();
+            this.lvName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvBlocks = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvFilesize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvIOS = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvRegion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvData = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cmWads = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.cmCut = new System.Windows.Forms.ToolStripMenuItem();
@@ -140,6 +140,7 @@ namespace ShowMiiWads
             this.btnNorwegian = new System.Windows.Forms.ToolStripMenuItem();
             this.btnPortuguese = new System.Windows.Forms.ToolStripMenuItem();
             this.btnJapanese = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnChinese = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.btnFromFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsTools = new System.Windows.Forms.ToolStripMenuItem();
@@ -178,17 +179,17 @@ namespace ShowMiiWads
             this.lbQueueInstall = new System.Windows.Forms.ToolStripStatusLabel();
             this.lbQueueDiscard = new System.Windows.Forms.ToolStripStatusLabel();
             this.lvNand = new System.Windows.Forms.ListView();
-            this.lvNandName = new System.Windows.Forms.ColumnHeader();
-            this.lvNandID = new System.Windows.Forms.ColumnHeader();
-            this.lvNandBlocks = new System.Windows.Forms.ColumnHeader();
-            this.lvNandSize = new System.Windows.Forms.ColumnHeader();
-            this.lvNandIOS = new System.Windows.Forms.ColumnHeader();
-            this.lvNandRegion = new System.Windows.Forms.ColumnHeader();
-            this.lvNandContent = new System.Windows.Forms.ColumnHeader();
-            this.lvNandPath = new System.Windows.Forms.ColumnHeader();
-            this.lvNandType = new System.Windows.Forms.ColumnHeader();
-            this.lvNandVersion = new System.Windows.Forms.ColumnHeader();
-            this.lvNandTitle = new System.Windows.Forms.ColumnHeader();
+            this.lvNandName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvNandID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvNandBlocks = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvNandSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvNandIOS = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvNandRegion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvNandContent = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvNandPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvNandType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvNandVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvNandTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cmNand = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmInstall = new System.Windows.Forms.ToolStripMenuItem();
             this.cmInstallWad = new System.Windows.Forms.ToolStripMenuItem();
@@ -204,7 +205,7 @@ namespace ShowMiiWads
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.cmNandPreview = new System.Windows.Forms.ToolStripMenuItem();
             this.lvQueue = new System.Windows.Forms.ListBox();
-            this.btnChinese = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmNandPatchReturnTo = new System.Windows.Forms.ToolStripMenuItem();
             this.cmWads.SuspendLayout();
             this.msMain.SuspendLayout();
             this.ssMain.SuspendLayout();
@@ -234,12 +235,12 @@ namespace ShowMiiWads
             this.lvWads.TabIndex = 1;
             this.lvWads.UseCompatibleStateImageBehavior = false;
             this.lvWads.View = System.Windows.Forms.View.Details;
-            this.lvWads.Resize += new System.EventHandler(this.lvWads_Resize);
-            this.lvWads.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvWads_MouseClick);
+            this.lvWads.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvWads_ColumnClick);
             this.lvWads.SelectedIndexChanged += new System.EventHandler(this.lvWads_SelectedIndexChanged);
             this.lvWads.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvWads_DragDrop);
-            this.lvWads.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvWads_ColumnClick);
             this.lvWads.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvWads_DragEnter);
+            this.lvWads.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvWads_MouseClick);
+            this.lvWads.Resize += new System.EventHandler(this.lvWads_Resize);
             // 
             // lvName
             // 
@@ -578,7 +579,7 @@ namespace ShowMiiWads
             // 
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.btnOpen.Size = new System.Drawing.Size(184, 22);
+            this.btnOpen.Size = new System.Drawing.Size(182, 22);
             this.btnOpen.Text = "Open Folder";
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
@@ -586,7 +587,7 @@ namespace ShowMiiWads
             // 
             this.btnExport.Name = "btnExport";
             this.btnExport.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.btnExport.Size = new System.Drawing.Size(184, 22);
+            this.btnExport.Size = new System.Drawing.Size(182, 22);
             this.btnExport.Text = "Export to File";
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
@@ -594,30 +595,30 @@ namespace ShowMiiWads
             // 
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.btnRefresh.Size = new System.Drawing.Size(184, 22);
+            this.btnRefresh.Size = new System.Drawing.Size(182, 22);
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(181, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(179, 6);
             // 
             // tsMru
             // 
             this.tsMru.Name = "tsMru";
-            this.tsMru.Size = new System.Drawing.Size(184, 22);
+            this.tsMru.Size = new System.Drawing.Size(182, 22);
             this.tsMru.Text = "Most Recently Used";
             // 
             // mruSeparator
             // 
             this.mruSeparator.Name = "mruSeparator";
-            this.mruSeparator.Size = new System.Drawing.Size(181, 6);
+            this.mruSeparator.Size = new System.Drawing.Size(179, 6);
             // 
             // btnExit
             // 
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(184, 22);
+            this.btnExit.Size = new System.Drawing.Size(182, 22);
             this.btnExit.Text = "Exit";
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
@@ -936,7 +937,7 @@ namespace ShowMiiWads
             this.btnEnglish.CheckOnClick = true;
             this.btnEnglish.CheckState = System.Windows.Forms.CheckState.Checked;
             this.btnEnglish.Name = "btnEnglish";
-            this.btnEnglish.Size = new System.Drawing.Size(152, 22);
+            this.btnEnglish.Size = new System.Drawing.Size(128, 22);
             this.btnEnglish.Text = "English";
             this.btnEnglish.Click += new System.EventHandler(this.btnEnglish_Click);
             // 
@@ -944,7 +945,7 @@ namespace ShowMiiWads
             // 
             this.btnGerman.CheckOnClick = true;
             this.btnGerman.Name = "btnGerman";
-            this.btnGerman.Size = new System.Drawing.Size(152, 22);
+            this.btnGerman.Size = new System.Drawing.Size(128, 22);
             this.btnGerman.Text = "Deutsch";
             this.btnGerman.Click += new System.EventHandler(this.btnGerman_Click);
             // 
@@ -952,7 +953,7 @@ namespace ShowMiiWads
             // 
             this.btnFrench.CheckOnClick = true;
             this.btnFrench.Name = "btnFrench";
-            this.btnFrench.Size = new System.Drawing.Size(152, 22);
+            this.btnFrench.Size = new System.Drawing.Size(128, 22);
             this.btnFrench.Text = "Français";
             this.btnFrench.Click += new System.EventHandler(this.btnFrench_Click);
             // 
@@ -960,7 +961,7 @@ namespace ShowMiiWads
             // 
             this.btnItalian.CheckOnClick = true;
             this.btnItalian.Name = "btnItalian";
-            this.btnItalian.Size = new System.Drawing.Size(152, 22);
+            this.btnItalian.Size = new System.Drawing.Size(128, 22);
             this.btnItalian.Text = "Italiano";
             this.btnItalian.Click += new System.EventHandler(this.btnItalian_Click);
             // 
@@ -968,7 +969,7 @@ namespace ShowMiiWads
             // 
             this.btnSpanish.CheckOnClick = true;
             this.btnSpanish.Name = "btnSpanish";
-            this.btnSpanish.Size = new System.Drawing.Size(152, 22);
+            this.btnSpanish.Size = new System.Drawing.Size(128, 22);
             this.btnSpanish.Text = "Español";
             this.btnSpanish.Click += new System.EventHandler(this.btnSpanish_Click);
             // 
@@ -976,7 +977,7 @@ namespace ShowMiiWads
             // 
             this.btnNorwegian.CheckOnClick = true;
             this.btnNorwegian.Name = "btnNorwegian";
-            this.btnNorwegian.Size = new System.Drawing.Size(152, 22);
+            this.btnNorwegian.Size = new System.Drawing.Size(128, 22);
             this.btnNorwegian.Text = "Norsk";
             this.btnNorwegian.Click += new System.EventHandler(this.btnNorwegian_Click);
             // 
@@ -984,7 +985,7 @@ namespace ShowMiiWads
             // 
             this.btnPortuguese.CheckOnClick = true;
             this.btnPortuguese.Name = "btnPortuguese";
-            this.btnPortuguese.Size = new System.Drawing.Size(152, 22);
+            this.btnPortuguese.Size = new System.Drawing.Size(128, 22);
             this.btnPortuguese.Text = "Português";
             this.btnPortuguese.Click += new System.EventHandler(this.btnPortuguese_Click);
             // 
@@ -992,20 +993,28 @@ namespace ShowMiiWads
             // 
             this.btnJapanese.CheckOnClick = true;
             this.btnJapanese.Name = "btnJapanese";
-            this.btnJapanese.Size = new System.Drawing.Size(152, 22);
+            this.btnJapanese.Size = new System.Drawing.Size(128, 22);
             this.btnJapanese.Text = "Japanese";
             this.btnJapanese.Click += new System.EventHandler(this.btnJapanese_Click);
+            // 
+            // btnChinese
+            // 
+            this.btnChinese.CheckOnClick = true;
+            this.btnChinese.Name = "btnChinese";
+            this.btnChinese.Size = new System.Drawing.Size(128, 22);
+            this.btnChinese.Text = "Chinese";
+            this.btnChinese.Click += new System.EventHandler(this.btnChinese_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(125, 6);
             // 
             // btnFromFile
             // 
             this.btnFromFile.CheckOnClick = true;
             this.btnFromFile.Name = "btnFromFile";
-            this.btnFromFile.Size = new System.Drawing.Size(152, 22);
+            this.btnFromFile.Size = new System.Drawing.Size(128, 22);
             this.btnFromFile.Text = "From File";
             this.btnFromFile.Click += new System.EventHandler(this.btnFromFile_Click);
             // 
@@ -1320,12 +1329,12 @@ namespace ShowMiiWads
             this.lvNand.UseCompatibleStateImageBehavior = false;
             this.lvNand.View = System.Windows.Forms.View.Details;
             this.lvNand.Visible = false;
-            this.lvNand.Resize += new System.EventHandler(this.lvNand_Resize);
-            this.lvNand.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvNand_MouseClick);
+            this.lvNand.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvNand_ColumnClick);
             this.lvNand.SelectedIndexChanged += new System.EventHandler(this.lvNand_SelectedIndexChanged);
             this.lvNand.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvNand_DragDrop);
-            this.lvNand.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvNand_ColumnClick);
             this.lvNand.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvNand_DragEnter);
+            this.lvNand.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvNand_MouseClick);
+            this.lvNand.Resize += new System.EventHandler(this.lvNand_Resize);
             // 
             // lvNandName
             // 
@@ -1401,11 +1410,12 @@ namespace ShowMiiWads
             this.tsNandSaveData,
             this.toolStripSeparator10,
             this.cmNandPackWad,
+            this.cmNandPatchReturnTo,
             this.cmNandDelete,
             this.toolStripSeparator13,
             this.cmNandPreview});
             this.cmNand.Name = "cmNand";
-            this.cmNand.Size = new System.Drawing.Size(144, 126);
+            this.cmNand.Size = new System.Drawing.Size(160, 170);
             // 
             // cmInstall
             // 
@@ -1413,7 +1423,7 @@ namespace ShowMiiWads
             this.cmInstallWad,
             this.cmInstallFolder});
             this.cmInstall.Name = "cmInstall";
-            this.cmInstall.Size = new System.Drawing.Size(143, 22);
+            this.cmInstall.Size = new System.Drawing.Size(159, 22);
             this.cmInstall.Text = "Install";
             // 
             // cmInstallWad
@@ -1438,7 +1448,7 @@ namespace ShowMiiWads
             this.cmNandBackupSaveAll,
             this.cmNandRestoreSaveAll});
             this.tsNandSaveData.Name = "tsNandSaveData";
-            this.tsNandSaveData.Size = new System.Drawing.Size(143, 22);
+            this.tsNandSaveData.Size = new System.Drawing.Size(159, 22);
             this.tsNandSaveData.Text = "Savedata";
             // 
             // cmNandBackupSave
@@ -1472,31 +1482,31 @@ namespace ShowMiiWads
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(140, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(156, 6);
             // 
             // cmNandPackWad
             // 
             this.cmNandPackWad.Name = "cmNandPackWad";
-            this.cmNandPackWad.Size = new System.Drawing.Size(143, 22);
+            this.cmNandPackWad.Size = new System.Drawing.Size(159, 22);
             this.cmNandPackWad.Text = "Pack To Wad";
             this.cmNandPackWad.Click += new System.EventHandler(this.btnPackToWad_Click);
             // 
             // cmNandDelete
             // 
             this.cmNandDelete.Name = "cmNandDelete";
-            this.cmNandDelete.Size = new System.Drawing.Size(143, 22);
+            this.cmNandDelete.Size = new System.Drawing.Size(159, 22);
             this.cmNandDelete.Text = "Delete";
             this.cmNandDelete.Click += new System.EventHandler(this.cmDelete_Click);
             // 
             // toolStripSeparator13
             // 
             this.toolStripSeparator13.Name = "toolStripSeparator13";
-            this.toolStripSeparator13.Size = new System.Drawing.Size(140, 6);
+            this.toolStripSeparator13.Size = new System.Drawing.Size(156, 6);
             // 
             // cmNandPreview
             // 
             this.cmNandPreview.Name = "cmNandPreview";
-            this.cmNandPreview.Size = new System.Drawing.Size(143, 22);
+            this.cmNandPreview.Size = new System.Drawing.Size(159, 22);
             this.cmNandPreview.Text = "Preview";
             this.cmNandPreview.Click += new System.EventHandler(this.cmPreview_Click);
             // 
@@ -1509,13 +1519,13 @@ namespace ShowMiiWads
             this.lvQueue.TabIndex = 5;
             this.lvQueue.Visible = false;
             // 
-            // btnChinese
+            // cmNandPatchReturnTo
             // 
-            this.btnChinese.CheckOnClick = true;
-            this.btnChinese.Name = "btnChinese";
-            this.btnChinese.Size = new System.Drawing.Size(152, 22);
-            this.btnChinese.Text = "Chinese";
-            this.btnChinese.Click += new System.EventHandler(this.btnChinese_Click);
+            this.cmNandPatchReturnTo.Name = "cmNandPatchReturnTo";
+            this.cmNandPatchReturnTo.Size = new System.Drawing.Size(159, 22);
+            this.cmNandPatchReturnTo.Text = "Patch Return To";
+            this.cmNandPatchReturnTo.Visible = false;
+            this.cmNandPatchReturnTo.Click += new System.EventHandler(this.cmNandPatchReturnTo_Click);
             // 
             // ShowMiiWads_Main
             // 
@@ -1532,12 +1542,12 @@ namespace ShowMiiWads
             this.Name = "ShowMiiWads_Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ShowMiiWads by Leathl";
-            this.Load += new System.EventHandler(this.Main_Load);
-            this.SizeChanged += new System.EventHandler(this.Main_SizeChanged);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ShowMiiWads_FormClosed);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
-            this.LocationChanged += new System.EventHandler(this.Main_LocationChanged);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ShowMiiWads_FormClosed);
+            this.Load += new System.EventHandler(this.Main_Load);
             this.ResizeEnd += new System.EventHandler(this.Main_ResizeEnd);
+            this.LocationChanged += new System.EventHandler(this.Main_LocationChanged);
+            this.SizeChanged += new System.EventHandler(this.Main_SizeChanged);
             this.cmWads.ResumeLayout(false);
             this.msMain.ResumeLayout(false);
             this.msMain.PerformLayout();
@@ -1710,6 +1720,7 @@ namespace ShowMiiWads
         private System.Windows.Forms.ToolStripMenuItem btnJapanese;
         private System.Windows.Forms.ToolStripMenuItem btnPortableMode;
         private System.Windows.Forms.ToolStripMenuItem btnChinese;
+        private System.Windows.Forms.ToolStripMenuItem cmNandPatchReturnTo;
     }
 }
 

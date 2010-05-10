@@ -36,7 +36,7 @@ namespace ShowMiiWads
     public partial class ShowMiiWads_Main : Form
     {
         //Define global variables
-        public const string version = "1.4";
+        public const string version = "1.5";
         private string language = "English";
         private string langfile = "";
         private string oldlang = "";
@@ -1377,10 +1377,11 @@ namespace ShowMiiWads
                 ib.DefaultValue = oldid;
                 ib.btnCancel.Text = Messages[27];
                 ib.MaxLength = 4;
+                ib.CaseBox = true;
 
                 if (ib.ShowDialog() == DialogResult.OK)
                 {
-                    string newid = ib.InputResponse.ToUpper();
+                    string newid = ib.InputResponse;
                     if (newid.Length == 4)
                     {
                         if (newid != oldid)
@@ -1414,7 +1415,6 @@ namespace ShowMiiWads
                         ErrorBox(Messages[44]);
                         return false;
                     }
-
                 }
                 else
                 {
@@ -3529,7 +3529,9 @@ namespace ShowMiiWads
             lbQueueInstall.Visible = false;
             lbQueueDiscard.Visible = false;
 
-            LoadNew(); ;
+            lvQueue.Items.Clear();
+
+            LoadNew();
         }
 
         private void cmInstallWad_Click(object sender, EventArgs e)
@@ -3626,6 +3628,8 @@ namespace ShowMiiWads
                             break;
                     }
 
+                    foreach (char invalidChar in Path.GetInvalidFileNameChars())
+                        filename = filename.Replace(invalidChar.ToString(), string.Empty);
 
                     string path = lvi.SubItems[7].Text;
                     string result = fld.SelectedPath + "\\" + filename + ".wad";
@@ -4120,6 +4124,7 @@ namespace ShowMiiWads
             {
                 cmNandPreview.Enabled = false;
                 btnPreview.Enabled = false;
+                cmNandPatchReturnTo.Visible = false;
 
                 bool backup = false;
                 bool save = false;
@@ -4146,11 +4151,13 @@ namespace ShowMiiWads
                 {
                     cmNandPreview.Enabled = true;
                     btnPreview.Enabled = true;
+                    cmNandPatchReturnTo.Visible = true;
                 }
                 else
                 {
                     cmNandPreview.Enabled = false;
                     btnPreview.Enabled = false;
+                    cmNandPatchReturnTo.Visible = false;
                 }
 
                 string titlepath = lvNand.SelectedItems[0].SubItems[7].Text;
@@ -4844,6 +4851,47 @@ namespace ShowMiiWads
         private void btnPortableMode_Click(object sender, EventArgs e)
         {
             portable = btnPortableMode.Checked;
+        }
+
+        private void cmNandPatchReturnTo_Click(object sender, EventArgs e)
+        {
+            if (lvNand.Visible && lvNand.SelectedItems.Count == 1)
+            {
+                InputBoxDialog ib = new InputBoxDialog();
+                ib.FormCaption = "Enter Title ID";
+                ib.FormPrompt = "Please enter the ID of the title to return to...";
+                ib.MaxLength = 4;
+
+                if (ib.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+
+                string stringId = ib.InputResponse;
+                if (stringId.Length != 4) { ErrorBox("The title ID must be 4 characters long!"); return; }
+
+                uint titleID = (uint)((stringId[0] << 24) | (stringId[1] << 16) | (stringId[2] << 8) | stringId[3]);
+
+                string path = NandPath + "\\title\\" + lvNand.SelectedItems[0].SubItems[7].Text + "\\content\\";
+                string[] appFile = Directory.GetFiles(path, "*.app");
+                bool patched = false;
+
+                for (int i = 0; i < appFile.Length; i++)
+                {
+                    if (Wii.U8.CheckU8(appFile[i])) continue;
+
+                    using (FileStream fs = new FileStream(appFile[i], FileMode.Open, FileAccess.ReadWrite))
+                    {
+                        if (ReturnToPatcher.PatchFile(fs, titleID)) { patched = true; break; }
+                    }
+                }
+
+                if (patched)
+                {
+                    string[] tmdFile = Directory.GetFiles(path, "title.tmd");
+                    Wii.WadEdit.UpdateTmdContents(tmdFile[0]);
+                    InfoBox("Successfully patched title to return to " + stringId);
+                }
+                else
+                    ErrorBox("No patterns to patch were found...");
+            }
         }
     }
 }

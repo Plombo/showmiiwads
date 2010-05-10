@@ -31,6 +31,7 @@ namespace InputBoxes
         private System.Windows.Forms.Button btnOK;
         public Button btnCancel;
         private System.Windows.Forms.TextBox txtInput;
+        private CheckBox cbUppercase;
         /// <summary>
         /// Required designer variable.
         ///
@@ -54,7 +55,7 @@ namespace InputBoxes
 
         /// <summary>
         /// Clean up any resources being used.
-        ///
+        /// </summary>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -80,6 +81,7 @@ namespace InputBoxes
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.txtInput = new System.Windows.Forms.TextBox();
+            this.cbUppercase = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblPrompt
@@ -119,6 +121,19 @@ namespace InputBoxes
             this.txtInput.Name = "txtInput";
             this.txtInput.Size = new System.Drawing.Size(379, 20);
             this.txtInput.TabIndex = 0;
+            this.txtInput.TextChanged += new System.EventHandler(this.txtInput_TextChanged);
+            // 
+            // cbUppercase
+            // 
+            this.cbUppercase.AutoSize = true;
+            this.cbUppercase.Location = new System.Drawing.Point(8, 74);
+            this.cbUppercase.Name = "cbUppercase";
+            this.cbUppercase.Size = new System.Drawing.Size(151, 17);
+            this.cbUppercase.TabIndex = 4;
+            this.cbUppercase.Text = "Use uppercase letters only";
+            this.cbUppercase.UseVisualStyleBackColor = true;
+            this.cbUppercase.Visible = false;
+            this.cbUppercase.CheckedChanged += new System.EventHandler(this.cbUppercase_CheckedChanged);
             // 
             // InputBoxDialog
             // 
@@ -126,6 +141,7 @@ namespace InputBoxes
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(398, 128);
+            this.Controls.Add(this.cbUppercase);
             this.Controls.Add(this.txtInput);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
@@ -150,6 +166,7 @@ namespace InputBoxes
         string inputResponse = string.Empty;
         string defaultValue = string.Empty;
         int maxlength = 32000;
+        bool caseBox = false;
         #endregion
 
         #region Public Properties
@@ -178,6 +195,11 @@ namespace InputBoxes
             get { return maxlength; }
             set { maxlength = value; }
         }
+        public bool CaseBox
+        {
+            get { return caseBox; }
+            set { caseBox = value; }
+        }
 
         #endregion
 
@@ -191,6 +213,15 @@ namespace InputBoxes
             this.txtInput.SelectionLength = this.txtInput.Text.Length;
             this.txtInput.Focus();
             this.txtInput.MaxLength = maxlength;
+
+            if (caseBox)
+            {
+                if (!string.IsNullOrEmpty(defaultValue))
+                    if (defaultValue.ToUpper() == defaultValue)
+                        cbUppercase.Checked = true;
+
+                cbUppercase.Visible = true;
+            }
         }
 
         private void btnOK_Click(object sender, System.EventArgs e)
@@ -202,6 +233,22 @@ namespace InputBoxes
         private void button1_Click(object sender, System.EventArgs e)
         {
             this.Close();
+        }
+        private void txtInput_TextChanged(object sender, System.EventArgs e)
+        {
+            if (cbUppercase.Checked)
+            {
+                int temp = txtInput.SelectionStart;
+                txtInput.Text = txtInput.Text.ToUpper();
+                txtInput.SelectionStart = temp;
+
+            }
+        }
+
+        private void cbUppercase_CheckedChanged(object sender, System.EventArgs e)
+        {
+            if (cbUppercase.Checked)
+                txtInput.Text = txtInput.Text.ToUpper();
         }
         #endregion
     }
