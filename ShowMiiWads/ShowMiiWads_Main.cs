@@ -1,4 +1,4 @@
-﻿/* This file is part of ShowMiiWads
+/* This file is part of ShowMiiWads
  * Copyright (C) 2009 Leathl
  * 
  * ShowMiiWads is free software: you can redistribute it and/or
@@ -62,14 +62,14 @@ namespace ShowMiiWads
         private string addsub = "false";
         private string backup = "false";
         private string splash = "true";
-        private string ckey = Application.StartupPath + "\\common-key.bin";
-        private string key = Application.StartupPath + "\\key.bin";
+        private string ckey = Application.StartupPath + "/common-key.bin";
+        private string key = Application.StartupPath + "/key.bin";
         private string[] mru = new string[5] { "", "", "", "", "" };
-        public static string TempPath = Path.GetTempPath() + "\\ShowMiiWads_WadTemp";
-        public string ListPath = Path.GetTempPath() + "\\ShowMiiWads.list";
-        public string ListPathNand = Path.GetTempPath() + "\\ShowMiiNand.list";
-        private string CfgPath = Application.StartupPath + "\\ShowMiiWads.cfg";
-        private string SaveBackupPath = Application.StartupPath + "\\SaveDataBackups";
+        public static string TempPath = Path.GetTempPath() + "/ShowMiiWads_WadTemp";
+        public string ListPath = Path.GetTempPath() + "/ShowMiiWads.list";
+        public string ListPathNand = Path.GetTempPath() + "/ShowMiiNand.list";
+        private string CfgPath = Application.StartupPath + "/ShowMiiWads.cfg";
+        private string SaveBackupPath = Application.StartupPath + "/SaveDataBackups";
         private bool portable = false;
         private string lastPath = "";
 
@@ -77,7 +77,7 @@ namespace ShowMiiWads
         {
             InitializeComponent();
             //Get Icon
-            this.Icon = global::ShowMiiWads.Properties.Resources.ShowMiiWads_Icon;
+            // this.Icon = global::ShowMiiWads.Properties.Resources.ShowMiiWads_Icon;
             //Display WaitCursor
             Cursor.Current = Cursors.WaitCursor;
             //Set Caption
@@ -149,10 +149,10 @@ namespace ShowMiiWads
             lvNand.Items.Clear();
 
             if (Directory.Exists(NandPath) &&
-                Directory.Exists(NandPath + "\\ticket") &&
-                Directory.Exists(NandPath + "\\title"))
+                Directory.Exists(NandPath + "/ticket") &&
+                Directory.Exists(NandPath + "/title"))
             {
-                string[] tickets = Directory.GetFiles(NandPath + "\\ticket", "*.tik", SearchOption.AllDirectories);
+                string[] tickets = Directory.GetFiles(NandPath + "/ticket", "*.tik", SearchOption.AllDirectories);
 
                 if (tickets.Length > 0)
                 {
@@ -164,15 +164,15 @@ namespace ShowMiiWads
                         try
                         {
                             pbProgress.Value = (i + 1) * 100 / tickets.Length;
-                            string path1 = tickets[i].Remove(tickets[i].LastIndexOf('\\'));
-                            path1 = path1.Remove(0, path1.LastIndexOf('\\') + 1);
-                            string path2 = tickets[i].Remove(0, tickets[i].LastIndexOf('\\') + 1);
+                            string path1 = tickets[i].Remove(tickets[i].LastIndexOf('/'));
+                            path1 = path1.Remove(0, path1.LastIndexOf('/') + 1);
+                            string path2 = tickets[i].Remove(0, tickets[i].LastIndexOf('/') + 1);
                             path2 = path2.Remove(path2.LastIndexOf('.'));
 
                             byte[] tik = Wii.Tools.LoadFileToByteArray(tickets[i]);
-                            if (File.Exists(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\title.tmd"))
+                            if (File.Exists(NandPath + "/title/" + path1 + "/" + path2 + "/content/title.tmd"))
                             {
-                                byte[] tmd = Wii.Tools.LoadFileToByteArray(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\title.tmd");
+                                byte[] tmd = Wii.Tools.LoadFileToByteArray(NandPath + "/title/" + path1 + "/" + path2 + "/content/title.tmd");
                                 string[,] continfo = Wii.WadInfo.GetContentInfo(tmd);
                                 string cid = "00000000";
 
@@ -182,9 +182,9 @@ namespace ShowMiiWads
                                         cid = continfo[j, 0];
                                 }
 
-                                byte[] nullapp = Wii.Tools.LoadFileToByteArray(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app");
+                                byte[] nullapp = Wii.Tools.LoadFileToByteArray(NandPath + "/title/" + path1 + "/" + path2 + "/content/" + cid + ".app");
 
-                                Infos[i, 0] = tickets[i].Remove(0, tickets[i].LastIndexOf('\\') + 1);
+                                Infos[i, 0] = tickets[i].Remove(0, tickets[i].LastIndexOf('/') + 1);
                                 Infos[i, 1] = Wii.WadInfo.GetTitleID(tik, 0);
                                 //Infos[i, 2] = Wii.WadInfo.GetNandBlocks(tmd);
                                 //Infos[i, 3] = Wii.WadInfo.GetNandSize(tmd, true);
@@ -220,7 +220,7 @@ namespace ShowMiiWads
                                         break;
                                 }
 
-                                string[] titlefiles = Directory.GetFiles(NandPath + "\\title\\" + path1 + "\\" + path2, "*", SearchOption.AllDirectories);
+                                string[] titlefiles = Directory.GetFiles(NandPath + "/title/" + path1 + "/" + path2, "*", SearchOption.AllDirectories);
                                 Infos[i, 6] = (titlefiles.Length - 1).ToString();
                                 int nandsize = 0;
 
@@ -279,13 +279,13 @@ namespace ShowMiiWads
 
                 for (int j = 0; j < added.Length; j++)
                 {
-                    if (wadfiles[i].Remove(wadfiles[i].LastIndexOf('\\')) == added[j]) exists = true;
+                    if (wadfiles[i].Remove(wadfiles[i].LastIndexOf('/')) == added[j]) exists = true;
                 }
 
                 if (exists == false)
                 {
-                    AddWads(wadfiles[i].Remove(wadfiles[i].LastIndexOf('\\')));
-                    added[i] = wadfiles[i].Remove(wadfiles[i].LastIndexOf('\\'));
+                    AddWads(wadfiles[i].Remove(wadfiles[i].LastIndexOf('/')));
+                    added[i] = wadfiles[i].Remove(wadfiles[i].LastIndexOf('/'));
                 }
             }
         }
@@ -324,7 +324,7 @@ namespace ShowMiiWads
                     }
                     else
                     {
-                        lvWads.Groups.Add(new ListViewGroup(path, path.Remove(0, path.LastIndexOf('\\') + 1)));
+                        lvWads.Groups.Add(new ListViewGroup(path, path.Remove(0, path.LastIndexOf('/') + 1)));
                     }
                     lvWads.Groups[lvWads.Groups.Count - 1].Tag = path;
 
@@ -336,7 +336,7 @@ namespace ShowMiiWads
 
                             byte[] wadfile = Wii.Tools.LoadFileToByteArray(thisFile);
 
-                            Infos[i, 0] = thisFile.Remove(0, thisFile.LastIndexOf('\\') + 1);
+                            Infos[i, 0] = thisFile.Remove(0, thisFile.LastIndexOf('/') + 1);
                             Infos[i, 1] = Wii.WadInfo.GetTitleID(wadfile, 0);
                             Infos[i, 2] = Wii.WadInfo.GetNandBlocks(wadfile);
                             Infos[i, 3] = Wii.WadInfo.GetNandSize(wadfile, true);
@@ -422,30 +422,30 @@ namespace ShowMiiWads
                 {
                     pbProgress.Value = (i + 1) * 100 / lvWads.Items.Count;
 
-                    if (File.Exists(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text))
+                    if (File.Exists(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text))
                     {
                         switch (language)
                         {
                             case "Dutch":
-                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[6];
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text)[6];
                                 break;
                             case "Italian":
-                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[5];
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text)[5];
                                 break;
                             case "Spanish":
-                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[4];
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text)[4];
                                 break;
                             case "French":
-                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[3];
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text)[3];
                                 break;
                             case "German":
-                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[2];
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text)[2];
                                 break;
                             case "Japanese":
-                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[0];
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text)[0];
                                 break;
                             default:
-                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text)[1];
+                                lvWads.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitles(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text)[1];
                                 break;
                         }
                     }
@@ -460,7 +460,7 @@ namespace ShowMiiWads
                     string path1 = lvNand.Items[i].SubItems[7].Text.Remove(8);
                     string path2 = lvNand.Items[i].SubItems[7].Text.Remove(0, 9);
 
-                    byte[] tmd = Wii.Tools.LoadFileToByteArray(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\title.tmd");
+                    byte[] tmd = Wii.Tools.LoadFileToByteArray(NandPath + "/title/" + path1 + "/" + path2 + "/content/title.tmd");
                     string[,] continfo = Wii.WadInfo.GetContentInfo(tmd);
                     string cid = "00000000";
 
@@ -473,25 +473,25 @@ namespace ShowMiiWads
                     switch (language)
                     {
                         case "Dutch":
-                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[6];
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "/title/" + path1 + "/" + path2 + "/content/" + cid + ".app")[6];
                             break;
                         case "Italian":
-                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[5];
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "/title/" + path1 + "/" + path2 + "/content/" + cid + ".app")[5];
                             break;
                         case "Spanish":
-                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[4];
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "/title/" + path1 + "/" + path2 + "/content/" + cid + ".app")[4];
                             break;
                         case "French":
-                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[3];
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "/title/" + path1 + "/" + path2 + "/content/" + cid + ".app")[3];
                             break;
                         case "German":
-                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[2];
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "/title/" + path1 + "/" + path2 + "/content/" + cid + ".app")[2];
                             break;
                         case "Japanese":
-                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[0];
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "/title/" + path1 + "/" + path2 + "/content/" + cid + ".app")[0];
                             break;
                         default:
-                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app")[1];
+                            lvNand.Items[i].SubItems[10].Text = Wii.WadInfo.GetChannelTitlesFromApp(NandPath + "/title/" + path1 + "/" + path2 + "/content/" + cid + ".app")[1];
                             break;
                     }
                 }
@@ -510,9 +510,9 @@ namespace ShowMiiWads
             {
                 for (int i = 0; i < lvWads.Items.Count; i++)
                 {
-                    if (File.Exists(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text))
+                    if (File.Exists(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text))
                     {
-                        byte[] wadfile = Wii.Tools.LoadFileToByteArray(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text);
+                        byte[] wadfile = Wii.Tools.LoadFileToByteArray(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text);
                         lvWads.Items[i].SubItems[5].Text = Wii.WadInfo.GetRegionFlag(wadfile);
                     }
                 }
@@ -528,9 +528,9 @@ namespace ShowMiiWads
             {
                 for (int i = 0; i < lvWads.Items.Count; i++)
                 {
-                    if (File.Exists(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text))
+                    if (File.Exists(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text))
                     {
-                        byte[] wadfile = Wii.Tools.LoadFileToByteArray(lvWads.Items[i].Group.Tag + "\\" + lvWads.Items[i].Text);
+                        byte[] wadfile = Wii.Tools.LoadFileToByteArray(lvWads.Items[i].Group.Tag + "/" + lvWads.Items[i].Text);
                         lvWads.Items[i].SubItems[1].Text = Wii.WadInfo.GetTitleID(wadfile, 1);
                     }
                 }
@@ -627,7 +627,7 @@ namespace ShowMiiWads
 
                     for (int j = 0; j < ds.Tables[i].Rows.Count; j++)
                     {
-                        if (File.Exists(ds.Tables[i].TableName + "\\" + ds.Tables[i].Rows[j][0].ToString()))
+                        if (File.Exists(ds.Tables[i].TableName + "/" + ds.Tables[i].Rows[j][0].ToString()))
                         {
                             lvWads.Items.Add(new ListViewItem(new string[] { 
                                 ds.Tables[i].Rows[j][0].ToString(),
@@ -665,7 +665,7 @@ namespace ShowMiiWads
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
-                    if (File.Exists(NandPath + "\\ticket\\" + ds.Tables[0].Rows[i][7].ToString() + ".tik"))
+                    if (File.Exists(NandPath + "/ticket/" + ds.Tables[0].Rows[i][7].ToString() + ".tik"))
                     {
                         lvNand.Items.Add(new ListViewItem(new string[] { 
                         ds.Tables[0].Rows[i][0].ToString(),
@@ -1548,12 +1548,12 @@ namespace ShowMiiWads
                 foreach (ListViewItem lvi in lvis)
                 {
                     pbProgress.Value = (++counter * 100) / lvis.Count;
-                    string Wadfile = lvi.Group.Tag.ToString() + "\\" + lvi.Text;
+                    string Wadfile = lvi.Group.Tag.ToString() + "/" + lvi.Text;
 
                     if (File.Exists(Wadfile))
                     {
-                        string thispath = Wadfile.Remove(Wadfile.LastIndexOf("\\"));
-                        string wadname = Wadfile.Remove(Wadfile.Length - 4).Remove(0, Wadfile.LastIndexOf("\\") + 1);
+                        string thispath = Wadfile.Remove(Wadfile.LastIndexOf("/"));
+                        string wadname = Wadfile.Remove(Wadfile.Length - 4).Remove(0, Wadfile.LastIndexOf("/") + 1);
 
                         string newname = ib.InputResponse;
                         FileInfo fiWad = new FileInfo(Wadfile);
@@ -1569,8 +1569,8 @@ namespace ShowMiiWads
                         if (newname.Contains("{size}")) newname = newname.Replace("{size}", lvi.SubItems[3].Text);
                         if (newname.Contains("{iosflag}")) newname = newname.Replace("{iosflag}", lvi.SubItems[4].Text);
                         if (newname.Contains("{content}")) newname = newname.Replace("{content}", lvi.SubItems[6].Text);
-                        if (newname.Contains("{hextitleid}")) newname = newname.Replace("{hextitleid}", lvi.SubItems[7].Text.Remove(0, lvi.SubItems[7].Text.IndexOf('\\') + 1));
-                        if (newname.Contains("{fullhextitleid}")) newname = newname.Replace("{fullhextitleid}", lvi.SubItems[7].Text.Replace("\\", ""));
+                        if (newname.Contains("{hextitleid}")) newname = newname.Replace("{hextitleid}", lvi.SubItems[7].Text.Remove(0, lvi.SubItems[7].Text.IndexOf('/') + 1));
+                        if (newname.Contains("{fullhextitleid}")) newname = newname.Replace("{fullhextitleid}", lvi.SubItems[7].Text.Replace("/", ""));
 
                         if (newname.Contains("System: IOS")) newname = newname.Replace("System: IOS", "IOS");
                         if (newname.Contains("System: MIOS")) newname = newname.Replace("System: MIOS", "MIOS");
@@ -1581,7 +1581,7 @@ namespace ShowMiiWads
                         {
                             try
                             {
-                                string thisfile = thispath + "\\" + newname;
+                                string thisfile = thispath + "/" + newname;
 
                                 if (!File.Exists(thisfile)) fiWad.MoveTo(thisfile);
                                 else
@@ -1590,13 +1590,13 @@ namespace ShowMiiWads
                                     bool stop = false;
                                     thisfile = thisfile.Insert(thisfile.Length - 4, " (" + count.ToString() + ")");
 
-                                    if (thisfile.Remove(0, thisfile.LastIndexOf('\\') + 1) != wadname + ".wad")
+                                    if (thisfile.Remove(0, thisfile.LastIndexOf('/') + 1) != wadname + ".wad")
                                     {
                                         while (File.Exists(thisfile))
                                         {
                                             thisfile = thisfile.Replace(" (" + count.ToString() + ")", " (" + (++count).ToString() + ")");
 
-                                            if (thisfile.Remove(0, thisfile.LastIndexOf('\\') + 1) == wadname + ".wad")
+                                            if (thisfile.Remove(0, thisfile.LastIndexOf('/') + 1) == wadname + ".wad")
                                             {
                                                 stop = true;
                                                 break;
@@ -1665,7 +1665,7 @@ namespace ShowMiiWads
 
                     for (int i = 0; i < lvg.Items.Count; i++)
                     {
-                        if (lvg.Items[i].Text == thisFile.Remove(0, thisFile.LastIndexOf('\\') + 1)) exists = true;
+                        if (lvg.Items[i].Text == thisFile.Remove(0, thisFile.LastIndexOf('/') + 1)) exists = true;
                     }
 
                     if (exists == false)
@@ -1676,7 +1676,7 @@ namespace ShowMiiWads
                         {
                             byte[] wadfile = Wii.Tools.LoadFileToByteArray(thisFile);
 
-                            Infos[0] = thisFile.Remove(0, thisFile.LastIndexOf('\\') + 1);
+                            Infos[0] = thisFile.Remove(0, thisFile.LastIndexOf('/') + 1);
                             Infos[1] = Wii.WadInfo.GetTitleID(wadfile, 0);
                             Infos[2] = Wii.WadInfo.GetNandBlocks(wadfile);
                             Infos[3] = Wii.WadInfo.GetNandSize(wadfile, true);
@@ -1729,12 +1729,12 @@ namespace ShowMiiWads
         {
             lvNand.Items.Clear();
             LoadListNand();
-            if (Directory.Exists(NandPath + "\\ticket"))
+            if (Directory.Exists(NandPath + "/ticket"))
             {
                 pbProgress.Value = 0;
                 int counter = 0;
 
-                string[] tiks = Directory.GetFiles(NandPath + "\\ticket\\", "*.tik", SearchOption.AllDirectories);
+                string[] tiks = Directory.GetFiles(NandPath + "/ticket/", "*.tik", SearchOption.AllDirectories);
 
                 foreach (string tik in tiks)
                 {
@@ -1743,7 +1743,7 @@ namespace ShowMiiWads
 
                     for (int i = 0; i < lvNand.Items.Count; i++)
                     {
-                        if (tik.Remove(0, tik.LastIndexOf('\\') + 1) == lvNand.Items[i].Text) exists = true;
+                        if (tik.Remove(0, tik.LastIndexOf('/') + 1) == lvNand.Items[i].Text) exists = true;
                     }
 
                     if (exists == false)
@@ -1752,15 +1752,15 @@ namespace ShowMiiWads
 
                         try
                         {
-                            string path1 = tik.Remove(tik.LastIndexOf('\\'));
-                            path1 = path1.Remove(0, path1.LastIndexOf('\\') + 1);
-                            string path2 = tik.Remove(0, tik.LastIndexOf('\\') + 1);
+                            string path1 = tik.Remove(tik.LastIndexOf('/'));
+                            path1 = path1.Remove(0, path1.LastIndexOf('/') + 1);
+                            string path2 = tik.Remove(0, tik.LastIndexOf('/') + 1);
                             path2 = path2.Remove(path2.LastIndexOf('.'));
 
                             byte[] tikarray = Wii.Tools.LoadFileToByteArray(tik);
-                            if (File.Exists(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\title.tmd"))
+                            if (File.Exists(NandPath + "/title/" + path1 + "/" + path2 + "/content/title.tmd"))
                             {
-                                byte[] tmd = Wii.Tools.LoadFileToByteArray(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\title.tmd");
+                                byte[] tmd = Wii.Tools.LoadFileToByteArray(NandPath + "/title/" + path1 + "/" + path2 + "/content/title.tmd");
                                 string[,] continfo = Wii.WadInfo.GetContentInfo(tmd);
                                 string cid = "00000000";
 
@@ -1770,9 +1770,9 @@ namespace ShowMiiWads
                                         cid = continfo[j, 0];
                                 }
 
-                                byte[] nullapp = Wii.Tools.LoadFileToByteArray(NandPath + "\\title\\" + path1 + "\\" + path2 + "\\content\\" + cid + ".app");
+                                byte[] nullapp = Wii.Tools.LoadFileToByteArray(NandPath + "/title/" + path1 + "/" + path2 + "/content/" + cid + ".app");
 
-                                Infos[0] = tik.Remove(0, tik.LastIndexOf('\\') + 1);
+                                Infos[0] = tik.Remove(0, tik.LastIndexOf('/') + 1);
                                 Infos[1] = Wii.WadInfo.GetTitleID(tikarray, 0);
                                 //Infos[2] = Wii.WadInfo.GetNandBlocks(tmd);
                                 //Infos[3] = Wii.WadInfo.GetNandSize(tmd, true);
@@ -1808,7 +1808,7 @@ namespace ShowMiiWads
                                         break;
                                 }
 
-                                string[] titlefiles = Directory.GetFiles(NandPath + "\\title\\" + path1 + "\\" + path2, "*", SearchOption.AllDirectories);
+                                string[] titlefiles = Directory.GetFiles(NandPath + "/title/" + path1 + "/" + path2, "*", SearchOption.AllDirectories);
                                 Infos[6] = (titlefiles.Length - 1).ToString();
                                 int nandsize = 0;
 
@@ -2099,7 +2099,7 @@ namespace ShowMiiWads
                     {
                         for (int i = 0; i < lvWads.SelectedItems.Count; i++)
                         {
-                            string wadfile = lvWads.SelectedItems[i].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[i].Text;
+                            string wadfile = lvWads.SelectedItems[i].Group.Tag.ToString() + "/" + lvWads.SelectedItems[i].Text;
 
                             if (File.Exists(wadfile))
                             {
@@ -2127,11 +2127,11 @@ namespace ShowMiiWads
                         if (dlg == DialogResult.Cancel) continue;
                         if (dlg == DialogResult.Yes)
                         {
-                            if (File.Exists(NandPath + "\\ticket\\" + item.SubItems[7].Text.Remove(8) + "\\" + item.Text))
-                                File.Delete(NandPath + "\\ticket\\" + item.SubItems[7].Text.Remove(8) + "\\" + item.Text);
+                            if (File.Exists(NandPath + "/ticket/" + item.SubItems[7].Text.Remove(8) + "/" + item.Text))
+                                File.Delete(NandPath + "/ticket/" + item.SubItems[7].Text.Remove(8) + "/" + item.Text);
 
-                            if (Directory.Exists(NandPath + "\\title\\" + item.SubItems[7].Text + "\\content\\"))
-                                Directory.Delete(NandPath + "\\title\\" + item.SubItems[7].Text + "\\content\\", true);
+                            if (Directory.Exists(NandPath + "/title/" + item.SubItems[7].Text + "/content/"))
+                                Directory.Delete(NandPath + "/title/" + item.SubItems[7].Text + "/content/", true);
                             
                             continue;
                         }
@@ -2139,11 +2139,11 @@ namespace ShowMiiWads
 
                     pbProgress.Value = (++counter) * 100 / selected;
 
-                    if (File.Exists(NandPath + "\\ticket\\" + item.SubItems[7].Text.Remove(8) + "\\" + item.Text))
-                        File.Delete(NandPath + "\\ticket\\" + item.SubItems[7].Text.Remove(8) + "\\" + item.Text);
+                    if (File.Exists(NandPath + "/ticket/" + item.SubItems[7].Text.Remove(8) + "/" + item.Text))
+                        File.Delete(NandPath + "/ticket/" + item.SubItems[7].Text.Remove(8) + "/" + item.Text);
 
-                    if (Directory.Exists(NandPath + "\\title\\" + item.SubItems[7].Text))
-                        Directory.Delete(NandPath + "\\title\\" + item.SubItems[7].Text, true);
+                    if (Directory.Exists(NandPath + "/title/" + item.SubItems[7].Text))
+                        Directory.Delete(NandPath + "/title/" + item.SubItems[7].Text, true);
                 }
 
                 LoadNew();
@@ -2253,7 +2253,7 @@ namespace ShowMiiWads
 
                         for (int j = 0; j < lvWads.Groups.Count; j++)
                         {
-                            if (drop[i].Remove(drop[i].LastIndexOf('\\')) == lvWads.Groups[j].Tag.ToString())
+                            if (drop[i].Remove(drop[i].LastIndexOf('/')) == lvWads.Groups[j].Tag.ToString())
                             {
                                 doesexist = true;
                             }
@@ -2261,7 +2261,7 @@ namespace ShowMiiWads
 
                         for (int k = 0; k < drop.Length; k++)
                         {
-                            if (drop[i].Remove(drop[i].LastIndexOf('\\')).ToUpper() == added[k])
+                            if (drop[i].Remove(drop[i].LastIndexOf('/')).ToUpper() == added[k])
                             {
                                 doesexist = true;
                             }
@@ -2269,14 +2269,14 @@ namespace ShowMiiWads
 
                         if (doesexist == false)
                         {
-                            if (Directory.GetFiles(drop[i].Remove(drop[i].LastIndexOf('\\')), "*.wad").Length > 0)
+                            if (Directory.GetFiles(drop[i].Remove(drop[i].LastIndexOf('/')), "*.wad").Length > 0)
                             {
-                                NewMRU(drop[i].Remove(drop[i].LastIndexOf('\\')));
+                                NewMRU(drop[i].Remove(drop[i].LastIndexOf('/')));
 
                                 //Verzeichnis, in dem die Datei liegt, hinzufügen
-                                this.BeginInvoke(AddWadsDel, new object[] { drop[i].Remove(drop[i].LastIndexOf('\\')) });
+                                this.BeginInvoke(AddWadsDel, new object[] { drop[i].Remove(drop[i].LastIndexOf('/')) });
                                 this.Activate();
-                                added[i] = drop[i].Remove(drop[i].LastIndexOf('\\')).ToUpper();
+                                added[i] = drop[i].Remove(drop[i].LastIndexOf('/')).ToUpper();
                             }
                         }
                     }
@@ -2441,7 +2441,7 @@ namespace ShowMiiWads
                 }
                 else
                 {
-                    if (ChangeTitleID(path + "\\" + file, oldid) == true)
+                    if (ChangeTitleID(path + "/" + file, oldid) == true)
                     {
                         lvWads.SelectedItems[0].Remove();
                         SaveList();
@@ -2473,7 +2473,7 @@ namespace ShowMiiWads
                         string file = lvi.Text;
 
 
-                        if (ChangeRegion(path + "\\" + file, 'f') == true)
+                        if (ChangeRegion(path + "/" + file, 'f') == true)
                         {
                             changed++;
                         }
@@ -2514,7 +2514,7 @@ namespace ShowMiiWads
                         string file = lvi.Text;
 
 
-                        if (ChangeRegion(path + "\\" + file, 'p') == true)
+                        if (ChangeRegion(path + "/" + file, 'p') == true)
                         {
                             changed++;
                         }
@@ -2554,7 +2554,7 @@ namespace ShowMiiWads
                         string file = lvi.Text;
 
 
-                        if (ChangeRegion(path + "\\" + file, 'u') == true)
+                        if (ChangeRegion(path + "/" + file, 'u') == true)
                         {
                             changed++;
                         }
@@ -2594,7 +2594,7 @@ namespace ShowMiiWads
                         string file = lvi.Text;
 
 
-                        if (ChangeRegion(path + "\\" + file, 'j') == true)
+                        if (ChangeRegion(path + "/" + file, 'j') == true)
                         {
                             changed++;
                         }
@@ -2661,7 +2661,7 @@ namespace ShowMiiWads
 
                 for (int i = 0; i < lvWads.SelectedItems.Count; i++)
                 {
-                    copy[i] = lvWads.SelectedItems[i].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[i].Text;
+                    copy[i] = lvWads.SelectedItems[i].Group.Tag.ToString() + "/" + lvWads.SelectedItems[i].Text;
                 }
 
                 copyfile = copy;
@@ -2677,7 +2677,7 @@ namespace ShowMiiWads
 
                 for (int i = 0; i < lvWads.SelectedItems.Count; i++)
                 {
-                    cut[i] = lvWads.SelectedItems[i].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[i].Text;
+                    cut[i] = lvWads.SelectedItems[i].Group.Tag.ToString() + "/" + lvWads.SelectedItems[i].Text;
                 }
 
                 copyfile = cut;
@@ -2695,14 +2695,14 @@ namespace ShowMiiWads
                 {
                     if (!string.IsNullOrEmpty(copyfile[i]))
                     {
-                        string filename = copyfile[i].Remove(0, copyfile[i].LastIndexOf('\\') + 1);
+                        string filename = copyfile[i].Remove(0, copyfile[i].LastIndexOf('/') + 1);
 
                         if (File.Exists(copyfile[i]))
                         {
                             bool over = false;
                             bool exists = false;
 
-                            if (File.Exists(newfolder + "\\" + filename))
+                            if (File.Exists(newfolder + "/" + filename))
                             {
                                 exists = true;
                                 if (MessageBox.Show(filename + "\r\n" + Messages[49], Messages[51], MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -2715,7 +2715,7 @@ namespace ShowMiiWads
                             {
                                 try
                                 {
-                                    File.Copy(copyfile[i], newfolder + "\\" + filename);
+                                    File.Copy(copyfile[i], newfolder + "/" + filename);
 
                                     if (copyaction == "cut")
                                     {
@@ -2829,7 +2829,7 @@ namespace ShowMiiWads
                         {
                             pbProgress.Value = ((i + 1) * 100) / selected;
 
-                            string wadfile = lvWads.SelectedItems[i].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[i].Text;
+                            string wadfile = lvWads.SelectedItems[i].Group.Tag.ToString() + "/" + lvWads.SelectedItems[i].Text;
 
                             try { Wii.WadUnpack.UnpackToNand(wadfile, NandPath); }
                             catch (Exception ex) { ErrorBox(ex.Message); }
@@ -2918,10 +2918,10 @@ namespace ShowMiiWads
                         {
                             pbProgress.Value = ((i + 1) * 100) / selected;
 
-                            string wadfile = lvWads.SelectedItems[i].Group.Tag + "\\" + lvWads.SelectedItems[i].Text;
+                            string wadfile = lvWads.SelectedItems[i].Group.Tag + "/" + lvWads.SelectedItems[i].Text;
                             string wadname = lvWads.SelectedItems[i].Text.Remove(lvWads.SelectedItems[i].Text.Length - 4);
 
-                            try { Wii.WadUnpack.UnpackWad(wadfile, fd.SelectedPath + "\\" + wadname); }
+                            try { Wii.WadUnpack.UnpackWad(wadfile, fd.SelectedPath + "/" + wadname); }
                             catch (Exception ex) { ErrorBox(ex.Message); }
                         }
                     }
@@ -2954,7 +2954,7 @@ namespace ShowMiiWads
 
                 foreach (ListViewGroup lvg in lvWads.Groups)
                 {
-                    lvg.Header = lvg.Header.Remove(0, lvg.Header.LastIndexOf('\\') + 1);
+                    lvg.Header = lvg.Header.Remove(0, lvg.Header.LastIndexOf('/') + 1);
                 }
             }
         }
@@ -3048,8 +3048,8 @@ namespace ShowMiiWads
                 {
                     if (File.Exists(ckey) || File.Exists(key))
                     {
-                        string wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text;
-                        string[] oldtitles = Wii.WadInfo.GetChannelTitles(lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text);
+                        string wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "/" + lvWads.SelectedItems[0].Text;
+                        string[] oldtitles = Wii.WadInfo.GetChannelTitles(lvWads.SelectedItems[0].Group.Tag.ToString() + "/" + lvWads.SelectedItems[0].Text);
 
                         if (oldtitles[1].Length != 0)
                         {
@@ -3343,7 +3343,7 @@ namespace ShowMiiWads
                     try
                     {
                         byte[] tmd = Wii.Tools.LoadFileToByteArray(Directory.GetFiles(packpath, "*.tmd")[0]);
-                        byte[] app = Wii.Tools.LoadFileToByteArray(packpath + "\\00000000.app");
+                        byte[] app = Wii.Tools.LoadFileToByteArray(packpath + "/00000000.app");
 
                         string channelname = "";
                         switch (language)
@@ -3632,7 +3632,7 @@ namespace ShowMiiWads
                         filename = filename.Replace(invalidChar.ToString(), string.Empty);
 
                     string path = lvi.SubItems[7].Text;
-                    string result = fld.SelectedPath + "\\" + filename + ".wad";
+                    string result = fld.SelectedPath + "/" + filename + ".wad";
 
                     try { Wii.WadPack.PackWadFromNand(NandPath, path, result); }
                     catch (Exception ex) { ErrorBox(filename + "\r\n" + ex.Message); }
@@ -3660,24 +3660,24 @@ namespace ShowMiiWads
 
                                 pbProgress.Value = 0;
 
-                                Wii.WadUnpack.UnpackWad(lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text, TempPath);
+                                Wii.WadUnpack.UnpackWad(lvWads.SelectedItems[0].Group.Tag.ToString() + "/" + lvWads.SelectedItems[0].Text, TempPath);
 
                                 pbProgress.Value = 20;
 
-                                Wii.U8.UnpackU8(TempPath + "\\00000000.app", TempPath + "\\00000000_app_OUT");
+                                Wii.U8.UnpackU8(TempPath + "/00000000.app", TempPath + "/00000000_app_OUT");
 
                                 pbProgress.Value = 40;
 
-                                Wii.U8.UnpackU8(TempPath + "\\00000000_app_OUT\\meta\\banner.bin", TempPath + "\\00000000_app_OUT\\meta\\banner_bin_OUT");
+                                Wii.U8.UnpackU8(TempPath + "/00000000_app_OUT/meta/banner.bin", TempPath + "/00000000_app_OUT/meta/banner_bin_OUT");
 
                                 pbProgress.Value = 60;
 
-                                Wii.U8.UnpackU8(TempPath + "\\00000000_app_OUT\\meta\\icon.bin", TempPath + "\\00000000_app_OUT\\meta\\icon_bin_OUT");
+                                Wii.U8.UnpackU8(TempPath + "/00000000_app_OUT/meta/icon.bin", TempPath + "/00000000_app_OUT/meta/icon_bin_OUT");
 
                                 pbProgress.Value = 80;
 
-                                string[] bannertpls = Directory.GetFiles(TempPath + "\\00000000_app_OUT\\meta\\banner_bin_OUT\\arc\\timg", "*.tpl");
-                                string[] icontpls = Directory.GetFiles(TempPath + "\\00000000_app_OUT\\meta\\icon_bin_OUT\\arc\\timg", "*.tpl");
+                                string[] bannertpls = Directory.GetFiles(TempPath + "/00000000_app_OUT/meta/banner_bin_OUT/arc/timg", "*.tpl");
+                                string[] icontpls = Directory.GetFiles(TempPath + "/00000000_app_OUT/meta/icon_bin_OUT/arc/timg", "*.tpl");
 
                                 foreach (string thistpl in bannertpls)
                                 {
@@ -3706,7 +3706,7 @@ namespace ShowMiiWads
                                 pvw.cmBannerImages.Text = Messages[104];
                                 pvw.cmIconImages.Text = Messages[105];
                                 pvw.cmBothImages.Text = Messages[106];
-                                pvw.wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text;
+                                pvw.wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "/" + lvWads.SelectedItems[0].Text;
                                 pvw.fromwad = true;
                                 pvw.backup = backup;
                                 pvw.cmRGB565.Text = Messages[137];
@@ -3743,7 +3743,7 @@ namespace ShowMiiWads
                     {
                         try
                         {
-                            byte[] tmd = Wii.Tools.LoadFileToByteArray(NandPath + "\\title\\" + lvNand.SelectedItems[0].SubItems[7].Text + "\\content\\title.tmd");
+                            byte[] tmd = Wii.Tools.LoadFileToByteArray(NandPath + "/title/" + lvNand.SelectedItems[0].SubItems[7].Text + "/content/title.tmd");
                             string nullappname = "";
                             string[,] contents = Wii.WadInfo.GetContentInfo(tmd);
 
@@ -3758,19 +3758,19 @@ namespace ShowMiiWads
 
                             pbProgress.Value = 20;
 
-                            byte[] nullapp = Wii.Tools.LoadFileToByteArray(NandPath + "\\title\\" + lvNand.SelectedItems[0].SubItems[7].Text + "\\content\\" + nullappname + ".app");
+                            byte[] nullapp = Wii.Tools.LoadFileToByteArray(NandPath + "/title/" + lvNand.SelectedItems[0].SubItems[7].Text + "/content/" + nullappname + ".app");
                             byte[] bannerbin = Wii.U8.GetBannerBin(nullapp);
                             byte[] iconbin = Wii.U8.GetIconBin(nullapp);
 
                             pbProgress.Value = 40;
 
-                            Wii.U8.UnpackTpls(bannerbin, TempPath + "\\00000000_app_OUT\\meta\\banner_bin_OUT\\arc\\timg");
-                            Wii.U8.UnpackTpls(iconbin, TempPath + "\\00000000_app_OUT\\meta\\icon_bin_OUT\\arc\\timg");
+                            Wii.U8.UnpackTpls(bannerbin, TempPath + "/00000000_app_OUT/meta/banner_bin_OUT/arc/timg");
+                            Wii.U8.UnpackTpls(iconbin, TempPath + "/00000000_app_OUT/meta/icon_bin_OUT/arc/timg");
 
                             pbProgress.Value = 60;
 
-                            string[] bannertpls = Directory.GetFiles(TempPath + "\\00000000_app_OUT\\meta\\banner_bin_OUT\\arc\\timg", "*.tpl");
-                            string[] icontpls = Directory.GetFiles(TempPath + "\\00000000_app_OUT\\meta\\icon_bin_OUT\\arc\\timg", "*.tpl");
+                            string[] bannertpls = Directory.GetFiles(TempPath + "/00000000_app_OUT/meta/banner_bin_OUT/arc/timg", "*.tpl");
+                            string[] icontpls = Directory.GetFiles(TempPath + "/00000000_app_OUT/meta/icon_bin_OUT/arc/timg", "*.tpl");
 
                             foreach (string thistpl in bannertpls)
                             {
@@ -3833,16 +3833,16 @@ namespace ShowMiiWads
                 {
                     try
                     {
-                        string outfolder = ofd.FileName.Remove(0, ofd.FileName.LastIndexOf('\\') + 1).Replace('.', '_') + "_OUT";
+                        string outfolder = ofd.FileName.Remove(0, ofd.FileName.LastIndexOf('/') + 1).Replace('.', '_') + "_OUT";
 
                         FolderBrowserDialog fbd = new FolderBrowserDialog();
                         fbd.Description = string.Format(Messages[39], outfolder);
-                        fbd.SelectedPath = ofd.FileName.Remove(ofd.FileName.LastIndexOf('\\'));
+                        fbd.SelectedPath = ofd.FileName.Remove(ofd.FileName.LastIndexOf('/'));
 
                         if (fbd.ShowDialog() == DialogResult.OK)
                         {
                             byte[] file = Wii.Tools.LoadFileToByteArray(ofd.FileName);
-                            Wii.U8.UnpackU8(file, fbd.SelectedPath + "\\" + outfolder);
+                            Wii.U8.UnpackU8(file, fbd.SelectedPath + "/" + outfolder);
                             InfoBox(Messages[67]);
                         }
                     }
@@ -3879,9 +3879,9 @@ namespace ShowMiiWads
                     }
 
                     SaveFileDialog sfd = new SaveFileDialog();
-                    sfd.InitialDirectory = ofd.FileName.Remove(ofd.FileName.LastIndexOf('\\'));
+                    sfd.InitialDirectory = ofd.FileName.Remove(ofd.FileName.LastIndexOf('/'));
                     sfd.Filter = "PNG|*.png|JPG|*.jpg|GIF|*.gif|BMP|*.bmp|All|*.png; *.jpg; *.gif; *.bmp";
-                    sfd.FileName = ofd.FileName.Remove(ofd.FileName.LastIndexOf('.')).Remove(0, ofd.FileName.LastIndexOf('\\') + 1);
+                    sfd.FileName = ofd.FileName.Remove(ofd.FileName.LastIndexOf('.')).Remove(0, ofd.FileName.LastIndexOf('/') + 1);
 
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
@@ -3910,7 +3910,7 @@ namespace ShowMiiWads
 
         private void btnCreateKey_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(Application.StartupPath + "\\common-key.bin") && !File.Exists(Application.StartupPath + "\\key.bin"))
+            if (!File.Exists(Application.StartupPath + "/common-key.bin") && !File.Exists(Application.StartupPath + "/key.bin"))
             {
                 InputBoxDialog ipb = new InputBoxDialog();
                 ipb.FormPrompt = string.Format(Messages[108], "45e", "common-key.bin");
@@ -3932,9 +3932,9 @@ namespace ShowMiiWads
             }
             else
             {
-                if (File.Exists(Application.StartupPath + "\\common-key.bin"))
+                if (File.Exists(Application.StartupPath + "/common-key.bin"))
                     ErrorBox(string.Format(Messages[111], "common-key.bin"));
-                else if (File.Exists(Application.StartupPath + "\\key.bin"))
+                else if (File.Exists(Application.StartupPath + "/key.bin"))
                     ErrorBox(string.Format(Messages[111], "key.bin"));
             }
         }
@@ -4052,7 +4052,7 @@ namespace ShowMiiWads
         {
             if (lvWads.SelectedItems.Count == 1)
             {
-                string wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text;
+                string wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "/" + lvWads.SelectedItems[0].Text;
 
                 if (File.Exists(wadfile + ".backup"))
                 {
@@ -4409,7 +4409,7 @@ namespace ShowMiiWads
             {
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "U8|*.bin; *.app; *.bnr; *.u8; *.arc|*.*|*.*";
-                sfd.FileName = fbd.SelectedPath.Remove(0, fbd.SelectedPath.LastIndexOf('\\') + 1) + ".bin";
+                sfd.FileName = fbd.SelectedPath.Remove(0, fbd.SelectedPath.LastIndexOf('/') + 1) + ".bin";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -4439,7 +4439,7 @@ namespace ShowMiiWads
             {
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "U8|*.bin; *.app; *.bnr; *.u8; *.arc|*.*|*.*";
-                sfd.FileName = fbd.SelectedPath.Remove(0, fbd.SelectedPath.LastIndexOf('\\') + 1) + ".bin";
+                sfd.FileName = fbd.SelectedPath.Remove(0, fbd.SelectedPath.LastIndexOf('/') + 1) + ".bin";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -4470,7 +4470,7 @@ namespace ShowMiiWads
             {
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "U8|*.bin; *.app; *.bnr; *.u8; *.arc|*.*|*.*";
-                sfd.FileName = fld.SelectedPath.Remove(0, fld.SelectedPath.LastIndexOf('\\') + 1) + ".bin";
+                sfd.FileName = fld.SelectedPath.Remove(0, fld.SelectedPath.LastIndexOf('/') + 1) + ".bin";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -4547,7 +4547,7 @@ namespace ShowMiiWads
                 {
                     try
                     {
-                        string wadfile = lvWads.SelectedItems[0].Group.Tag + "\\" + lvWads.SelectedItems[0].Text;
+                        string wadfile = lvWads.SelectedItems[0].Group.Tag + "/" + lvWads.SelectedItems[0].Text;
 
                         Wii.WadUnpack.UnpackWad(wadfile, TempPath);
                         string[] appfiles = Directory.GetFiles(TempPath, "*.app");
@@ -4557,14 +4557,14 @@ namespace ShowMiiWads
 
                         using (BinaryReader loader = new BinaryReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("ShowMiiWads.Resources.Nandloader.app")))
                         {
-                            using (FileStream nandloader = new FileStream(TempPath + "\\00000002.app", FileMode.Create))
+                            using (FileStream nandloader = new FileStream(TempPath + "/00000002.app", FileMode.Create))
                             {
                                 byte[] taikoarray = loader.ReadBytes((int)loader.BaseStream.Length);
                                 nandloader.Write(taikoarray, 0, taikoarray.Length);
                             }
                         }
 
-                        File.Copy(ofd.FileName, TempPath + "\\00000001.app");
+                        File.Copy(ofd.FileName, TempPath + "/00000001.app");
 
                         string[] tmdfile = Directory.GetFiles(TempPath, "*.tmd");
                         byte[] tmd = Wii.Tools.LoadFileToByteArray(tmdfile[0]);
@@ -4603,7 +4603,7 @@ namespace ShowMiiWads
         {
             if (MessageBox.Show("This might brick your Wii!\nOnly use this feature, if you have BootMii installed as boot2(!) with a NAND Backup(!)\nUse this at your own risk!\nEspecially, be very careful using this feature with any System Wad!\nDo you agree?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                string wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text;
+                string wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "/" + lvWads.SelectedItems[0].Text;
                 int oldversion = Wii.WadInfo.GetTitleVersion(wadfile);
                 int newversion;
 
@@ -4656,7 +4656,7 @@ namespace ShowMiiWads
                         {
                             try
                             {
-                                string wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "\\" + lvWads.SelectedItems[0].Text;
+                                string wadfile = lvWads.SelectedItems[0].Group.Tag.ToString() + "/" + lvWads.SelectedItems[0].Text;
 
                                 byte[] wad = Wii.Tools.LoadFileToByteArray(wadfile);
                                 wad = Wii.WadEdit.ChangeIosSlot(wad, slot);
@@ -4809,13 +4809,13 @@ namespace ShowMiiWads
                                 if (Directory.Exists(TempPath)) Directory.Delete(TempPath, true);
                                 Directory.CreateDirectory(TempPath);
 
-                                string wadfile = thisWad.Group.Tag.ToString() + "\\" + thisWad.Text;
+                                string wadfile = thisWad.Group.Tag.ToString() + "/" + thisWad.Text;
 
                                 Wii.WadUnpack.UnpackNullApp(wadfile, TempPath);
-                                Wii.U8.UnpackU8(TempPath + "\\00000000.app", TempPath + "\\00000000.app_OUT");
-                                Wii.U8.UnpackU8(TempPath + "\\00000000.app_OUT\\meta\\banner.bin", TempPath + "\\00000000.app_OUT\\meta\\banner.bin_OUT");
+                                Wii.U8.UnpackU8(TempPath + "/00000000.app", TempPath + "/00000000.app_OUT");
+                                Wii.U8.UnpackU8(TempPath + "/00000000.app_OUT/meta/banner.bin", TempPath + "/00000000.app_OUT/meta/banner.bin_OUT");
 
-                                string[] tpls = Directory.GetFiles(TempPath + "\\00000000.app_OUT\\meta\\banner.bin_OUT\\arc\\timg");
+                                string[] tpls = Directory.GetFiles(TempPath + "/00000000.app_OUT/meta/banner.bin_OUT/arc/timg");
 
                                 foreach (string thisTpl in tpls)
                                 {
@@ -4823,7 +4823,7 @@ namespace ShowMiiWads
                                     {
                                         Image vcpic = Wii.TPL.ConvertFromTPL(thisTpl);
                                         vcpic = ResizeImage(vcpic, 192, 112);
-                                        vcpic.Save(fbd.SelectedPath + "\\" + thisId + ".png", System.Drawing.Imaging.ImageFormat.Png);
+                                        vcpic.Save(fbd.SelectedPath + "/" + thisId + ".png", System.Drawing.Imaging.ImageFormat.Png);
                                     }
                                 }
 
@@ -4869,7 +4869,7 @@ namespace ShowMiiWads
 
                 uint titleID = (uint)((stringId[0] << 24) | (stringId[1] << 16) | (stringId[2] << 8) | stringId[3]);
 
-                string path = NandPath + "\\title\\" + lvNand.SelectedItems[0].SubItems[7].Text + "\\content\\";
+                string path = NandPath + "/title/" + lvNand.SelectedItems[0].SubItems[7].Text + "/content/";
                 string[] appFile = Directory.GetFiles(path, "*.app");
                 bool patched = false;
 

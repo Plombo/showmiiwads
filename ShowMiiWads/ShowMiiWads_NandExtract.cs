@@ -123,13 +123,13 @@ class NandExtract
         switch (type)
         {
             case 0:
-                key = readKeyfile(Directory.GetCurrentDirectory() + "\\keys.bin");
+                key = readKeyfile(Directory.GetCurrentDirectory() + "/keys.bin");
                 if (key != null)
                     return true;
                 break;
 
             case 1:
-                key = readKeyfile(Directory.GetCurrentDirectory() + "\\keys.bin");
+                key = readKeyfile(Directory.GetCurrentDirectory() + "/keys.bin");
                 if (key != null)
                     return true;
                 break;
@@ -228,9 +228,9 @@ class NandExtract
         if (filename != "/")
         {
             if (parent != "/" && parent != "")
-                filename = parent + "\\" + filename;
+                filename = parent + "/" + filename;
 
-            Directory.CreateDirectory(extractPath + "\\" + filename);
+            Directory.CreateDirectory(extractPath + "/" + filename);
         }
 
         if (fst.sub != 0xffff)
@@ -244,7 +244,7 @@ class NandExtract
         byte[] cluster = new byte[0x4000],
                data = new byte[cluster_span * 0x4000];
 
-        string filename = "\\" + parent + "\\" +
+        string filename = "/" + parent + "/" +
                         ASCIIEncoding.ASCII.GetString(fst.filename).
                         Replace("\0", string.Empty).
                         Replace(":", "-");

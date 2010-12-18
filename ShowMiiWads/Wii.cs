@@ -1,4 +1,4 @@
-﻿/* This file is part of ShowMiiWads
+/* This file is part of ShowMiiWads
  * Copyright (C) 2009 Leathl
  * 
  * ShowMiiWads is free software: you can redistribute it and/or
@@ -339,8 +339,8 @@ namespace Wii
             for (int i = 0; i < 32; i += 2)
                 cheese[++count] = byte.Parse(water.Remove(0, i).Remove(2), System.Globalization.NumberStyles.HexNumber);
 
-            if (destinationpath[destinationpath.Length - 1] != '\\') destinationpath = destinationpath + "\\";
-            using (FileStream keystream = new FileStream(destinationpath + "\\common-key.bin", FileMode.Create))
+            if (destinationpath[destinationpath.Length - 1] != '/') destinationpath = destinationpath + "/";
+            using (FileStream keystream = new FileStream(destinationpath + "/common-key.bin", FileMode.Create))
             {
                 keystream.Write(cheese, 0, cheese.Length);
             }
@@ -422,13 +422,13 @@ namespace Wii
             foreach (string thisFile in files)
             {
                 if (!Directory.Exists(destination)) Directory.CreateDirectory(destination);
-                if (File.Exists(destination + "\\" + Path.GetFileName(thisFile))) File.Delete(destination + "\\" + Path.GetFileName(thisFile));
-                File.Copy(thisFile, destination + "\\" + Path.GetFileName(thisFile));
+                if (File.Exists(destination + "/" + Path.GetFileName(thisFile))) File.Delete(destination + "/" + Path.GetFileName(thisFile));
+                File.Copy(thisFile, destination + "/" + Path.GetFileName(thisFile));
             }
 
             foreach (string thisDir in subdirs)
             {
-                CopyDirectory(thisDir, destination + "\\" + thisDir.Remove(0, thisDir.LastIndexOf('\\') + 1));
+                CopyDirectory(thisDir, destination + "/" + thisDir.Remove(0, thisDir.LastIndexOf('/') + 1));
             }
         }
     }
@@ -665,7 +665,7 @@ namespace Wii
         /// <returns></returns>
         public static string[] GetChannelTitles(byte[] wadfile)
         {
-            if (File.Exists(System.Windows.Forms.Application.StartupPath + "\\common-key.bin") || File.Exists(System.Windows.Forms.Application.StartupPath + "\\key.bin"))
+            if (File.Exists(System.Windows.Forms.Application.StartupPath + "/common-key.bin") || File.Exists(System.Windows.Forms.Application.StartupPath + "/key.bin"))
             {
                 string channeltype = GetChannelType(wadfile, 0);
 
@@ -1142,7 +1142,7 @@ namespace Wii
                     wadtiktmd[tmdpos + 0x193].ToString("x2");
             }
 
-            thispath = thispath.Insert(8, "\\");
+            thispath = thispath.Insert(8, "/");
             return thispath;
         }
 
@@ -1301,10 +1301,10 @@ namespace Wii
         {
             byte[] commonkey = new byte[16];
 
-            if (File.Exists(System.Windows.Forms.Application.StartupPath + "\\common-key.bin"))
-            { commonkey = Tools.LoadFileToByteArray(System.Windows.Forms.Application.StartupPath + "\\common-key.bin"); }
-            else if (File.Exists(System.Windows.Forms.Application.StartupPath + "\\key.bin"))
-            { commonkey = Tools.LoadFileToByteArray(System.Windows.Forms.Application.StartupPath + "\\key.bin"); }
+            if (File.Exists(System.Windows.Forms.Application.StartupPath + "/common-key.bin"))
+            { commonkey = Tools.LoadFileToByteArray(System.Windows.Forms.Application.StartupPath + "/common-key.bin"); }
+            else if (File.Exists(System.Windows.Forms.Application.StartupPath + "/key.bin"))
+            { commonkey = Tools.LoadFileToByteArray(System.Windows.Forms.Application.StartupPath + "/key.bin"); }
             else { throw new FileNotFoundException("The (common-)key.bin must be in the application directory!"); }
 
             byte[] encryptedkey = new byte[16];
@@ -2130,12 +2130,12 @@ namespace Wii
                 tmd.Read(oldsha1, 0, oldsha1.Length);
                 string fileName = id;
 
-                if (!File.Exists(tmdfile.Remove(tmdfile.LastIndexOf('\\') + 1) + fileName + ".app"))
+                if (!File.Exists(tmdfile.Remove(tmdfile.LastIndexOf('/') + 1) + fileName + ".app"))
                     fileName = index;
 
-                if (File.Exists(tmdfile.Remove(tmdfile.LastIndexOf('\\') + 1) + fileName + ".app"))
+                if (File.Exists(tmdfile.Remove(tmdfile.LastIndexOf('/') + 1) + fileName + ".app"))
                 {
-                    byte[] content = Wii.Tools.LoadFileToByteArray(tmdfile.Remove(tmdfile.LastIndexOf('\\') + 1) + fileName + ".app");
+                    byte[] content = Wii.Tools.LoadFileToByteArray(tmdfile.Remove(tmdfile.LastIndexOf('/') + 1) + fileName + ".app");
                     int newsize = content.Length;
                     
                     if (newsize != oldsize)
@@ -2305,10 +2305,10 @@ namespace Wii
         {
             byte[] commonkey = new byte[16];
 
-            if (File.Exists(System.Windows.Forms.Application.StartupPath + "\\common-key.bin"))
-            { commonkey = Tools.LoadFileToByteArray(System.Windows.Forms.Application.StartupPath + "\\common-key.bin"); }
-            else if (File.Exists(System.Windows.Forms.Application.StartupPath + "\\key.bin"))
-            { commonkey = Tools.LoadFileToByteArray(System.Windows.Forms.Application.StartupPath + "\\key.bin"); }
+            if (File.Exists(System.Windows.Forms.Application.StartupPath + "/common-key.bin"))
+            { commonkey = Tools.LoadFileToByteArray(System.Windows.Forms.Application.StartupPath + "/common-key.bin"); }
+            else if (File.Exists(System.Windows.Forms.Application.StartupPath + "/key.bin"))
+            { commonkey = Tools.LoadFileToByteArray(System.Windows.Forms.Application.StartupPath + "/key.bin"); }
             else { throw new FileNotFoundException("The (common-)key.bin must be in the application directory!"); }
 
             Array.Resize(ref titleid, 16);
@@ -2373,7 +2373,7 @@ namespace Wii
         /// <returns></returns>
         public static void UnpackNullApp(string wadfile, string destination)
         {
-            if (!destination.EndsWith(".app")) destination += "\\00000000.app";
+            if (!destination.EndsWith(".app")) destination += "/00000000.app";
 
             byte[] wad = Tools.LoadFileToByteArray(wadfile);
             byte[] nullapp = UnpackNullApp(wad);
@@ -2431,7 +2431,7 @@ namespace Wii
         /// <param name="pathtowad"></param>
         public static void UnpackWad(string pathtowad)
         {
-            string destinationpath = pathtowad.Remove(pathtowad.LastIndexOf('\\'));
+            string destinationpath = pathtowad.Remove(pathtowad.LastIndexOf('/'));
             byte[] wadfile = Tools.LoadFileToByteArray(pathtowad);
             UnpackWad(wadfile, destinationpath);
         }
@@ -2450,8 +2450,8 @@ namespace Wii
         /// </summary>
         public static void UnpackWad(byte[] wadfile, string destinationpath, out bool hashesmatch)
         {
-            if (destinationpath[destinationpath.Length - 1] != '\\')
-            { destinationpath = destinationpath + "\\"; }
+            if (destinationpath[destinationpath.Length - 1] != '/')
+            { destinationpath = destinationpath + "/"; }
 
             hashesmatch = true;
 
@@ -2556,18 +2556,18 @@ namespace Wii
         public static void UnpackToNand(byte[] wadfile, string nandpath)
         {
             string path = WadInfo.GetNandPath(wadfile, 0);
-            string path1 = path.Remove(path.IndexOf('\\'));
-            string path2 = path.Remove(0, path.IndexOf('\\') + 1);
+            string path1 = path.Remove(path.IndexOf('/'));
+            string path2 = path.Remove(0, path.IndexOf('/') + 1);
 
-            if (nandpath[nandpath.Length - 1] != '\\') { nandpath = nandpath + "\\"; }
+            if (nandpath[nandpath.Length - 1] != '/') { nandpath = nandpath + "/"; }
 
             if (!Directory.Exists(nandpath + "ticket")) { Directory.CreateDirectory(nandpath + "ticket"); }
             if (!Directory.Exists(nandpath + "title")) { Directory.CreateDirectory(nandpath + "title"); }
-            if (!Directory.Exists(nandpath + "ticket\\" + path1)) { Directory.CreateDirectory(nandpath + "ticket\\" + path1); }
-            if (!Directory.Exists(nandpath + "title\\" + path1)) { Directory.CreateDirectory(nandpath + "title\\" + path1); }
-            if (!Directory.Exists(nandpath + "title\\" + path1 + "\\" + path2)) { Directory.CreateDirectory(nandpath + "title\\" + path1 + "\\" + path2); }
-            if (!Directory.Exists(nandpath + "title\\" + path1 + "\\" + path2 + "\\content")) { Directory.CreateDirectory(nandpath + "title\\" + path1 + "\\" + path2 + "\\content"); }
-            if (!Directory.Exists(nandpath + "title\\" + path1 + "\\" + path2 + "\\data")) { Directory.CreateDirectory(nandpath + "title\\" + path1 + "\\" + path2 + "\\data"); }
+            if (!Directory.Exists(nandpath + "ticket/" + path1)) { Directory.CreateDirectory(nandpath + "ticket/" + path1); }
+            if (!Directory.Exists(nandpath + "title/" + path1)) { Directory.CreateDirectory(nandpath + "title/" + path1); }
+            if (!Directory.Exists(nandpath + "title/" + path1 + "/" + path2)) { Directory.CreateDirectory(nandpath + "title/" + path1 + "/" + path2); }
+            if (!Directory.Exists(nandpath + "title/" + path1 + "/" + path2 + "/content")) { Directory.CreateDirectory(nandpath + "title/" + path1 + "/" + path2 + "/content"); }
+            if (!Directory.Exists(nandpath + "title/" + path1 + "/" + path2 + "/data")) { Directory.CreateDirectory(nandpath + "title/" + path1 + "/" + path2 + "/data"); }
             if (!Directory.Exists(nandpath + "shared1")) Directory.CreateDirectory(nandpath + "shared1");
 
             int certsize = WadInfo.GetCertSize(wadfile);
@@ -2581,14 +2581,14 @@ namespace Wii
             int contentpos = 64 + Tools.AddPadding(certsize) + Tools.AddPadding(tiksize) + Tools.AddPadding(tmdsize);
 
             //unpack ticket
-            using (FileStream tik = new FileStream(nandpath + "ticket\\" + path1 + "\\" + path2 + ".tik", FileMode.Create))
+            using (FileStream tik = new FileStream(nandpath + "ticket/" + path1 + "/" + path2 + ".tik", FileMode.Create))
             {
                 tik.Seek(0, SeekOrigin.Begin);
                 tik.Write(wadfile, tikpos, tiksize);
             }
 
             //unpack tmd
-            using (FileStream tmd = new FileStream(nandpath + "title\\" + path1 + "\\" + path2 + "\\content\\title.tmd", FileMode.Create))
+            using (FileStream tmd = new FileStream(nandpath + "title/" + path1 + "/" + path2 + "/content/title.tmd", FileMode.Create))
             {
                 tmd.Seek(0, SeekOrigin.Begin);
                 tmd.Write(wadfile, tmdpos, tmdsize);
@@ -2604,31 +2604,31 @@ namespace Wii
 
                 if (contents[i, 2] == "8001")
                 {
-                    if (File.Exists(nandpath + "shared1\\content.map"))
+                    if (File.Exists(nandpath + "shared1/content.map"))
                     {
-                        byte[] contmap = Tools.LoadFileToByteArray(nandpath + "shared1\\content.map");
+                        byte[] contmap = Tools.LoadFileToByteArray(nandpath + "shared1/content.map");
 
                         if (ContentMap.CheckSharedContent(contmap, contents[i, 4]) == false)
                         {
                             string newname = ContentMap.GetNewSharedContentName(contmap);
 
-                            FileStream content = new FileStream(nandpath + "shared1\\" + newname + ".app", FileMode.Create);
+                            FileStream content = new FileStream(nandpath + "shared1/" + newname + ".app", FileMode.Create);
                             content.Write(thiscontent, 0, thiscontent.Length);
                             content.Close();
-                            ContentMap.AddSharedContent(nandpath + "shared1\\content.map", newname, contents[i, 4]);
+                            ContentMap.AddSharedContent(nandpath + "shared1/content.map", newname, contents[i, 4]);
                         }
                     }
                     else
                     {
-                        FileStream content = new FileStream(nandpath + "shared1\\00000000.app", FileMode.Create);
+                        FileStream content = new FileStream(nandpath + "shared1/00000000.app", FileMode.Create);
                         content.Write(thiscontent, 0, thiscontent.Length);
                         content.Close();
-                        ContentMap.AddSharedContent(nandpath + "shared1\\content.map", "00000000", contents[i, 4]);
+                        ContentMap.AddSharedContent(nandpath + "shared1/content.map", "00000000", contents[i, 4]);
                     }
                 }
                 else
                 {
-                    FileStream content = new FileStream(nandpath + "title\\" + path1 + "\\" + path2 + "\\content\\" + contents[i, 0] + ".app", FileMode.Create);
+                    FileStream content = new FileStream(nandpath + "title/" + path1 + "/" + path2 + "/content/" + contents[i, 0] + ".app", FileMode.Create);
 
                     content.Write(thiscontent, 0, thiscontent.Length);
                     content.Close();
@@ -2640,9 +2640,9 @@ namespace Wii
             //add titleid to uid.sys, if it doesn't exist
             string titleid = WadInfo.GetFullTitleID(wadfile, 1);
 
-            if (File.Exists(nandpath + "\\sys\\uid.sys"))
+            if (File.Exists(nandpath + "/sys/uid.sys"))
             {
-                FileStream fs = new FileStream(nandpath + "\\sys\\uid.sys", FileMode.Open);
+                FileStream fs = new FileStream(nandpath + "/sys/uid.sys", FileMode.Open);
                 byte[] uidsys = new byte[fs.Length];
                 fs.Read(uidsys, 0, uidsys.Length);
                 fs.Close();
@@ -2650,14 +2650,14 @@ namespace Wii
                 if (UID.CheckUID(uidsys, titleid) == false)
                 {
                     uidsys = UID.AddUID(uidsys, titleid);
-                    Tools.SaveFileFromByteArray(uidsys, nandpath + "\\sys\\uid.sys");
+                    Tools.SaveFileFromByteArray(uidsys, nandpath + "/sys/uid.sys");
                 }
             }
             else
             {
-                if (!Directory.Exists(nandpath + "\\sys")) Directory.CreateDirectory(nandpath + "\\sys");
+                if (!Directory.Exists(nandpath + "/sys")) Directory.CreateDirectory(nandpath + "/sys");
                 byte[] uidsys = UID.AddUID(new byte[0], titleid);
-                Tools.SaveFileFromByteArray(uidsys, nandpath + "\\sys\\uid.sys");
+                Tools.SaveFileFromByteArray(uidsys, nandpath + "/sys/uid.sys");
             }
         }
     }
@@ -2672,7 +2672,7 @@ namespace Wii
         /// <param name="contentFolder"></param>
         public static int GetEstimatedSize(string contentdirectory)
         {
-            if (contentdirectory[contentdirectory.Length - 1] != '\\') { contentdirectory = contentdirectory + "\\"; }
+            if (contentdirectory[contentdirectory.Length - 1] != '/') { contentdirectory = contentdirectory + "/"; }
 
             if (!Directory.Exists(contentdirectory)) throw new DirectoryNotFoundException("The directory doesn't exists:\r\n" + contentdirectory);
             if (Directory.GetFiles(contentdirectory, "*.app").Length < 1) throw new Exception("No *.app file was found");
@@ -2706,7 +2706,7 @@ namespace Wii
         /// <param name="directory"></param>
         public static void PackWad(string contentdirectory, string destinationfile)
         {
-            if (contentdirectory[contentdirectory.Length - 1] != '\\') { contentdirectory = contentdirectory + "\\"; }
+            if (contentdirectory[contentdirectory.Length - 1] != '/') { contentdirectory = contentdirectory + "/"; }
 
             if (!Directory.Exists(contentdirectory)) throw new DirectoryNotFoundException("The directory doesn't exists:\r\n" + contentdirectory);
             if (Directory.GetFiles(contentdirectory, "*.app").Length < 1) throw new Exception("No *.app file was found");
@@ -2808,13 +2808,13 @@ namespace Wii
         /// <returns></returns>
         public static void PackWadFromNand(string nandpath, string path, string destinationfile)
         {
-            if (nandpath[nandpath.Length - 1] != '\\') { nandpath = nandpath + "\\"; }
+            if (nandpath[nandpath.Length - 1] != '/') { nandpath = nandpath + "/"; }
             string path1 = path.Remove(8);
             string path2 = path.Remove(0, 9);
-            string ticketdir = nandpath + "ticket\\" + path1 + "\\";
-            string contentdir = nandpath + "title\\" + path1 + "\\" + path2 + "\\content\\";
-            string sharedir = nandpath + "shared1\\";
-            string certdir = nandpath + "sys\\";
+            string ticketdir = nandpath + "ticket/" + path1 + "/";
+            string contentdir = nandpath + "title/" + path1 + "/" + path2 + "/content/";
+            string sharedir = nandpath + "shared1/";
+            string certdir = nandpath + "sys/";
 
             if (!Directory.Exists(ticketdir) ||
                 !Directory.Exists(contentdir)) throw new DirectoryNotFoundException("Directory doesn't exist:\r\n" + contentdir);
@@ -3416,7 +3416,7 @@ namespace Wii
         {
             int datapad = 32, stringtablepad = 32; //Biggie seems to use these paddings, so let's do it, too ;)
             string rootpath = folder;
-            if (rootpath[rootpath.Length - 1] != '\\') rootpath = rootpath + "\\";
+            if (rootpath[rootpath.Length - 1] != '/') rootpath = rootpath + "/";
 
             bannersize = 0; iconsize = 0; soundsize = 0;
 
@@ -3453,8 +3453,8 @@ namespace Wii
             {
                 files[i] = files[i].Remove(0, rootpath.Length - 1);
 
-                recursion = Tools.CountCharsInString(files[i], '\\') - 1;
-                name = files[i].Remove(0, files[i].LastIndexOf('\\') + 1);
+                recursion = Tools.CountCharsInString(files[i], '/') - 1;
+                name = files[i].Remove(0, files[i].LastIndexOf('/') + 1);
 
                 byte[] temp1 = BitConverter.GetBytes((UInt16)stringtable.Length); Array.Reverse(temp1);
                 tempnode[2] = temp1[0];
@@ -3665,7 +3665,7 @@ namespace Wii
             int lz77offset = Lz77.GetLz77Offset(u8archive);
             if (lz77offset != -1) { u8archive = Lz77.Decompress(u8archive, lz77offset); }
 
-            if (unpackpath[unpackpath.Length - 1] != '\\') { unpackpath = unpackpath + "\\"; }
+            if (unpackpath[unpackpath.Length - 1] != '/') { unpackpath = unpackpath + "/"; }
             if (!Directory.Exists(unpackpath)) Directory.CreateDirectory(unpackpath);
 
             int u8offset = -1;
@@ -3732,7 +3732,7 @@ namespace Wii
                     switch (nodes[y, 0])
                     {
                         case "0100":
-                            if (dirs[dirindex][dirs[dirindex].Length - 1] != '\\') { dirs[dirindex] = dirs[dirindex] + "\\"; }
+                            if (dirs[dirindex][dirs[dirindex].Length - 1] != '/') { dirs[dirindex] = dirs[dirindex] + "/"; }
                             Directory.CreateDirectory(dirs[dirindex] + nodes[y, 4]);
                             dirs[dirindex + 1] = dirs[dirindex] + nodes[y, 4];
                             dirindex++;
@@ -3742,7 +3742,7 @@ namespace Wii
                             int filepos = u8offset + Tools.HexStringToInt(nodes[y, 2]);
                             int filesize = Tools.HexStringToInt(nodes[y, 3]);
 
-                            using (FileStream fs = new FileStream(dirs[dirindex] + "\\" + nodes[y, 4], FileMode.Create))
+                            using (FileStream fs = new FileStream(dirs[dirindex] + "/" + nodes[y, 4], FileMode.Create))
                             {
                                 fs.Write(u8archive, filepos, filesize);
                             }
@@ -3926,7 +3926,7 @@ namespace Wii
             int lz77offset = Lz77.GetLz77Offset(u8archive);
             if (lz77offset != -1) { u8archive = Lz77.Decompress(u8archive, lz77offset); }
 
-            if (unpackpath[unpackpath.Length - 1] != '\\') { unpackpath = unpackpath + "\\"; }
+            if (unpackpath[unpackpath.Length - 1] != '/') { unpackpath = unpackpath + "/"; }
             if (!Directory.Exists(unpackpath)) Directory.CreateDirectory(unpackpath);
 
             int u8offset = -1;
@@ -4125,7 +4125,7 @@ namespace Wii
         {
             int i, p, cmp;
             cmp = 1;
-            p = N + 1 + (text_buf[r] == 0xffff ? 0 : text_buf[r]); //text_buf[r];
+            p = N + 1 + (text_buf[r] == 0xffff ? 0 : (int)text_buf[r]); //text_buf[r];
             rson[r] = lson[r] = N; match_length = 0;
             for (; ; )
             {
@@ -5817,7 +5817,7 @@ namespace Wii
         /// <param name="destinationpath"></param>
         public static void BackupSaves(string nandpath, string destinationpath)
         {
-            string titlefolder = nandpath + "\\title";
+            string titlefolder = nandpath + "/title";
             string[] lowerdirs = Directory.GetDirectories(titlefolder);
             Tools.ChangeProgress(0);
 
@@ -5828,12 +5828,12 @@ namespace Wii
 
                 for (int j = 0; j < upperdirs.Length; j++)
                 {
-                    if (Directory.Exists(upperdirs[j] + "\\data"))
+                    if (Directory.Exists(upperdirs[j] + "/data"))
                     {
-                        if (Directory.GetFiles(upperdirs[j] + "\\data").Length > 0 ||
-                            Directory.GetDirectories(upperdirs[j] + "\\data").Length > 0)
+                        if (Directory.GetFiles(upperdirs[j] + "/data").Length > 0 ||
+                            Directory.GetDirectories(upperdirs[j] + "/data").Length > 0)
                         {
-                            Tools.CopyDirectory(upperdirs[j] + "\\data", (upperdirs[j] + "\\data").Replace(nandpath, destinationpath).Replace("\\title", ""));
+                            Tools.CopyDirectory(upperdirs[j] + "/data", (upperdirs[j] + "/data").Replace(nandpath, destinationpath).Replace("/title", ""));
                         }
                     }
                 }
@@ -5847,7 +5847,7 @@ namespace Wii
         /// <param name="nandpath"></param>
         public static void RestoreSaves(string backuppath, string nandpath)
         {
-            string titlefolder = nandpath + "\\title";
+            string titlefolder = nandpath + "/title";
             string[] lowerdirs = Directory.GetDirectories(backuppath);
             Tools.ChangeProgress(0);
 
@@ -5858,15 +5858,15 @@ namespace Wii
 
                 for (int j = 0; j < upperdirs.Length; j++)
                 {
-                    string[] datafiles = Directory.GetFiles(upperdirs[j] + "\\data");
+                    string[] datafiles = Directory.GetFiles(upperdirs[j] + "/data");
                     string upperdirnand = upperdirs[j].Replace(backuppath, titlefolder);
 
                     if (Directory.Exists(upperdirnand) &&
-                        (Directory.GetFiles(upperdirs[j] + "\\data").Length > 0 ||
-                         Directory.GetDirectories(upperdirs[j] + "\\data").Length > 0))
+                        (Directory.GetFiles(upperdirs[j] + "/data").Length > 0 ||
+                         Directory.GetDirectories(upperdirs[j] + "/data").Length > 0))
                     {
-                        if (!Directory.Exists(upperdirnand + "\\data")) Directory.CreateDirectory(upperdirnand + "\\data");
-                        Tools.CopyDirectory(upperdirs[j] + "\\data", (upperdirs[j] + "\\data").Replace(backuppath, titlefolder));
+                        if (!Directory.Exists(upperdirnand + "/data")) Directory.CreateDirectory(upperdirnand + "/data");
+                        Tools.CopyDirectory(upperdirs[j] + "/data", (upperdirs[j] + "/data").Replace(backuppath, titlefolder));
                     }
                 }
             }
@@ -5882,12 +5882,12 @@ namespace Wii
         /// <param name="destinationpath"></param>
         public static void BackupSingleSave(string nandpath, string titlepath, string destinationpath)
         {
-            string datafolder = nandpath + "\\title\\" + titlepath + "\\data";
+            string datafolder = nandpath + "/title/" + titlepath + "/data";
 
             if (Directory.GetFiles(datafolder).Length > 0 ||
                 Directory.GetDirectories(datafolder).Length > 0)
             {
-                string savefolder = datafolder.Replace(nandpath, destinationpath).Replace("\\title", "");
+                string savefolder = datafolder.Replace(nandpath, destinationpath).Replace("/title", "");
                 if (!Directory.Exists(savefolder)) Directory.CreateDirectory(savefolder);
 
                 Tools.CopyDirectory(datafolder, savefolder);
@@ -5906,15 +5906,15 @@ namespace Wii
         /// <param name="nandpath"></param>
         public static void RestoreSingleSave(string backuppath, string titlepath, string nandpath)
         {
-            string titlefoldernand = nandpath + "\\title\\" + titlepath;
-            string titlefolder = titlefoldernand.Replace(nandpath, backuppath).Replace("\\title", "");
+            string titlefoldernand = nandpath + "/title/" + titlepath;
+            string titlefolder = titlefoldernand.Replace(nandpath, backuppath).Replace("/title", "");
 
             if (Directory.Exists(titlefoldernand) &&
-                (Directory.GetFiles(titlefolder + "\\data").Length > 0 ||
-                 Directory.GetDirectories(titlefolder + "\\data").Length > 0))
+                (Directory.GetFiles(titlefolder + "/data").Length > 0 ||
+                 Directory.GetDirectories(titlefolder + "/data").Length > 0))
             {
-                if (!Directory.Exists(titlefoldernand + "\\data")) Directory.CreateDirectory(titlefoldernand + "\\data");
-                Tools.CopyDirectory(titlefolder + "\\data", titlefoldernand + "\\data");
+                if (!Directory.Exists(titlefoldernand + "/data")) Directory.CreateDirectory(titlefoldernand + "/data");
+                Tools.CopyDirectory(titlefolder + "/data", titlefoldernand + "/data");
             }
             else
             {
@@ -5929,7 +5929,7 @@ namespace Wii
         /// <param name="titlepath">Format: XXXXXXXX\XXXXXXXX</param>
         public static bool CheckForSaveData(string nandpath, string titlepath)
         {
-            string datafolder = nandpath + "\\title\\" + titlepath + "\\data";
+            string datafolder = nandpath + "/title/" + titlepath + "/data";
 
             if (!Directory.Exists(datafolder)) return false;
             else
@@ -5948,7 +5948,7 @@ namespace Wii
         /// <param name="titlepath">Format: XXXXXXXX\XXXXXXXX</param>
         public static bool CheckForBackupData(string backuppath, string titlepath)
         {
-            string datafolder = backuppath + "\\" + titlepath + "\\data";
+            string datafolder = backuppath + "/" + titlepath + "/data";
 
             if (!Directory.Exists(datafolder)) return false;
             else

@@ -1,4 +1,4 @@
-﻿/* This file is part of ShowMiiWads
+/* This file is part of ShowMiiWads
  * Copyright (C) 2009 Leathl
  * 
  * ShowMiiWads is free software: you can redistribute it and/or
@@ -36,7 +36,7 @@ namespace ShowMiiWads
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (System.IO.File.Exists(Application.StartupPath + "\\ShowMiiWads.cfg"))
+            if (System.IO.File.Exists(Application.StartupPath + "/ShowMiiWads.cfg"))
             {
                 LoadSettings();
 
@@ -49,9 +49,9 @@ namespace ShowMiiWads
 
         private static void LoadSettings()
         {
-            DataSet ds = new DataSet();
-            ds.ReadXmlSchema(Application.StartupPath + "\\ShowMiiWads.cfg");
-            ds.ReadXml(Application.StartupPath + "\\ShowMiiWads.cfg");
+            /*DataSet ds = new DataSet();
+            ds.ReadXmlSchema(Application.StartupPath + "/ShowMiiWads.cfg");
+            ds.ReadXml(Application.StartupPath + "/ShowMiiWads.cfg");
 
             try
             {
@@ -59,7 +59,7 @@ namespace ShowMiiWads
                 foldercount = Convert.ToInt32(ds.Tables["Folders"].Rows[0]["Foldercount"]);
                 splash = ds.Tables["Settings"].Rows[0]["SplashScreen"].ToString();
             }
-            catch { }
+            catch { }*/
         }
     }
 }
