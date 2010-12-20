@@ -67,7 +67,6 @@ class NandExtract
 
         if (initNand() == true)
         {
-
             if (!Directory.Exists(extractPath))
                 Directory.CreateDirectory(extractPath);
 
@@ -248,6 +247,7 @@ class NandExtract
                         ASCIIEncoding.ASCII.GetString(fst.filename).
                         Replace("\0", string.Empty).
                         Replace(":", "-");
+		Console.WriteLine("Extracting " + filename);
 
         try
         {
